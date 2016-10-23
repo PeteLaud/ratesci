@@ -8,7 +8,8 @@ Score-based confidence intervals for the rate difference (RD) or ratio (RR), for
 %%including options for variance bias correction (MN), skewness correction (GN) and continuity correction 
 }
 \usage{
-ratesCI(x1, x2, n1, n2, dist = "bin", contrast = "RD", level = 0.95, bcf = T, delta = NULL, leftside = T, cc = F, skew = T, precis = 6, plot=F)
+ratesCI(x1, x2, n1, n2, dist = "bin", contrast = "RD", level = 0.95, skew = TRUE, 
+bcf = TRUE, cc = FALSE, delta = NULL, precis = 6, plot=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -63,11 +64,9 @@ Gart JJ, Nam JM. Approximate interval estimation of the difference in binomial p
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-## Intervals for binomial RD using data from Giannotta 1984 trial within the CRASH trial meta-analysis
+## Intervals from Hartung & Knapp
 #SCAS:
-#ratesCI(x1=34, x2=7, n1=72, n2=16, dist="bin", contrast="RD", skew=TRUE) 
-#MN:
-#ratesCI(x1=34, x2=7, n1=72, n2=16, dist="bin", contrast="RD", skew=FALSE) 
+#ratesCI(x1=12, x2=1, n1=16, n2=16, dist="bin", contrast="RD", skew=TRUE) 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
