@@ -268,7 +268,7 @@ ratesCI <- function(
 	if(tdas==TRUE) pval2sided <- pf(chisq.zero,1,nstrat-1,lower.tail=FALSE)
 	pval <- cbind(chisq=chisq.zero,pval2sided,delta=delta,scoredelta=scoredelta$score,pval.left,pval.right)
 	
-	outlist <- list(estimates=estimates,nstrat=nstrat,pval=pval)
+	outlist <- list(estimates=estimates,pval=pval,nstrat=nstrat)
 	if(stratified==TRUE) {
 		Qtest <- c(Q=Q.FE,tau2=tau2.FE,pval.het=pval.het,I2=I2) 
 		wtpct <- 100*wt.MLE/sum(wt.MLE)
