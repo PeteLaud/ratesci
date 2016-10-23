@@ -13,7 +13,7 @@ ratesCI <- function(
 	# 		FM = Farrington & Manning, Statistics in Medicine 1990; 9:1447-1454
 	# 		GN = Gart & Nam, Biometrics 1990; 46(3):637-643
 
-	#This function is vectorised in x1,x2,n1,n2
+	#This function is vectorised in x1,x2,n1,n2 
 	
 	x1,
 	x2=NULL,  		#x1,x2: vectors of number of events in group 1 & group 2 respectively
@@ -521,10 +521,7 @@ x2 <- c(9,1,18,31,6,17,7,23,3,6,12,22,19)
 n1 <- c(16,16,34,56,22,54,17,58,14,26,44,29,38)
 n2 <- c(16,16,34,56,22,55,15,58,15,27,45,30,38)
 
-ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=F,skew=TRUE,cc=0.5)$estimates[c(2,12),]
-xx <- ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=T,skew=TRUE)
-(xx$stratdata)[,"p1d"] - (xx$stratdata)[,"p2d"]
-
+ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=F,skew=TRUE,cc=F) $estimates[c(2,12),]
 
 fround <- function(x,digits=6) paste(format(round(x[1],digits=digits),nsmall=digits)," (",paste(format(round(x[2:3],digits=digits),nsmall=digits),collapse=", "),")",sep="")
 mytab <-rbind(
@@ -545,9 +542,5 @@ OR=fround(ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="OR",stratified=T,weights="IV
 )
 )
 mytab
-
-ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=T,weights="MN",skew=T,tdas=F,delta=0.37)
-library(meta)
-metabin(event.e=x1,n.e=n1,event.c=x2,n.c=n2,sm="RD",backtransf=T,level=0.95,level.comb=0.95,method="MH",warn=T,addincr=0,incr=0,MH.exact=T,hakn=F,allstudies=F)	
 
 }
