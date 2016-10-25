@@ -1,7 +1,7 @@
 #Need to add output of per-stratum CIs for stratified method
 #rm(list=ls())
 
-ratesCI <- function(
+ratesCI.score <- function(
 
 	#Score-based confidence intervals for the rate difference (RD) or ratio (RR), for independent binomial or Poisson rates, 
 	#including options for bias correction (from MN), skewness correction (from GN) and continuity correction 
@@ -22,9 +22,9 @@ ratesCI <- function(
 	dist="bin",		#dist: whether the data represent binomial ("bin") or Poisson ("poi") rates
 	contrast="RD",	#contrast: comparative parameter ("RD"=risk/rate difference, "RR"=risk/rate ratio, "OR"=odds ratio) 
 	level=0.95,		#level: confidence level (default 0.95)
-	bcf=T,			#bcf: whether to include bias correction factor in the score denominator (applicable to dist="bin" only) (default=TRUE). 
-					#		NB: bcf=FALSE option is really only included for legacy validation against previous published methods (i.e. Gart & Nam)
 	skew=TRUE,		#skew: skewness correction, generalised from Gart & Nam and Laud & Dane (TRUE/FALSE) (default=TRUE)
+	bcf=TRUE,			#bcf: whether to include bias correction factor in the score denominator (applicable to dist="bin" only) (default=TRUE). 
+					#		NB: bcf=FALSE option is really only included for legacy validation against previous published methods (i.e. Gart & Nam)
 	cc=0,			#cc: continuity correction (0=none, TRUE=0.5=conservative, intermediate value for a compromise)  (default=0)
 	delta=NULL,		#delta: non-inferiority margin, for an optional one-sided test of non-zero null hypothesis eg. H0: theta<=delta (default=NULL)
 					#		NB: 1-sided p will be <0.025 iff 2-sided 95% CI excludes delta. NB: can also be used for a superiority test by setting delta=0
@@ -41,9 +41,7 @@ ratesCI <- function(
 	...)
 	
 { 
-	omitupper=FALSE	#omitupper: option to omit upper limit
-	omitlower=FALSE	#omitlower: option to omit lower limit
-	
+
 #	would like to have inputs checked in a separate subroutine, but not sure how
 #	checkinputs(x1=x1,x2=x2,n1=n1,n2=n2,dist=dist,contrast=contrast,level=level,bcf=bcf,skew=skew,cc=cc,delta=delta,
 #	precis=precis,plot=plot,plotmax=plotmax,stratified=stratified,weights=weights,wt=wt,tdas=tdas,warn=warn)
@@ -188,8 +186,8 @@ ratesCI <- function(
 	if(stratified==TRUE && tdas==TRUE) {qtnorm <- qt(1-(1-level)/2,nstrat-1)  #for t-distribution method
 	} else {qtnorm <- qnorm(1-(1-level)/2)}
 
-	if(!omitlower) {lower <- bisect(ftn=function(theta) myfun(theta)-qtnorm,contrast=contrast,dist=dist,precis=precis+1,uplow="low")} else lower <- NA
-	if(!omitupper) {upper <- bisect(ftn=function(theta) myfun(theta)+qtnorm,contrast=contrast,dist=dist,precis=precis+1,uplow="up")} else upper <- NA
+	lower <- bisect(ftn=function(theta) myfun(theta)-qtnorm,contrast=contrast,dist=dist,precis=precis+1,uplow="low")
+	upper <- bisect(ftn=function(theta) myfun(theta)+qtnorm,contrast=contrast,dist=dist,precis=precis+1,uplow="up")
 
 	if(plot==TRUE) {
 		if(contrast=="RD") { 

@@ -2,14 +2,15 @@
 \alias{ratesCI}
 %%\alias{score}
 %%\alias{bisect}
-\title{Confidence Intervals for Comparison of Rates.}
+\title{Confidence Intervals for Comparison of Rates}
 \description{
 Score-based confidence intervals for the rate difference (RD) or ratio (RR), for independent binomial or Poisson rates, or for odds ratio (OR) (binomial only)
 %%including options for variance bias correction (MN), skewness correction (GN) and continuity correction 
 }
 \usage{
-ratesCI(x1, x2, n1, n2, dist = "bin", contrast = "RD", level = 0.95, skew = TRUE, 
-bcf = TRUE, cc = FALSE, delta = NULL, precis = 6, plot=FALSE)
+ratesCI(x1, x2=NULL, n1, n2=NULL, dist = "bin", contrast = "RD", level = 0.95, skew = TRUE, 
+bcf = TRUE, cc = 0, delta = NULL, precis = 6, plot=FALSE, plotmax=1000, stratified=FALSE,
+weights="IV", wt=NULL, tdas=FALSE,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,13 +28,19 @@ bcf = TRUE, cc = FALSE, delta = NULL, precis = 6, plot=FALSE)
 %  \item{leftside}{option to decide direction of one-sided test. TRUE (default) tests H0: theta<=delta, FALSE tests H0: theta>=delta}
   \item{precis}{required level of precision for output of confidence intervals (number of dps)}
   \item{plot}{option to produce plot of the score function, for checking the outcome of the bisection routine}
+  \item{plotmax}{upper limit of x-axis for plot}
+  \item{stratified}{stratified option}
+  \item{weights}{weights ["MH" (recommended for tdas=FALSE), "IV" (recommended for tdas=TRUE) or "MN")}
+  \item{wt}{user-defined weights}
+  \item{tdas}{t-distribution asymptotic score method}
+  \item{...}{other args}
 %  \item{omitlower}{utility option to omit calculation of lower confidence limit to reduce computation time}
 %  \item{omitupper}{utility option to omit calculation of upper confidence limit to reduce computation time}
 %%  \item{stratified}{option to perform stratified calculations}
 %%  \item{random}{option to use random effects model}
 }
 \details{
-[Additional options, or possibly a separate function, for stratified calculations to be added at a later date]
+[See article submitted to Pharmaceutical Statistics journal.]
 }
 \value{
 A list containing the following components
@@ -74,3 +81,5 @@ Gart JJ, Nam JM. Approximate interval estimation of the difference in binomial p
 \keyword{Binomial proportions}
 \keyword{Poisson rates}
 \keyword{Difference or ratio}
+\keyword{Stratified}
+\keyword{Meta-analysis}
