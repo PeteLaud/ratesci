@@ -118,19 +118,13 @@ ratesCI.MOVER <- function(
 	CI
 }
 
-ratesCI.MOVER(5,0,56,29,type="Wilson",contrast="RD") #Newcombe 1998
-ratesCI.MOVER(5,0,56,29,type="exact",contrast="RD")
-ratesCI.MOVER(5,0,56,29,type="Jeff",contrast="RD",cc=0.25)
 
-
-
-
-
-
-
-
-if(F) {
-
+if(FALSE) {
+  
+  ratesCI.MOVER(5,0,56,29,type="Wilson",contrast="RD") #Newcombe 1998
+  ratesCI.MOVER(5,0,56,29,type="exact",contrast="RD")
+  ratesCI.MOVER(5,0,56,29,type="Jeff",contrast="RR",cc=0)
+  
 
 
 MOVER(0:10,0,10,10,contrast="RR",dist="poi")

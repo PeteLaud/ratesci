@@ -46,17 +46,17 @@ ratesCI.score <- function(
 #	checkinputs(x1=x1,x2=x2,n1=n1,n2=n2,dist=dist,contrast=contrast,level=level,bcf=bcf,skew=skew,cc=cc,delta=delta,
 #	precis=precis,plot=plot,plotmax=plotmax,stratified=stratified,weights=weights,wt=wt,tdas=tdas,warn=warn)
 	
-	if( !is.numeric(c(x1,n1,x2,n2,delta))) {
+	if(!is.numeric(c(x1, n1, x2, n2, delta))) {
 		print("Non-numeric inputs!")
 		stop()
 	}
-	if(any(c(x1,n1,x2,n2)<0)) {
+	if(any(c(x1, n1, x2, n2)<0)) {
 		print("Negative inputs!")
 		stop()
 	}	
 	if(!is.null(delta)) {	
 		if(contrast=="RD") {
-			if(dist=="bin" && (delta<-1 || delta>1)) {
+			if(dist=="bin" && (delta< -1 || delta>1)) {
 				print("Impossible delta!")
 				stop()			
 			}
@@ -278,12 +278,6 @@ ratesCI.score <- function(
 }
 
 
-checkinputs <- function(x1,x2,n1,n2,dist,contrast,level,bcf,skew,cc,delta,
-	precis,plot,plotmax,stratified,weights,wt,tdas,warn) {
-	
-	return(list(nstrat=nstrat))
-}
-
 
 #vectorized limit-finding routine - turns out not to be any quicker but is neater
 #the bisection method is just as efficient as the secant method suggested by G&N, and affords greater control over whether the final estimate has score<z
@@ -321,7 +315,6 @@ scoretheta <- function (
 	#function to evaluate the score at a given value of theta, given the observed data
 	#uses the MLE solution (and notation) given in F&M, extended in Laud2015
 	#This function is vectorised in x1,x2
-
 	theta,
 	x1,
 	x2=NULL,
@@ -344,13 +337,6 @@ scoretheta <- function (
 	p1hat <- x1/n1; p2hat <- x2/n2 
 	x <- x1+x2
 	N <- n1+n2
-
-	#continuity corrections
- 	corr <- 0
- 	if (cc>0 && contrast=="OR") corr <- cc*(1/(n1*p1d*(1-p1d)) + 1/(n2*p2d*(1-p2d))) #Cornfield, try cc=0.25
- 	if (cc>0 && contrast=="RR") corr <- cc*(1/(n1) + theta/(n2))  #try 0.125 or 0.25
- 	if (cc>0 && contrast=="RD") 	corr <- cc*(1/pmin(n1,n2)) #Hauck Anderson - halved with cc=0.25
- 	if (cc>0 && contrast=="RD" && stratified==TRUE) corr <- (3/16)*(sum(n1*n2/(n1+n2)))^(-1) #from MehrotraRailkar, also Zhao et at.
 
  	#RMLE of p1|theta depends on whether theta=RD or RR, and on whether a binomial or Poisson distribution is assumed
  	#Binomial RD
@@ -424,6 +410,13 @@ scoretheta <- function (
 		}	
 		p2d <- NA
 	}
+	
+	#continuity corrections
+	corr <- 0
+	if (cc>0 && contrast=="OR") corr <- cc*(1/(n1*p1d*(1-p1d)) + 1/(n2*p2d*(1-p2d))) #Cornfield, try cc=0.25
+	if (cc>0 && contrast=="RR") corr <- cc*(1/(n1) + theta/(n2))  #try 0.125 or 0.25
+	if (cc>0 && contrast=="RD") 	corr <- cc*(1/pmin(n1,n2)) #Hauck Anderson - halved with cc=0.25
+	if (cc>0 && contrast=="RD" && stratified==TRUE) corr <- (3/16)*(sum(n1*n2/(n1+n2)))^(-1) #from MehrotraRailkar, also Zhao et at.
 	
 	if (stratified==TRUE) {
 		pval <- NA
