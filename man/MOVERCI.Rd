@@ -13,8 +13,8 @@ MOVERCI(x1, x2, n1, n2, a1 = 0.5, b1 = 0.5, a2 = 0.5, b2 = 0.5,
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
 respectively.}
 
-\item{n1, n2}{Numeric vectors of sample sizes (or exposure times for Poisson 
-rates) in each group.}
+\item{n1, n2}{Numeric vectors of sample sizes (for binomial rates) or exposure
+times (for Poisson rates) in each group.}
 
 \item{a1, b1}{Numbers defining the Beta prior distribution for group 1 (0.5 
 for Jeffreys prior).}
@@ -33,14 +33,15 @@ for Jeffreys prior).}
 "RR", or "OR").}
 
 \item{type}{Character string indicating the method used for the intervals for
-the individual group rates. "Jeff"=Jeffreys equal-tailed intervals,
-"exact"=Clopper-Pearson exact intervals (also obtained using "Jeff" with
+the individual group rates. "Jeff"=Jeffreys equal-tailed intervals, 
+"exact"=Clopper-Pearson exact intervals (also obtained using "Jeff" with 
 cc=0.5), "Wilson"=Wilson score intervals (as per Newcombe 1998).}
 
 \item{...}{Additional arguments.}
 }
 \description{
-Confidence intervals applying the MOVER method across different contrasts and distributions
-using Jeffreys intervals (& other more general Beta and Gamma priors) instead of Wilson
+Confidence intervals applying the MOVER method across different contrasts and
+distributions using Jeffreys intervals (& other more general Beta and Gamma 
+priors) instead of Wilson
 }
 

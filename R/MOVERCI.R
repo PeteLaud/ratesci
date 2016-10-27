@@ -1,30 +1,27 @@
-
-
 #' MOVER confidence intervals for comparison of independent binomial or Poisson 
 #' rates.
 #' 
-#' Confidence intervals applying the MOVER method across different contrasts and distributions
-#' using Jeffreys intervals (& other more general Beta and Gamma priors) instead of Wilson
+#' Confidence intervals applying the MOVER method across different contrasts and
+#' distributions using Jeffreys intervals (& other more general Beta and Gamma 
+#' priors) instead of Wilson
 #' 
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
 #'   respectively.
-#' @param n1,n2 Numeric vectors of sample sizes (or exposure times for Poisson 
-#'   rates) in each group.
+#' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
+#'   times (for Poisson rates) in each group.
 #' @param a1,b1 Numbers defining the Beta prior distribution for group 1 (0.5 
 #'   for Jeffreys prior).
 #' @param a2,b2 Numbers defining the Beta prior distribution for group 2 (0.5 
 #'   for Jeffreys prior).
 #' @param cc Number or logical specifying (amount of) continuity correction.
-#' @param level Number specifying confidence level.
-#' @param dist Character string indicating distribution of data: "bin"=binomial,
-#'   "poi"=Poisson.
 #' @param contrast Character string indicating the contrast required: ("RD", 
 #'   "RR", or "OR").
 #' @param type Character string indicating the method used for the intervals for
-#'   the individual group rates. "Jeff"=Jeffreys equal-tailed intervals,
-#'   "exact"=Clopper-Pearson exact intervals (also obtained using "Jeff" with
+#'   the individual group rates. "Jeff"=Jeffreys equal-tailed intervals, 
+#'   "exact"=Clopper-Pearson exact intervals (also obtained using "Jeff" with 
 #'   cc=0.5), "Wilson"=Wilson score intervals (as per Newcombe 1998).
 #' @param ... Additional arguments.
+#' @inheritParams JeffreysCI
 #' @export
 MOVERCI <- function(
   x1,
@@ -82,11 +79,12 @@ MOVERCI <- function(
     j2 <- JeffreysCI(x2, n2, ai = a2, bi = b2, g = 0.5, alpha = alpha,
                      dist = dist, adj = paste( (contrast == "OR") ))
   } else {
-    # or use Wilson intervals as per Newcombe 1988 (NB could add cc here for completeness)
+    # or use Wilson intervals as per Newcombe 1988 
+    #(NB could add cc here for completeness)
     j1 <- quadroot(a = 1 + z ^ 2 / n1, b = - (2 * p1hat + z ^ 2 / n1),
-                   c = p1hat ^ 2)
+                   c_ = p1hat ^ 2)
     j2 <- quadroot(a = 1 + z ^ 2 / n2, b = - (2 * p2hat + z ^ 2 / n2),
-                   c = p2hat ^ 2)
+                   c_ = p2hat ^ 2)
   }
   l1 <- j1[, 1]
   u1 <- j1[, 2]
@@ -95,6 +93,8 @@ MOVERCI <- function(
   
   if (contrast == "RD") {
     # From Newcombe 1998
+    #Taking real part of complex number is a workaround for small negative numbers 
+    #due to machine precision. Could use pmax(0,...) instead
     lower <- p1hat - p2hat -
       Re(sqrt(as.complex( (p1hat - l1) ^ 2 + (u2 - p2hat) ^ 2)))
     upper <- p1hat - p2hat +
@@ -132,8 +132,31 @@ MOVERCI <- function(
   CI
 }
 
-# cc=continuity correction: cc=0.5 gives Clopper-Pearson 'exact' (conservative) interval
-# "adj" is the option to use exact binomial interval for zero cell counts as suggested by Brown et al
+
+#' Jeffreys and other approximate Bayesian confidence intervals for a single 
+#' binomial or Poisson rate.
+#' 
+#' Generalised approximate Bayesian confidence intervals based on a Beta (for 
+#' binomial rates) or Gamma (for Poisson rates) conjugate priors. Encompassing 
+#' the Jeffreys method (with Beta(0.5, 0.5) or Gamma(0.5) respectively), as well
+#' as any user-specified prior distribution. Clopper-Pearson also included by 
+#' way of a "continuity correction".
+#' 
+#' @param x Numeric vector of number of events.
+#' @param n Numeric vector of sample sizes (for binomial rates) or exposure 
+#'   times (for Poisson rates).
+#' @param ai,bi Numbers defining the Beta prior distribution (ai = bi = 0.5 for 
+#'   Jeffreys interval). Gamma prior for Poisson rates requires only ai.
+#' @param cc Number or logical specifying (amount of) "continuity correction", 
+#'   which enables the Clopper-Pearson method. A value between 0 and 0.5 allows
+#'   a compromise between proximate and conservative coverage.
+#' @param level Number specifying confidence level.
+#' @param dist Character string indicating distribution of data: "bin"=binomial,
+#'   "poi"=Poisson.
+#' @param adj Logical indicating whether to apply the adjustment in Brown et al.
+#'   (Not recommended)
+#' @param ... Other arguments.
+#' @export
 JeffreysCI <- function(
   x,
   n,
@@ -143,10 +166,10 @@ JeffreysCI <- function(
   level=0.95,
   dist="bin",
   adj=FALSE,
-  exact=F,
   ...
   ) {
   alpha <- 1 - level
+  if (as.character(cc) == "TRUE") cc <- 0.5
   if (dist == "bin") {
     CI.lower <- qbeta( alpha / 2, x + (ai - cc), n - x + (bi + cc))
     CI.lower[x == 0] <- 0
@@ -167,12 +190,11 @@ JeffreysCI <- function(
   CI
 }
 
-quadroot <- function(a, b, c) {
+quadroot <- function(a, b, c_) {
 	# GET ROOTS OF A QUADRATIC EQUATION
-	r1x <- ( - b + sqrt(b ^ 2 - 4 * a * c) ) / (2 * a)
-	r2x <- ( - b - sqrt(b ^ 2 - 4 * a * c) ) / (2 * a)
+	r1x <- ( - b + sqrt(b ^ 2 - 4 * a * c_) ) / (2 * a)
+	r2x <- ( - b - sqrt(b ^ 2 - 4 * a * c_) ) / (2 * a)
 	r1 <- pmin(r1x, r2x)
 	r2 <- pmax(r1x, r2x)
 	cbind(r1, r2)
 }
-
