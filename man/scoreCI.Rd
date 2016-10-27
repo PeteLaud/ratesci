@@ -1,5 +1,5 @@
-\name{ratesCI}
-\alias{ratesCI}
+\name{scoreCI}
+\alias{scoreCI}
 %%\alias{score}
 %%\alias{bisect}
 \title{Confidence Intervals for Comparison of Rates}
@@ -8,7 +8,7 @@ Score-based confidence intervals for the rate difference (RD) or ratio (RR), for
 %%including options for variance bias correction (MN), skewness correction (GN) and continuity correction 
 }
 \usage{
-ratesCI(x1, x2=NULL, n1, n2=NULL, dist = "bin", contrast = "RD", level = 0.95, skew = TRUE, 
+scoreCI(x1, x2=NULL, n1, n2=NULL, dist = "bin", contrast = "RD", level = 0.95, skew = TRUE, 
 bcf = TRUE, cc = 0, delta = NULL, precis = 6, plot=FALSE, plotmax=1000, stratified=FALSE,
 weights="IV", wt=NULL, tdas=FALSE,...)
 }
@@ -77,9 +77,3 @@ Gart JJ, Nam JM. Approximate interval estimation of the difference in binomial p
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-\keyword{Confidence interval}
-\keyword{Binomial proportions}
-\keyword{Poisson rates}
-\keyword{Difference or ratio}
-\keyword{Stratified}
-\keyword{Meta-analysis}

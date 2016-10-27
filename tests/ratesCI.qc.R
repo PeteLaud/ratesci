@@ -84,6 +84,59 @@ mytab
 
 
 
+
+if(FALSE) {
+  
+  ratesCI.MOVER(5,0,56,29,type="Wilson",contrast="RD") #Newcombe 1998
+  ratesCI.MOVER(5,0,56,29,type="exact",contrast="RD")
+  ratesCI.MOVER(5,0,56,29,type="Jeff",contrast="OR",cc=0)
+  
+  
+  
+  MOVER(0:10,0,10,10,contrast="RR",dist="poi")
+  
+  x1 <- 3; x2<-2; n1=n2=10
+  
+  MOVER(x1,x2,n1,n2,contrast="OR",type="Wilson")
+  1/MOVER(n1-x1,n2-x2,n1,n2,contrast="OR",type="Wilson")
+  1/MOVER(49,49,50,50,contrast="OR")
+  
+  1/MOVER(41,15,28010,19017,contrast="RR",dist="poi")
+  MOVER(15,41,19017,28010,contrast="RR",dist="poi")
+  MOVER(c(15,20),41,19017,28010,contrast="RD",dist="poi")
+  
+  MOVER(0,5,15,20,contrast="OR",dist="bin")
+  1/MOVER(5,0,20,15,contrast="OR",dist="bin")
+  1/MOVER(15,15,15,20,contrast="OR",dist="bin")
+  MOVER(15,15,20,15,contrast="OR",dist="bin")
+  
+  c=26
+  MOVER(c,1,50,50,contrast="OR",dist="bin")
+  1/MOVER(50-c,50-1,50,50,contrast="OR",dist="bin")
+  1/MOVER(15,15,15,20,contrast="OR",dist="bin")
+  MOVER(15,15,20,15,contrast="OR",dist="bin")
+  
+  x1=c(0,1,15,15);x2=c(1,0,15,15);n1=c(15,20,15,20);n2=c(20,15,20,15)
+  
+  MOVER(c(1,15,14,1),c(15,1,15,0),15,15,contrast="OR",dist="bin")
+  
+  xy <- expand.grid(0:15,0:15)
+  MOVER(xy[,1],xy[,2],15,15,contrast="RR",dist="poi",type="Wil")
+  MOVER(0,5,15,15,contrast="RR",dist="poi")
+  
+  1/(41/28010 / (15/19017))
+  
+  #diffBinconf.NJ(c(0,1),c(1,0),c(10,10),c(10,10),adj=F)
+  
+  
+  #diffBinconf.NJ(56,48,70,80)
+  diffBinconf.NJ(5,0,56,29)	
+  diffBinconf.NJ(5,0,56,29,dist="poi")	
+  #diffBinconf.NJ(0,5,10,10,k=0)	
+}
+
+
+
 root="/Users/petelaud/Documents/"
 newpath=paste(root,"Main/Courses_papers/skewscore/R/",sep="")
 source(paste(newpath,"ratesCI iterative weights skewness on point estimate.R",sep=""))
@@ -622,8 +675,7 @@ ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RR",stratified=T,weights="IV",random=T
 ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RR",stratified=T,weights="MH",random=F,hk=F,fixtau=F,fixvs=F,plot=T,plotmax=12,skew=T)
 ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RR",stratified=T,weights="MH",random=T,hk=F,fixtau=F,fixvs=F,plot=T,plotmax=12,skew=T)
 scr <-
- score(theta=1,x1=x1,x2=x2,n1=n1,n2=n2,stratified=T,weights="IV",contrast="RR")
- $Stheta
+ score(theta=1,x1=x1,x2=x2,n1=n1,n2=n2,stratified=T,weights="IV",contrast="RR")$Stheta
 sco <- score(theta=2.24,x1=x1,x2=x2,n1=n1,n2=n2,stratified=T,weights="MH",contrast="OR")$Stheta
 
 
@@ -817,7 +869,6 @@ labels <- 1:length(x1)
 ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RR",stratified=T,weights="IV",random=T,hk=T,fixtau=F,fixvs=F,weightiter=1,plot=T)
 ratesCI(x1=x1[17],x2=x2[17],n1=n1[17],n2=n2[17],contrast="RR",stratified=T,weights="IV",random=T,hk=T,fixtau=T,fixvs=F,weightiter=1,plot=T)
 
-$estimates[,c(3)]
 U.RD <- ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=T,weights="IV",random=T,hk=T,fixtau=F,fixvs=F)$estimates[,c(3)]
 pbar <- (sum(x1)/sum(n1)+sum(x2)/sum(n2))/2
 U.p1 <- pbar + U.RD/2
@@ -929,7 +980,7 @@ mytab
 
 
 if(FALSE) {
-,
+
 #bizarre things happen with fixtau=F, even with iterative weights (e.g. CRASH excluding 2 extremes):
 #but it seems to improve the results for the Tarone dataset.
 TDASi=c(

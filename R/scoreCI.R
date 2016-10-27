@@ -1,7 +1,8 @@
 #Need to add output of per-stratum CIs for stratified method
 #rm(list=ls())
 
-ratesCI.score <- function(
+#' @export
+scoreCI <- function(
 
 	#Score-based confidence intervals for the rate difference (RD) or ratio (RR), for independent binomial or Poisson rates, 
 	#including options for bias correction (from MN), skewness correction (from GN) and continuity correction 

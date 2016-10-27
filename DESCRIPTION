@@ -1,11 +1,11 @@
 Package: ratesCI
 Type: Package
-Title: Confidence intervals for comparison of binomial or Poisson rates
+Title: Confidence Intervals for Comparison of Binomial or Poisson Rates
 Version: 1.0
 Date: 2014-06-19
 Author: Peter J Laud
 Maintainer: Peter J Laud <p.j.laud@sheffield.ac.uk>
-Description: Score-based confidence intervals for the rate difference (RD) or
+Description: Score-based and MOVER confidence intervals for the rate difference (RD) or
     ratio (RR), for independent binomial or Poisson rates, or for odds ratio (OR)
     (binomial only).
 License: GPL-2
