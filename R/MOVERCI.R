@@ -42,14 +42,14 @@ MOVERCI <- function(
   alpha <- 1 - level
   z <- qnorm(1 - alpha / 2)
   if (as.character(cc) == "TRUE") cc <- 0.5
-  
+
   #in case x1,x2 are vectors but n1,n2 are not
   if (length(n1) == 1 & length(x1) > 1) n1 <- rep(n1, length(x1))
   if (length(n2) == 1 & length(x1) > 1) n2 <- rep(n2, length(x1))
-  
+
   if (contrast == "OR") {
     # special cases for OR handled as per Fagerland & Newcombe Table III
-    special <- ( (x2 == n2) | (x1 == n1))
+    special <- (x2 == n2) | (x1 == n1)
     xx <- x2
     x2[special] <- (n1 - x1)[special]
     x1[special] <- (n2 - xx)[special]
@@ -57,29 +57,29 @@ MOVERCI <- function(
     n1[special] <- n2[special]
     n2[special] <- nx[special]
   }
-  
+
   p1hat <- x1 / n1
   p2hat <- x2 / n2
-  
+
   if (contrast == "OR" && dist != "bin") {
     print("WARNING: Odds Ratio must use dist='bin'")
     dist <- "bin"
   }
-  
+
   if (type == "Jeff") {
     # MOVER-J, including optional 'continuity correction' g
     j1 <- JeffreysCI(x1, n1, ai = a1, bi = b1, g = cc, alpha = alpha,
-                     dist = dist, adj = paste( (contrast == "OR") ))
+                     dist = dist, adj = paste(contrast == "OR"))
     j2 <- JeffreysCI(x2, n2, ai = a2, bi = b2, g = cc, alpha = alpha,
-                     dist = dist, adj = paste( (contrast == "OR") ))
+                     dist = dist, adj = paste(contrast == "OR"))
   } else if (type == "exact") {
     # MOVER-E based on Clopper-Pearson exact intervals
     j1 <- JeffreysCI(x1, n1, ai = a1, bi = b1, g = 0.5, alpha = alpha,
-                     dist = dist, adj = paste( (contrast == "OR") ))
+                     dist = dist, adj = paste(contrast == "OR"))
     j2 <- JeffreysCI(x2, n2, ai = a2, bi = b2, g = 0.5, alpha = alpha,
-                     dist = dist, adj = paste( (contrast == "OR") ))
+                     dist = dist, adj = paste(contrast == "OR"))
   } else {
-    # or use Wilson intervals as per Newcombe 1988 
+    # or use Wilson intervals as per Newcombe 1988
     #(NB could add cc here for completeness)
     j1 <- quadroot(a = 1 + z ^ 2 / n1, b = - (2 * p1hat + z ^ 2 / n1),
                    c_ = p1hat ^ 2)
@@ -90,15 +90,10 @@ MOVERCI <- function(
   u1 <- j1[, 2]
   l2 <- j2[, 1]
   u2 <- j2[, 2]
-  
+
   if (contrast == "RD") {
-    # From Newcombe 1998
-    #Taking real part of complex number is a workaround for small negative numbers 
-    #due to machine precision. Could use pmax(0,...) instead
-    lower <- p1hat - p2hat -
-      Re(sqrt(as.complex( (p1hat - l1) ^ 2 + (u2 - p2hat) ^ 2)))
-    upper <- p1hat - p2hat +
-      Re(sqrt(as.complex( (u1 - p1hat) ^ 2 + (p2hat - l2) ^ 2)))
+    lower <- p1hat - p2hat - sqrt(pmax(0, (p1hat - l1) ^ 2 + (u2 - p2hat) ^ 2))
+    upper <- p1hat - p2hat + sqrt(pmax(0, (u1 - p1hat) ^ 2 + (p2hat - l2) ^ 2))
   } else if (contrast == "OR") {
     # From Fagerland & Newcombe 2013
     q1hat <- p1hat / (1 - p1hat)
@@ -107,25 +102,23 @@ MOVERCI <- function(
     U1 <- u1 / (1 - u1)
     L2 <- l2 / (1 - l2)
     U2 <- u2 / (1 - u2)
-    lower <- pmax(0, (q1hat * q2hat -
-                        Re(sqrt(as.complex( (q1hat * q2hat) ^ 2 -
-                                              L1 * U2 * (2 * q1hat - L1) * (2 * q2hat - U2))))) /
-                    (U2 * (2 * q2hat - U2)))
-    upper <- (q1hat * q2hat +
-                Re(sqrt(as.complex( (q1hat * q2hat) ^ 2 - U1 * L2 *
-                                      (2 * q1hat - U1) * (2 * q2hat - L2))))) /
-      (L2 * (2 * q2hat - L2))
+    lower <- pmax(0, (q1hat * q2hat - sqrt(pmax(0, (q1hat * q2hat) ^ 2 -
+               L1 * U2 * (2 * q1hat - L1) * (2 * q2hat - U2)))) /
+                 (U2 * (2 * q2hat - U2)))
+    upper <- (q1hat * q2hat + sqrt(pmax(0, (q1hat * q2hat) ^ 2 -
+                U1 * L2 * (2 * q1hat - U1) * (2 * q2hat - L2)))) /
+                  (L2 * (2 * q2hat - L2))
     upper[x2 == 0] <- Inf
     lower[(x1 == 0 & x2 == n2) | (x1 == n1 & x2 == 0)] <- 0
     upper[(x1 == 0 & x2 == n2) | (x1 == n1 & x2 == 0)] <- Inf
   } else if (contrast == "RR") {
     # From Donner & Zou 2012 / Li et al
-    lower <- (p1hat * p2hat -
-                Re(sqrt(as.complex( (p1hat * p2hat) ^ 2 - l1 * (2 * p2hat - u2) *
-                                      (u2 * (2 * p1hat - l1)))))) / (u2 * (2 * p2hat - u2))
-    upper <- (p1hat * p2hat +
-                Re(sqrt(as.complex( (p1hat * p2hat) ^ 2 - u1 * (2 * p2hat - l2) *
-                                      (l2 * (2 * p1hat - u1)))))) / (l2 * (2 * p2hat - l2))
+    lower <- (p1hat * p2hat - sqrt(pmax(0, (p1hat * p2hat) ^ 2 -
+               l1 * (2 * p2hat - u2) * (u2 * (2 * p1hat - l1))))) /
+                  (u2 * (2 * p2hat - u2))
+    upper <- (p1hat * p2hat + sqrt(pmax(0, (p1hat * p2hat) ^ 2 -
+               u1 * (2 * p2hat - l2) * (l2 * (2 * p1hat - u1))))) /
+                  (l2 * (2 * p2hat - l2))
     upper[x2 == 0] <- Inf
   }
   CI <- cbind(Lower = lower, Upper = upper)
@@ -150,7 +143,7 @@ MOVERCI <- function(
 #' @param cc Number or logical specifying (amount of) "continuity correction", 
 #'   which enables the Clopper-Pearson method. A value between 0 and 0.5 allows
 #'   a compromise between proximate and conservative coverage.
-#' @param level Number specifying confidence level.
+#' @param level Number specifying confidence level (between 0 and 1).
 #' @param dist Character string indicating distribution of data: "bin"=binomial,
 #'   "poi"=Poisson.
 #' @param adj Logical indicating whether to apply the adjustment in Brown et al.
