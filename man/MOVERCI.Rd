@@ -6,8 +6,8 @@
 rates.}
 \usage{
 MOVERCI(x1, x2, n1, n2, a1 = 0.5, b1 = 0.5, a2 = 0.5, b2 = 0.5,
-  cc = 0, level = 0.95, dist = "bin", contrast = "RD", type = "Jeff",
-  ...)
+  cc = 0, level = 0.95, distrib = "bin", contrast = "RD",
+  type = "Jeff", ...)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
@@ -24,9 +24,9 @@ for Jeffreys prior).}
 
 \item{cc}{Number or logical specifying (amount of) continuity correction.}
 
-\item{level}{Number specifying confidence level.}
+\item{level}{Number specifying confidence level (between 0 and 1).}
 
-\item{dist}{Character string indicating distribution of data: "bin"=binomial,
+\item{distrib}{Character string indicating distribution of data: "bin"=binomial,
 "poi"=Poisson.}
 
 \item{contrast}{Character string indicating the contrast required: ("RD", 

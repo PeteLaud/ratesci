@@ -10,48 +10,48 @@ x1<-5; x2 <- 0; n1 <- 56; n2 <- 29
 fround <- function(x,digits=6) paste("(",paste(format(round(x,digits=digits),nsmall=digits),collapse=", "),")",sep="")
 mytab <-rbind(SCAS=
                 c(
-                  RDbin=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RD")$estimates[,c(1,3)],3),
-                  RDpoi=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RD",dist="poi")$estimates[,c(1,3)],3),
-                  RRbin=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RR")$estimates[,c(1,3)],3),
-                  RRpoi=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RR",dist="poi")$estimates[,c(1,3)],3),
-                  OR=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="OR")$estimates[,c(1,3)],3)
+                  RDbin=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RD")$estimates[,c(1,3)],3),
+                  RDpoi=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RD",dist="poi")$estimates[,c(1,3)],3),
+                  RRbin=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RR")$estimates[,c(1,3)],3),
+                  RRpoi=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RR",dist="poi")$estimates[,c(1,3)],3),
+                  OR=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="OR")$estimates[,c(1,3)],3)
                 ), MN=
                 c(
-                  RDbin=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=F,ontrast="RD")$estimates[,c(1,3)],3),
-                  RDpoi=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=F,contrast="RD",dist="poi")$estimates[,c(1,3)],3),
-                  RRbin=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=F,contrast="RR")$estimates[,c(1,3)],3),
-                  RRpoi=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=F,contrast="RR",dist="poi")$estimates[,c(1,3)],3),
-                  OR=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=F,contrast="OR")$estimates[,c(1,3)],3)
+                  RDbin=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=F,ontrast="RD")$estimates[,c(1,3)],3),
+                  RDpoi=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=F,contrast="RD",dist="poi")$estimates[,c(1,3)],3),
+                  RRbin=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=F,contrast="RR")$estimates[,c(1,3)],3),
+                  RRpoi=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=F,contrast="RR",dist="poi")$estimates[,c(1,3)],3),
+                  OR=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=F,contrast="OR")$estimates[,c(1,3)],3)
                 ), MOVERJ=
                 c(
-                  RDbin=fround(ratesCI.MOVER(x1,x2,n1,n2,dist="bin",contrast="RD"),3),
-                  RDpoi=fround(ratesCI.MOVER(x1,x2,n1,n2,dist="poi",contrast="RD"),3),
-                  RRbin=fround(ratesCI.MOVER(x1,x2,n1,n2,dist="bin",contrast="RR"),3),
-                  RRpoi=fround(ratesCI.MOVER(x1,x2,n1,n2,dist="poi",contrast="RR"),3),
-                  OR=fround(ratesCI.MOVER(x1,x2,n1,n2,dist="bin",contrast="OR"),3)
+                  RDbin=fround(MOVERCI(x1,x2,n1,n2,dist="bin",contrast="RD"),3),
+                  RDpoi=fround(MOVERCI(x1,x2,n1,n2,dist="poi",contrast="RD"),3),
+                  RRbin=fround(MOVERCI(x1,x2,n1,n2,dist="bin",contrast="RR"),3),
+                  RRpoi=fround(MOVERCI(x1,x2,n1,n2,dist="poi",contrast="RR"),3),
+                  OR=fround(MOVERCI(x1,x2,n1,n2,dist="bin",contrast="OR"),3)
                 ), SCAScomp=
                 c(
-                  RDbin=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RD",cc=0.25)$estimates[,c(1,3)],3),
-                  RDpoi=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RD",dist="poi",cc=0.25)$estimates[,c(1,3)],3),
-                  RRbin=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RR",cc=0.25)$estimates[,c(1,3)],3),
-                  RRpoi=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RR",dist="poi",cc=0.25)$estimates[,c(1,3)],3),
-                  OR=fround(ratesCI.score(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="OR",cc=0.25)$estimates[,c(1,3)],3)
+                  RDbin=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RD",cc=0.25)$estimates[,c(1,3)],3),
+                  RDpoi=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RD",dist="poi",cc=0.25)$estimates[,c(1,3)],3),
+                  RRbin=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RR",cc=0.25)$estimates[,c(1,3)],3),
+                  RRpoi=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="RR",dist="poi",cc=0.25)$estimates[,c(1,3)],3),
+                  OR=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,skew=T,contrast="OR",cc=0.25)$estimates[,c(1,3)],3)
                 ), MOVERcomp=
                 c(
-                  RDbin=fround(ratesCI.MOVER(x1,x2,n1,n2,dist="bin",contrast="RD",type="exact",cc=0.25),3),
-                  RDpoi=fround(ratesCI.MOVER(x1,x2,n1,n2,dist="poi",contrast="RD",type="exact",cc=0.25),3),
-                  RRbin=fround(ratesCI.MOVER(x1,x2,n1,n2,dist="bin",contrast="RR",type="exact",cc=0.25),3),
-                  RRpoi=fround(ratesCI.MOVER(x1,x2,n1,n2,dist="poi",contrast="RR",type="exact",cc=0.25),3),
-                  OR=fround(ratesCI.MOVER(x1,x2,n1,n2,dist="bin",contrast="OR",type="exact",cc=0.25),3)
+                  RDbin=fround(MOVERCI(x1,x2,n1,n2,dist="bin",contrast="RD",cc=0.25),3),
+                  RDpoi=fround(MOVERCI(x1,x2,n1,n2,dist="poi",contrast="RD",cc=0.25),3),
+                  RRbin=fround(MOVERCI(x1,x2,n1,n2,dist="bin",contrast="RR",cc=0.25),3),
+                  RRpoi=fround(MOVERCI(x1,x2,n1,n2,dist="poi",contrast="RR",cc=0.25),3),
+                  OR=fround(MOVERCI(x1,x2,n1,n2,dist="bin",contrast="OR",cc=0.25),3)
                 )
 )
 mytab
 
-ratesCI.MOVER(5,0,56,29,type="Wilson",contrast="RD") #Newcombe 1998
-ratesCI.MOVER(5,0,56,29,type="exact",contrast="RD")
-ratesCI.MOVER(5,0,56,29,type="Jeff",contrast="RD",cc=0.25)
+MOVERCI(5,0,56,29,type="Wilson",contrast="RD") #Newcombe 1998
+MOVERCI(5,0,56,29,type="exact",contrast="RD")
+MOVERCI(5,0,56,29,type="Jeff",contrast="RD",cc=0.25)
 
-ratesCI.score(x1,x2,n1,n2,delta=0.5)
+scoreCI(x1,x2,n1,n2,delta=0.5)
 
 #Hartung & Knapp stratified example: (Table 3 of Laud 2016)
 x1 <- c(15,12,29,42,14,44,14,29,10,17,38,19,21)
@@ -59,24 +59,24 @@ x2 <- c(9,1,18,31,6,17,7,23,3,6,12,22,19)
 n1 <- c(16,16,34,56,22,54,17,58,14,26,44,29,38)
 n2 <- c(16,16,34,56,22,55,15,58,15,27,45,30,38)
 
-ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=F,skew=TRUE,cc=F) $estimates[c(2,12),]
+scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=F,skew=TRUE,cc=F) $estimates[c(2,12),]
 
 fround <- function(x,digits=6) paste(format(round(x[1],digits=digits),nsmall=digits)," (",paste(format(round(x[2:3],digits=digits),nsmall=digits),collapse=", "),")",sep="")
 mytab <-rbind(
   SCASmh=c(
-    RDbin=fround(ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=T,weights="MH",skew=T,tdas=F)$estimates[,c(2,1,3)],3),
-    RRbin=fround(ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RR",stratified=T,weights="MH",skew=T,tdas=F)$estimates[,c(2,1,3)],2),
-    OR=fround(ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="OR",stratified=T,weights="MH",skew=T,tdas=F)$estimates[,c(2,1,3)],2)
+    RDbin=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=T,weights="MH",skew=T,tdas=F)$estimates[,c(2,1,3)],3),
+    RRbin=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RR",stratified=T,weights="MH",skew=T,tdas=F)$estimates[,c(2,1,3)],2),
+    OR=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="OR",stratified=T,weights="MH",skew=T,tdas=F)$estimates[,c(2,1,3)],2)
   ),
   SCASiv=c(
-    RDbin=fround(ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=T,weights="IV",skew=T,tdas=F)$estimates[,c(2,1,3)],3),
-    RRbin=fround(ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RR",stratified=T,weights="IV",skew=T,tdas=F)$estimates[,c(2,1,3)],2),
-    OR=fround(ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="OR",stratified=T,weights="IV",skew=T,tdas=F)$estimates[,c(2,1,3)],2)
+    RDbin=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=T,weights="IV",skew=T,tdas=F)$estimates[,c(2,1,3)],3),
+    RRbin=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RR",stratified=T,weights="IV",skew=T,tdas=F)$estimates[,c(2,1,3)],2),
+    OR=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="OR",stratified=T,weights="IV",skew=T,tdas=F)$estimates[,c(2,1,3)],2)
   ),
   TDAS=c(
-    RDbin=fround(ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=T,weights="IV",tdas=T)$estimates[,c(2,1,3)],3),
-    RRbin=fround(ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RR",stratified=T,weights="IV",tdas=T)$estimates[,c(2,1,3)],2),
-    OR=fround(ratesCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="OR",stratified=T,weights="IV",tdas=T)$estimates[,c(2,1,3)],2)
+    RDbin=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RD",stratified=T,weights="IV",tdas=T)$estimates[,c(2,1,3)],3),
+    RRbin=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="RR",stratified=T,weights="IV",tdas=T)$estimates[,c(2,1,3)],2),
+    OR=fround(scoreCI(x1=x1,x2=x2,n1=n1,n2=n2,contrast="OR",stratified=T,weights="IV",tdas=T)$estimates[,c(2,1,3)],2)
   )
 )
 mytab
@@ -87,9 +87,9 @@ mytab
 
 if(FALSE) {
   
-  ratesCI.MOVER(5,0,56,29,type="Wilson",contrast="RD") #Newcombe 1998
-  ratesCI.MOVER(5,0,56,29,type="exact",contrast="RD")
-  ratesCI.MOVER(5,0,56,29,type="Jeff",contrast="OR",cc=0)
+  MOVERCI(5,0,56,29,type="Wilson",contrast="RD") #Newcombe 1998
+  MOVERCI(5,0,56,29,type="exact",contrast="RD")
+  MOVERCI(5,0,56,29,type="Jeff",contrast="OR",cc=0)
   
   
   

@@ -2,11 +2,11 @@
 % Please edit documentation in R/MOVERCI.R
 \name{JeffreysCI}
 \alias{JeffreysCI}
-\title{Approximate Bayesian confidence intervals for a single binomial or Poisson 
-rate.}
+\title{Jeffreys and other approximate Bayesian confidence intervals for a single 
+binomial or Poisson rate.}
 \usage{
 JeffreysCI(x, n, ai = 0.5, bi = 0.5, cc = 0, level = 0.95,
-  dist = "bin", adj = FALSE, ...)
+  distrib = "bin", adj = FALSE, ...)
 }
 \arguments{
 \item{x}{Numeric vector of number of events.}
@@ -18,12 +18,12 @@ times (for Poisson rates).}
 Jeffreys interval). Gamma prior for Poisson rates requires only ai.}
 
 \item{cc}{Number or logical specifying (amount of) "continuity correction", 
-which enables the Clopper-Pearson method to be included. A value between 0 
-and 0.5 gives less conservative coverage.}
+which enables the Clopper-Pearson method. A value between 0 and 0.5 allows
+a compromise between proximate and conservative coverage.}
 
-\item{level}{Number specifying confidence level.}
+\item{level}{Number specifying confidence level (between 0 and 1).}
 
-\item{dist}{Character string indicating distribution of data: "bin"=binomial,
+\item{distrib}{Character string indicating distribution of data: "bin"=binomial,
 "poi"=Poisson.}
 
 \item{adj}{Logical indicating whether to apply the adjustment in Brown et al.
@@ -33,9 +33,9 @@ and 0.5 gives less conservative coverage.}
 }
 \description{
 Generalised approximate Bayesian confidence intervals based on a Beta (for 
-binomial rates) or Gamma (for Poisson rates) conjugate prior distribution. 
-Encompassing the Jeffreys method (with Beta(0.5, 0.5) or Gamma(0.5) 
-respectively), and Clopper-Pearson, as well as any user-specified prior 
-distribution.
+binomial rates) or Gamma (for Poisson rates) conjugate priors. Encompassing 
+the Jeffreys method (with Beta(0.5, 0.5) or Gamma(0.5) respectively), as well
+as any user-specified prior distribution. Clopper-Pearson also included by 
+way of a "continuity correction".
 }
 
