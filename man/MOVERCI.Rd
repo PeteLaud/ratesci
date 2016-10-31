@@ -16,26 +16,27 @@ respectively.}
 \item{n1, n2}{Numeric vectors of sample sizes (for binomial rates) or exposure
 times (for Poisson rates) in each group.}
 
-\item{a1, b1}{Numbers defining the Beta prior distribution for group 1 (0.5 
-for Jeffreys prior).}
+\item{a1, b1}{Numbers defining the Beta prior distribution for group 1 (default a1 = b1 = 0.5 
+for Jeffreys method).}
 
-\item{a2, b2}{Numbers defining the Beta prior distribution for group 2 (0.5 
-for Jeffreys prior).}
+\item{a2, b2}{Numbers defining the Beta prior distribution for group 2 (default a2 = b2 = 0.5 
+for Jeffreys method).}
 
-\item{cc}{Number or logical specifying (amount of) continuity correction.}
+\item{cc}{Number or logical specifying (amount of) continuity correction (default 0).}
 
-\item{level}{Number specifying confidence level (between 0 and 1).}
+\item{level}{Number specifying confidence level (between 0 and 1, default
+0.95).}
 
-\item{distrib}{Character string indicating distribution of data: "bin"=binomial,
-"poi"=Poisson.}
+\item{distrib}{Character string indicating distribution of data:
+"bin"=binomial, "poi"=Poisson.}
 
 \item{contrast}{Character string indicating the contrast required: ("RD", 
 "RR", or "OR").}
 
 \item{type}{Character string indicating the method used for the intervals for
-the individual group rates. "Jeff"=Jeffreys equal-tailed intervals, 
-"exact"=Clopper-Pearson exact intervals (also obtained using "Jeff" with 
-cc=0.5), "Wilson"=Wilson score intervals (as per Newcombe 1998).}
+the individual group rates. "Jeff" = Jeffreys equal-tailed intervals (default), 
+"exact" = Clopper-Pearson exact intervals (also obtained using type = "Jeff" with 
+cc = 0.5), "Wilson" = Wilson score intervals (as per Newcombe 1998).}
 
 \item{...}{Additional arguments.}
 }
@@ -43,5 +44,29 @@ cc=0.5), "Wilson"=Wilson score intervals (as per Newcombe 1998).}
 Confidence intervals applying the MOVER method across different contrasts and
 distributions using Jeffreys intervals (& other more general Beta and Gamma 
 priors) instead of Wilson
+}
+\examples{
+ scoreCI(5,0,56,29)
+}
+\author{
+Peter J Laud, \email{p.j.laud@sheffield.ac.uk}
+}
+\references{
+Laud PJ. Equal-tailed confidence intervals for comparison of 
+  rates: Submitted to Pharmaceutical Statistics for peer review Oct 2016.
+  
+  Newcombe RG. Interval estimation for the difference between independent 
+  proportions: comparison of eleven methods. Statistics in Medicine 1998;
+  
+  Donner A, Zou G. Closed-form confidence intervals for functions of the
+  normal mean and standard deviation. Statistical Methods in Medical Research
+  
+  Fagerland MW, Newcombe RG. Confidence intervals for odds ratio and relative
+  risk based on the inverse hyperbolic sine transformation. Statistics in  
+  Medicine 2013; 32(16):2823-2836.
+  
+  Li HQ, Tang ML, Wong WK. Confidence intervals for ratio of two poisson
+  rates using the method of variance estimates recovery. Computational 
+  Statistics 2014; 29(3-4):869-889.
 }
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/scoreCI.R
 \name{scoreCI}
 \alias{scoreCI}
-\title{Score confidence intervals for comparison of independent binomial or Poisson 
+\title{Score confidence intervals for comparisons of independent binomial or Poisson
 rates.}
 \usage{
 scoreCI(x1, x2 = NULL, n1, n2 = NULL, distrib = "bin", contrast = "RD",
@@ -14,41 +14,47 @@ scoreCI(x1, x2 = NULL, n1, n2 = NULL, distrib = "bin", contrast = "RD",
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
 respectively.}
 
-\item{n1, n2}{Numeric vectors of sample sizes (for binomial rates) or exposure
+\item{n1, n2}{Numeric vectors of sample sizes (for binomial rates) or exposure 
 times (for Poisson rates) in each group.}
 
-\item{distrib}{Character string indicating distribution of data: 
-"bin"=binomial, "poi"=Poisson.}
+\item{distrib}{Character string indicating distribution assumed for the input 
+data: "bin" = binomial, "poi" = Poisson.}
 
-\item{contrast}{Character string indicating the contrast required: ("RD", 
-"RR", or "OR").}
+\item{contrast}{Character string indicating the comparative parameter of 
+interest: ("RD" = rate difference, "RR" = rate ratio, "OR" = odds ratio).}
 
 \item{level}{Number specifying confidence level (between 0 and 1).}
 
 \item{skew}{Logical indicating whether to apply skewness correction (Laud 
 2016).}
 
-\item{bcf}{Logical indicating whether to apply bias correction.}
+\item{bcf}{Logical indicating whether to apply bias correction in the score 
+denominator. Applicable to distrib = "bin" only. (NB: bcf = FALSE option is 
+really only included for legacy validation against previous published 
+methods (i.e. Gart & Nam).}
 
 \item{cc}{Number or logical specifying (amount of) continuity correction.}
 
 \item{delta}{Number to be used in a one-sided significance test (e.g. 
-non-inferiority margin).}
+non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
+excludes delta. NB: can also be used for a superiority test by setting 
+delta=0.}
 
 \item{precis}{Number specifying precision to be used in optimisation 
 subroutine (i.e. number of decimal places).}
 
-\item{plot}{Logical indicating whether to output plots (needs to be a 
-separate function).}
+\item{plot}{Logical indicating whether to output plot of the score function 
+(need to move this into a separate R function).}
 
-\item{plotmax}{Numeric value indicating maximum value to be displayed on
+\item{plotmax}{Numeric value indicating maximum value to be displayed on 
 x-axis of plots.}
 
 \item{stratified}{Logical indicating whether to combine vector inputs into a 
 single stratified analysis.}
 
-\item{weighting}{String indicating which weighting method to use: "MH" 
-Mantel-Haenszel, "IVS" Inverse Variance of Score, "MN" Miettinen-Nurminen.}
+\item{weighting}{String indicating which weighting method to use:  "IVS" = 
+Inverse Variance of Score (default), "MH" = Mantel-Haenszel, "MN" = 
+Miettinen-Nurminen iterative weights.}
 
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
 
@@ -58,21 +64,24 @@ stratified data.}
 \item{...}{Other arguments.}
 }
 \value{
-A list containing the following components: \describe{ 
-  \item{estimates}{a matrix containing estimates of the rates in each group
-  and of the requested contrast, with its confidence interval} \item{pval}{a
-  matrix containing details of the corresponding 2-sided and one-sided
-  significance tests} \item{nstrat}{numeric indicating the number of strata
-  included in the analysis} }
+A list containing the following components: 
+  \describe{ 
+    \item{estimates}{a matrix containing estimates of the rates in
+    each group and of the requested contrast, with its confidence interval}
+    \item{pval}{a matrix containing details of the corresponding 2-sided and
+    one-sided significance tests} 
+    \item{nstrat}{numeric indicating the number of
+    strata included in the analysis} 
+  }
+ @examples  scoreCI(5,0,56,29)
 }
 \description{
 Score-based confidence intervals for the rate difference (RD) or ratio (RR) 
 for independent binomial or Poisson rates, or for odds ratio (OR) (binomial 
-only).  [To do: Need to add output of per-stratum CIs for stratified method, 
-and move plotting to a separate funtion.]
-}
-\examples{
- scoreCI(5,0,56,29)
+only). Including options for bias correction (from MN), skewness correction 
+(Laud 2016, developed from GN) and continuity correction. This function is 
+vectorised in x1, x2, n1, and n2.   [To do: Need to add output of per-stratum
+CIs for stratified method, and move plotting to a separate funtion.]
 }
 \author{
 Peter J Laud, \email{p.j.laud@sheffield.ac.uk}
@@ -80,16 +89,20 @@ Peter J Laud, \email{p.j.laud@sheffield.ac.uk}
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
   rates: Submitted to Pharmaceutical Statistics for peer review.
-
-Miettinen OS, Nurminen M. Comparative analysis of two rates. 
-  Statistics in Medicine 1985; 4:213-226.
-
-Gart JJ, Nam JM. Approximate interval estimation of the ratio of 
-  binomial parameters: A review and corrections for skewness. Biometrics 
-  1988; 44(2):323-338.
-
-Gart JJ, Nam JM. Approximate interval estimation of the 
-  difference in binomial parameters: correction for skewness and extension to
-  multiple tabes. Biometrics 1990; 46(3):637-643.
+  
+  Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
+  Medicine 1985; 4:213-226.
+  
+  Farrington CP, Manning G. Test statistics and sample size formulae for 
+  comparative binomial trials with null hypothesis of non-zero risk difference
+  or non-unity relative risk. Statistics in Medicine 1990; 9(12):1447-1454.
+  
+  Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
+  parameters: A review and corrections for skewness. Biometrics 1988; 
+  44(2):323-338.
+  
+  Gart JJ, Nam JM. Approximate interval estimation of the difference in 
+  binomial parameters: correction for skewness and extension to multiple 
+  tables. Biometrics 1990; 46(3):637-643.
 }
 

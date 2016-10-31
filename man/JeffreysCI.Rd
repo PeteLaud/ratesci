@@ -14,17 +14,19 @@ JeffreysCI(x, n, ai = 0.5, bi = 0.5, cc = 0, level = 0.95,
 \item{n}{Numeric vector of sample sizes (for binomial rates) or exposure 
 times (for Poisson rates).}
 
-\item{ai, bi}{Numbers defining the Beta prior distribution (ai = bi = 0.5 for 
-Jeffreys interval). Gamma prior for Poisson rates requires only ai.}
+\item{ai, bi}{Numbers defining the Beta prior distribution (default ai = bi =
+0.5 for Jeffreys interval). Gamma prior for Poisson rates requires only ai.}
 
-\item{cc}{Number or logical specifying (amount of) "continuity correction", 
-which enables the Clopper-Pearson method. A value between 0 and 0.5 allows
-a compromise between proximate and conservative coverage.}
+\item{cc}{Number or logical specifying (amount of) "continuity correction". 
+cc = 0 (default) gives Jeffreys interval, cc = 0.5 gives the
+Clopper-Pearson interval. A value between 0 and 0.5 allows a compromise
+between proximate and conservative coverage.}
 
-\item{level}{Number specifying confidence level (between 0 and 1).}
+\item{level}{Number specifying confidence level (between 0 and 1, default
+0.95).}
 
-\item{distrib}{Character string indicating distribution of data: "bin"=binomial,
-"poi"=Poisson.}
+\item{distrib}{Character string indicating distribution of data:
+"bin"=binomial, "poi"=Poisson.}
 
 \item{adj}{Logical indicating whether to apply the adjustment in Brown et al.
 (Not recommended)}

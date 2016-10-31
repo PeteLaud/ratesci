@@ -1,93 +1,99 @@
-#' Score confidence intervals for comparison of independent binomial or Poisson 
+#' Score confidence intervals for comparisons of independent binomial or Poisson
 #' rates.
 #' 
 #' Score-based confidence intervals for the rate difference (RD) or ratio (RR) 
 #' for independent binomial or Poisson rates, or for odds ratio (OR) (binomial 
-#' only).  [To do: Need to add output of per-stratum CIs for stratified method, 
-#' and move plotting to a separate funtion.]
+#' only). Including options for bias correction (from MN), skewness correction 
+#' (Laud 2016, developed from GN) and continuity correction. This function is 
+#' vectorised in x1, x2, n1, and n2.   [To do: Need to add output of per-stratum
+#' CIs for stratified method, and move plotting to a separate funtion.]
 #' 
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
 #'   respectively.
-#' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
+#' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure 
 #'   times (for Poisson rates) in each group.
-#' @param distrib Character string indicating distribution of data: 
-#'   "bin"=binomial, "poi"=Poisson.
-#' @param contrast Character string indicating the contrast required: ("RD", 
-#'   "RR", or "OR").
+#' @param distrib Character string indicating distribution assumed for the input 
+#'   data: "bin" = binomial, "poi" = Poisson.
+#' @param contrast Character string indicating the contrast of 
+#'   interest: ("RD" = rate difference, "RR" = rate ratio, "OR" = odds ratio).
 #' @param level Number specifying confidence level (between 0 and 1).
 #' @param skew Logical indicating whether to apply skewness correction (Laud 
 #'   2016).
-#' @param bcf Logical indicating whether to apply bias correction.
+#' @param bcf Logical indicating whether to apply bias correction in the score 
+#'   denominator. Applicable to distrib = "bin" only. (NB: bcf = FALSE option is 
+#'   really only included for legacy validation against previous published 
+#'   methods (i.e. Gart & Nam, Mee).
 #' @param cc Number or logical specifying (amount of) continuity correction.
 #' @param delta Number to be used in a one-sided significance test (e.g. 
-#'   non-inferiority margin).
+#'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
+#'   excludes delta. NB: can also be used for a superiority test by setting 
+#'   delta=0.
 #' @param precis Number specifying precision to be used in optimisation 
 #'   subroutine (i.e. number of decimal places).
-#' @param plot Logical indicating whether to output plots (needs to be a 
-#'   separate function).
-#' @param plotmax Numeric value indicating maximum value to be displayed on
+#' @param plot Logical indicating whether to output plot of the score function 
+#'   (need to move this into a separate R function).
+#' @param plotmax Numeric value indicating maximum value to be displayed on 
 #'   x-axis of plots.
 #' @param stratified Logical indicating whether to combine vector inputs into a 
 #'   single stratified analysis.
-#' @param weighting String indicating which weighting method to use: "MH" 
-#'   Mantel-Haenszel, "IVS" Inverse Variance of Score, "MN" Miettinen-Nurminen.
+#' @param weighting String indicating which weighting method to use:  "IVS" = 
+#'   Inverse Variance of Score (default), "MH" = Mantel-Haenszel, "MN" = 
+#'   Miettinen-Nurminen iterative weights.
 #' @param wt Numeric vector containing (optional) user-specified weights.
 #' @param tdas Logical indicating whether to use t-distribution method for 
-#'   stratified data.
+#'   stratified data (defined in Laud 2016).
 #' @param ... Other arguments.
-#' @return A list containing the following components: \describe{ 
-#'   \item{estimates}{a matrix containing estimates of the rates in each group
-#'   and of the requested contrast, with its confidence interval} \item{pval}{a
-#'   matrix containing details of the corresponding 2-sided and one-sided
-#'   significance tests} \item{nstrat}{numeric indicating the number of strata
-#'   included in the analysis} }
-#' @examples  scoreCI(5,0,56,29)
+#' @return A list containing the following components: 
+#'   \describe{ 
+#'     \item{estimates}{a matrix containing estimates of the rates in
+#'     each group and of the requested contrast, with its confidence interval}
+#'     \item{pval}{a matrix containing details of the corresponding 2-sided
+#'     significance test against the null hypothesis that p_1 = p_2, and    
+#'     one-sided significance tests agains the null hypothesis that theta >= or
+#'     <= delta}
+#'     \item{nstrat}{numeric indicating the number of
+#'     strata included in the analysis}
+#'     \item{call}{details of the function call} 
+#'   }
+#'  @examples  scoreCI(5,0,56,29)
 #' @author Peter J Laud, \email{p.j.laud@@sheffield.ac.uk}
-#' @references Laud PJ. Equal-tailed confidence intervals for comparison of 
+#' @references 
+#'   Laud PJ. Equal-tailed confidence intervals for comparison of 
 #'   rates: Submitted to Pharmaceutical Statistics for peer review.
-#' @references Miettinen OS, Nurminen M. Comparative analysis of two rates. 
-#'   Statistics in Medicine 1985; 4:213-226.
-#' @references Gart JJ, Nam JM. Approximate interval estimation of the ratio of 
-#'   binomial parameters: A review and corrections for skewness. Biometrics 
-#'   1988; 44(2):323-338.
-#' @references Gart JJ, Nam JM. Approximate interval estimation of the 
-#'   difference in binomial parameters: correction for skewness and extension to
-#'   multiple tabes. Biometrics 1990; 46(3):637-643.
+#'   
+#'   Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
+#'   Medicine 1985; 4:213-226.
+#'   
+#'   Farrington CP, Manning G. Test statistics and sample size formulae for 
+#'   comparative binomial trials with null hypothesis of non-zero risk difference
+#'   or non-unity relative risk. Statistics in Medicine 1990; 9(12):1447-1454.
+#'   
+#'   Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
+#'   parameters: A review and corrections for skewness. Biometrics 1988; 
+#'   44(2):323-338.
+#'   
+#'   Gart JJ, Nam JM. Approximate interval estimation of the difference in 
+#'   binomial parameters: correction for skewness and extension to multiple 
+#'   tables. Biometrics 1990; 46(3):637-643.
 #' @export
 scoreCI <- function(
-
-	#Score-based confidence intervals for the rate difference (RD) or ratio (RR),
-	#for independent binomial or Poisson rates, including options for bias
-	#correction (from MN), skewness correction (from GN) and continuity correction 
-	#Written by Pete Laud, March 2014 executable in either S-plus or R see
-	#ratesCI.qc for validation code
-
-	#refs:	MN = Miettinen & Nurminen, Statistics in Medicine 1985; 4:213-226
-	# 		FM = Farrington & Manning, Statistics in Medicine 1990; 9:1447-1454
-	# 		GN = Gart & Nam, Biometrics 1990; 46(3):637-643
-
-	#This function is vectorised in x1,x2,n1,n2 
-	
 	x1,
-	x2=NULL,  		#x1,x2: vectors of number of events in group 1 & group 2 respectively
+	x2=NULL,
 	n1,
-	n2=NULL,		#n1,n2: vectors of sample sizes (or exposure times for Poisson rates) in each treatment group
-	distrib="bin",		#distrib: whether the data represent binomial ("bin") or Poisson ("poi") rates
-	contrast="RD",	#contrast: comparative parameter ("RD"=risk/rate difference, "RR"=risk/rate ratio, "OR"=odds ratio) 
-	level=0.95,		#level: confidence level (default 0.95)
-	skew=TRUE,		#skew: skewness correction, generalised from Gart & Nam and Laud & Dane (TRUE/FALSE) (default=TRUE)
-	bcf=TRUE,			#bcf: whether to include bias correction factor in the score denominator (applicable to distrib="bin" only) (default=TRUE). 
-					#		NB: bcf=FALSE option is really only included for legacy validation against previous published methods (i.e. Gart & Nam)
-	cc=0,			#cc: continuity correction (0=none, TRUE=0.5=conservative, intermediate value for a compromise)  (default=0)
-	delta=NULL,		#delta: non-inferiority margin, for an optional one-sided test of non-zero null hypothesis eg. H0: theta<=delta (default=NULL)
-					#		NB: 1-sided p will be <0.025 iff 2-sided 95% CI excludes delta. NB: can also be used for a superiority test by setting delta=0
-	precis=6,		#precis: required level of precision (number of dps)
-	plot=FALSE,		#plot: whether to output plot of the score function
-	plotmax=1000,	
-
+	n2=NULL,
+	distrib="bin",
+	contrast="RD",
+	level=0.95,
+	skew=TRUE,
+	bcf=TRUE,
+	cc=0,
+	delta=NULL,
+	precis=6,
+	plot=FALSE,	
+	plotmax=1000,
 	stratified=FALSE,
-	weighting="IVS",	#weighting strategy: "MH" "IVS" "MN"
-	wt=NULL,		#optional user-specified weights
+	weighting="IVS",
+	wt=NULL,
 	tdas=FALSE,	
 	#warn=TRUE,
 	...
@@ -413,7 +419,6 @@ scoreCI <- function(
 	
 }
 
-
 # vectorized limit-finding routine - turns out not to be any quicker but is
 # neater. The bisection method is just as efficient as the secant method
 # suggested by G&N, and affords greater control over whether the final estimate
@@ -587,13 +592,13 @@ scoretheta <- function (
 	if(cc > 0) {
 	  if (contrast == "OR") {
 	    corr <- cc * (1/(n1 * p1d * (1 - p1d)) + 1/(n2 * p2d * (1 - p2d)))  
-	    # Cornfield, try cc=0.25 instead
+	    # cc=0.5 gives Cornfield correction. Try cc=0.25 instead
 	  } else if (contrast == "RR") {
 	    corr <- cc * (1/(n1) + theta/(n2))  #try 0.125 or 0.25
 	  } else if (contrast == "RD") {
-	    corr <- cc * (1/pmin(n1, n2))  #Hauck Anderson - halved with cc=0.25
+	    corr <- cc * (1/pmin(n1, n2))  #cc=0.5 gives Hauck-Anderson. Try cc=0.25
   	  if (stratified == TRUE) corr <- (3/16) * (sum(n1 * n2/(n1 + n2)))^(-1)  
-  	  # from MehrotraRailkar, also Zhao et al.
+  	  # from Mehrotra & Railkar, also Zhao et al.
 	  }  
 	}
 		
@@ -605,9 +610,10 @@ scoretheta <- function (
 	      # MH weights for RD, applied across other comparative parameters too 
 	      # (without theoretical justification for OR)
 	    } else if (weighting == "IVS") {
-	      if (all(V == 0) || all(is.na(V))) 
-	        wt <- rep(1, nstrat) else wt <- 1/V  
-	        # IVS: inverse variance weights updated wih V.tilde
+	      # IVS: inverse variance weights updated wih V.tilde
+	      if (all(V == 0) || all(is.na(V))) { 
+	        wt <- rep(1, nstrat)
+	      } else wt <- 1/V  
 	    } else if (weighting == "MN") {
 	      if (contrast == "RR") {
 	        # M&Ns iterative weights - quite similar to MH

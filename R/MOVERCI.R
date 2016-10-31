@@ -9,19 +9,43 @@
 #'   respectively.
 #' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
 #'   times (for Poisson rates) in each group.
-#' @param a1,b1 Numbers defining the Beta prior distribution for group 1 (0.5 
-#'   for Jeffreys prior).
-#' @param a2,b2 Numbers defining the Beta prior distribution for group 2 (0.5 
-#'   for Jeffreys prior).
-#' @param cc Number or logical specifying (amount of) continuity correction.
+#' @param a1,b1 Numbers defining the Beta prior distribution for group 1 (default a1 = b1 = 0.5 
+#'   for Jeffreys method).
+#' @param a2,b2 Numbers defining the Beta prior distribution for group 2 (default a2 = b2 = 0.5 
+#'   for Jeffreys method).
+#' @param cc Number or logical specifying (amount of) continuity correction (default 0).
 #' @param contrast Character string indicating the contrast required: ("RD", 
 #'   "RR", or "OR").
 #' @param type Character string indicating the method used for the intervals for
-#'   the individual group rates. "Jeff"=Jeffreys equal-tailed intervals, 
-#'   "exact"=Clopper-Pearson exact intervals (also obtained using "Jeff" with 
-#'   cc=0.5), "Wilson"=Wilson score intervals (as per Newcombe 1998).
+#'   the individual group rates. "Jeff" = Jeffreys equal-tailed intervals (default), 
+#'   "exact" = Clopper-Pearson exact intervals (also obtained using type = "Jeff" with 
+#'   cc = 0.5), "Wilson" = Wilson score intervals (as per Newcombe 1998).
 #' @param ... Additional arguments.
 #' @inheritParams JeffreysCI
+#' @return A matrix containing estimates of the rates in
+#'     each group and of the requested contrast, with its confidence interval
+#' @examples  scoreCI(5,0,56,29)
+#' @author Peter J Laud, \email{p.j.laud@@sheffield.ac.uk}
+#' @references 
+#'   Laud PJ. Equal-tailed confidence intervals for comparison of 
+#'   rates: Submitted to Pharmaceutical Statistics for peer review Oct 2016.
+#'   
+#'   Newcombe RG. Interval estimation for the difference between independent 
+#'   proportions: comparison of eleven methods. Statistics in Medicine 1998;
+#;   17(8):873-890.
+#'   
+#'   Donner A, Zou G. Closed-form confidence intervals for functions of the
+#'   normal mean and standard deviation. Statistical Methods in Medical Research
+#;   2012; 21(4):347-359.
+#'   
+#'   Fagerland MW, Newcombe RG. Confidence intervals for odds ratio and relative
+#'   risk based on the inverse hyperbolic sine transformation. Statistics in  
+#'   Medicine 2013; 32(16):2823-2836.
+#'   
+#'   Li HQ, Tang ML, Wong WK. Confidence intervals for ratio of two poisson
+#'   rates using the method of variance estimates recovery. Computational 
+#'   Statistics 2014; 29(3-4):869-889.
+#'   
 #' @export
 MOVERCI <- function(
   x1,
@@ -79,7 +103,7 @@ MOVERCI <- function(
     j2 <- JeffreysCI(x2, n2, ai = a2, bi = b2, cc = 0.5, alpha = alpha,
                      distrib = distrib, adj = paste(contrast == "OR"))
   } else {
-    # or use Wilson intervals as per Newcombe 1988
+    # or use Wilson intervals as per Newcombe 1998
     #(NB could add cc here for completeness)
     j1 <- quadroot(a = 1 + z^2/n1, b = - (2 * p1hat + z^2/n1),
                    c_ = p1hat^2)
@@ -92,10 +116,11 @@ MOVERCI <- function(
   u2 <- j2[, 2]
 
   if (contrast == "RD") {
+    # From Newcombe (1998), p876 "Method 10"
     lower <- p1hat - p2hat - sqrt(pmax(0, (p1hat - l1)^2 + (u2 - p2hat)^2))
     upper <- p1hat - p2hat + sqrt(pmax(0, (u1 - p1hat)^2 + (p2hat - l2)^2))
   } else if (contrast == "OR") {
-    # From Fagerland & Newcombe 2013
+    # From Fagerland & Newcombe (2013), p2828 "Method 4"
     q1hat <- p1hat/(1 - p1hat)
     q2hat <- p2hat/(1 - p2hat)
     L1 <- l1/(1 - l1)
@@ -112,7 +137,8 @@ MOVERCI <- function(
     lower[(x1 == 0 & x2 == n2) | (x1 == n1 & x2 == 0)] <- 0
     upper[(x1 == 0 & x2 == n2) | (x1 == n1 & x2 == 0)] <- Inf
   } else if (contrast == "RR") {
-    # From Donner & Zou 2012 / Li et al
+    # From Donner & Zou (2012), p351
+    # or Li et al. (2014), p873
     lower <- (p1hat * p2hat - sqrt(pmax(0, (p1hat * p2hat)^2 -
                l1 * (2 * p2hat - u2) * (u2 * (2 * p1hat - l1))))) /
                   (u2 * (2 * p2hat - u2))
@@ -124,7 +150,6 @@ MOVERCI <- function(
   CI <- cbind(Lower = lower, Upper = upper)
   CI
 }
-
 
 #' Jeffreys and other approximate Bayesian confidence intervals for a single 
 #' binomial or Poisson rate.
@@ -138,14 +163,16 @@ MOVERCI <- function(
 #' @param x Numeric vector of number of events.
 #' @param n Numeric vector of sample sizes (for binomial rates) or exposure 
 #'   times (for Poisson rates).
-#' @param ai,bi Numbers defining the Beta prior distribution (ai = bi = 0.5 for 
-#'   Jeffreys interval). Gamma prior for Poisson rates requires only ai.
-#' @param cc Number or logical specifying (amount of) "continuity correction", 
-#'   which enables the Clopper-Pearson method. A value between 0 and 0.5 allows
-#'   a compromise between proximate and conservative coverage.
-#' @param level Number specifying confidence level (between 0 and 1).
-#' @param distrib Character string indicating distribution of data: "bin"=binomial,
-#'   "poi"=Poisson.
+#' @param ai,bi Numbers defining the Beta prior distribution (default ai = bi =
+#'   0.5 for Jeffreys interval). Gamma prior for Poisson rates requires only ai.
+#' @param cc Number or logical specifying (amount of) "continuity correction". 
+#'   cc = 0 (default) gives Jeffreys interval, cc = 0.5 gives the
+#'   Clopper-Pearson interval. A value between 0 and 0.5 allows a compromise
+#'   between proximate and conservative coverage.
+#' @param level Number specifying confidence level (between 0 and 1, default
+#'   0.95).
+#' @param distrib Character string indicating distribution of data:
+#'   "bin"=binomial, "poi"=Poisson.
 #' @param adj Logical indicating whether to apply the adjustment in Brown et al.
 #'   (Not recommended)
 #' @param ... Other arguments.
@@ -174,7 +201,7 @@ JeffreysCI <- function(
     }
   } else if (distrib == "poi") {
     # Jeffreys prior for Poisson rate uses gamma distribution,
-    # as defined in Li et al.
+    # as defined in Li et al. with "continuity correction" from Laud 2016.
     CI.lower <- qgamma(alpha/2, x + (ai - cc), scale = 1/n)
     CI.lower[x == 0] <-  0
     CI.upper <- qgamma(1 - alpha/2, (x + (ai + cc)), scale = 1/n)
