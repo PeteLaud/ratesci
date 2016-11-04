@@ -40,6 +40,10 @@ cc = 0.5), "Wilson" = Wilson score intervals (as per Newcombe 1998).}
 
 \item{...}{Additional arguments.}
 }
+\value{
+A matrix containing estimates of the rates in
+    each group and of the requested contrast, with its confidence interval
+}
 \description{
 Confidence intervals applying the MOVER method across different contrasts and
 distributions using Jeffreys intervals (& other more general Beta and Gamma 

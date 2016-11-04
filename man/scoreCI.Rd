@@ -7,7 +7,7 @@ rates.}
 \usage{
 scoreCI(x1, x2 = NULL, n1, n2 = NULL, distrib = "bin", contrast = "RD",
   level = 0.95, skew = TRUE, bcf = TRUE, cc = 0, delta = NULL,
-  precis = 6, plot = FALSE, plotmax = 1000, stratified = FALSE,
+  precis = 6, plot = FALSE, plotmax = 100, stratified = FALSE,
   weighting = "IVS", wt = NULL, tdas = FALSE, ...)
 }
 \arguments{
@@ -20,7 +20,7 @@ times (for Poisson rates) in each group.}
 \item{distrib}{Character string indicating distribution assumed for the input 
 data: "bin" = binomial, "poi" = Poisson.}
 
-\item{contrast}{Character string indicating the comparative parameter of 
+\item{contrast}{Character string indicating the contrast of 
 interest: ("RD" = rate difference, "RR" = rate ratio, "OR" = odds ratio).}
 
 \item{level}{Number specifying confidence level (between 0 and 1).}
@@ -31,7 +31,7 @@ interest: ("RD" = rate difference, "RR" = rate ratio, "OR" = odds ratio).}
 \item{bcf}{Logical indicating whether to apply bias correction in the score 
 denominator. Applicable to distrib = "bin" only. (NB: bcf = FALSE option is 
 really only included for legacy validation against previous published 
-methods (i.e. Gart & Nam).}
+methods (i.e. Gart & Nam, Mee).}
 
 \item{cc}{Number or logical specifying (amount of) continuity correction.}
 
@@ -47,7 +47,7 @@ subroutine (i.e. number of decimal places).}
 (need to move this into a separate R function).}
 
 \item{plotmax}{Numeric value indicating maximum value to be displayed on 
-x-axis of plots.}
+x-axis of plots (useful for ratio contrasts which can be infinite).}
 
 \item{stratified}{Logical indicating whether to combine vector inputs into a 
 single stratified analysis.}
@@ -59,7 +59,7 @@ Miettinen-Nurminen iterative weights.}
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
 
 \item{tdas}{Logical indicating whether to use t-distribution method for 
-stratified data.}
+stratified data (defined in Laud 2016).}
 
 \item{...}{Other arguments.}
 }
@@ -68,10 +68,13 @@ A list containing the following components:
   \describe{ 
     \item{estimates}{a matrix containing estimates of the rates in
     each group and of the requested contrast, with its confidence interval}
-    \item{pval}{a matrix containing details of the corresponding 2-sided and
-    one-sided significance tests} 
+    \item{pval}{a matrix containing details of the corresponding 2-sided
+    significance test against the null hypothesis that p_1 = p_2, and    
+    one-sided significance tests agains the null hypothesis that theta >= or
+    <= delta}
     \item{nstrat}{numeric indicating the number of
-    strata included in the analysis} 
+    strata included in the analysis}
+    \item{call}{details of the function call} 
   }
  @examples  scoreCI(5,0,56,29)
 }

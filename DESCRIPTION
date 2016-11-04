@@ -13,3 +13,4 @@ Description: Confidence intervals for the rate difference (RD) or
     method but using equal-tailed Jeffreys intervals.
 License: GPL-2
 RoxygenNote: 5.0.1
+Suggests: testthat

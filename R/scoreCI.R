@@ -6,7 +6,7 @@
 #' only). Including options for bias correction (from MN), skewness correction 
 #' (Laud 2016, developed from GN) and continuity correction. This function is 
 #' vectorised in x1, x2, n1, and n2.   [To do: Need to add output of per-stratum
-#' CIs for stratified method, and move plotting to a separate funtion.]
+#' CIs for stratified method.]
 #' 
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
 #'   respectively.
@@ -31,9 +31,8 @@
 #' @param precis Number specifying precision to be used in optimisation 
 #'   subroutine (i.e. number of decimal places).
 #' @param plot Logical indicating whether to output plot of the score function 
-#'   (need to move this into a separate R function).
 #' @param plotmax Numeric value indicating maximum value to be displayed on 
-#'   x-axis of plots.
+#'   x-axis of plots (useful for ratio contrasts which can be infinite).
 #' @param stratified Logical indicating whether to combine vector inputs into a 
 #'   single stratified analysis.
 #' @param weighting String indicating which weighting method to use:  "IVS" = 
@@ -90,7 +89,7 @@ scoreCI <- function(
 	delta=NULL,
 	precis=6,
 	plot=FALSE,	
-	plotmax=1000,
+	plotmax=100,
 	stratified=FALSE,
 	weighting="IVS",
 	wt=NULL,
@@ -221,13 +220,14 @@ scoreCI <- function(
 	    ## & skew==FALSE)
 	    point[x1 == 0 & x2 == 0] <- NA
 	    point[(x1 > 0 & x2 == 0) && skew == FALSE] <- Inf
+	    if (distrib == "bin") point[x1 == n1 & x2 == n2] <- 1
 	  }
 	  if (contrast == "OR") {
-	    point[x1 == n1 & x2 == n1] <- NA
+	    point[x1 == n1 & x2 == n2] <- NA
 	    point[(x1 == n1 & x2 > 0) && skew == FALSE] <- Inf
 	  }
 	  if (contrast == "RD") {
-	    point[x1 == n1 & x2 == n1] <- 0
+	    if (distrib == "bin") point[x1 == n1 & x2 == n2] <- 0
 	    point[x1 == 0 & x2 == 0] <- 0
 	  }
 	}
@@ -298,7 +298,8 @@ scoreCI <- function(
 	  myfun(theta) + qtnorm, contrast = contrast, distrib = distrib,
 	  precis = precis + 1, uplow = "up")
 
-	# This probably needs to be a separate function to use on an output object
+	# Ideally this would be in a separate function, but it is unlikely to be used
+	# much in practice - only included for code development and validation purposes.
 	if (plot == TRUE) {
 	  if (contrast == "RD") {
 	    if (distrib == "bin") {
@@ -319,7 +320,8 @@ scoreCI <- function(
 	           main = paste0("Score function for ",
 	                         ifelse(distrib == "bin", "binomial", "Poisson"), " ",
 	                         contrast, "\n", x1, "/", n1, " vs ", x2, "/", n2),
-	           log = ifelse(contrast == "RD", "", "x"))
+	           #log = ifelse(contrast == "RD", "", "x")
+	           )
 	      text(x = c(lower[i], point[i], upper[i]), y = c(-1.5, -1.75, -2) * qnval,
 	           labels = formatC(c(lower[i], point[i], upper[i]), format = "fg", 4,
 	                            flag = "#"),
@@ -339,7 +341,8 @@ scoreCI <- function(
 	    plot(myseq, sc[1, ], type = "l", ylim = ylim, xlab = contrast,
 	         ylab = "Score", yaxs = "i", col = "blue",
 	         main = paste("Score function for", distrib, contrast),
-	         log = ifelse(contrast == "RD", "", "x"))
+	         #log = ifelse(contrast == "RD", "", "x")
+	         )
 	    abline(h = c(-1, 1) * qtval)
 	    abline(h = 0, lty = 2)
 	    lines(rep(lower, 2), c(ylim[1], -1.5 * qtval - 0.3), lty = 3)
@@ -452,9 +455,10 @@ bisect <- function(
     } else if (contrast %in% c("RR", "OR")) {
       scor <- ftn(round(tan(pi * (mid + 1)/4), 10))  
       # avoid machine precision producing values outside [-1,1]
-    } else if (contrast == "p") 
+    } else if (contrast == "p") {
       scor <- ftn((mid + 1)/2)  #need to modify for poisson 
-    check <- (scor < 0)  #| is.na(scor) #scor=NA only happens when |p1-p2|=1 and |theta|=1 (in which case hi==lo anyway), or if p1=p2=0
+    }
+    check <- (scor < 0)  | is.na(scor) #??scor=NA only happens when |p1-p2|=1 and |theta|=1 (in which case hi==lo anyway), or if p1=p2=0
     hi[check] <- mid[check]
     lo[!check] <- mid[!check]
     niter <- niter + 1
@@ -570,6 +574,8 @@ scoretheta <- function (
 	    # set to zero if machine precision error in cos function produces a negative V
 	    mu3 <- (1 - 2 * p1d)/((n1 * p1d * (1 - p1d))^2) -
 	      (1 - 2 * p2d)/((n2 * p2d * (1 - p2d))^2)
+	    Stheta[(x1 == 0 & x2 == 0) | (x1 == n1 & x2 == n2)] <- 0
+	    mu3[(x1 == 0 & x2 == 0) | (x1 == n1 & x2 == n2)] <- 0
 	  } else if (distrib == "poi") {
 	    print("Odds ratio not applicable to Poisson rates")
 	  }
@@ -701,9 +707,9 @@ scoretheta <- function (
 		B <- 1
 		C_ <- -((Stheta - corr)/sqrt(V) + mu3/(6 * V^(3/2)))
 		num <- (-B + sqrt(pmax(0, B^2 - 4 * A * C_)))
-		score <- ifelse((skew == FALSE | mu3 == 0),
+		score <- ifelse((skew == FALSE | abs(mu3) <= 10e-10),
 		                ifelse(Stheta == 0, 0, (Stheta - corr)/sqrt(V)), num/(2 * A)
-		                )
+		)
 		pval <- pnorm(score)
 	}
 
