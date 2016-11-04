@@ -5,8 +5,8 @@
 \title{MOVER confidence intervals for comparison of independent binomial or Poisson 
 rates.}
 \usage{
-MOVERCI(x1, x2, n1, n2, a1 = 0.5, b1 = 0.5, a2 = 0.5, b2 = 0.5,
-  cc = 0, level = 0.95, distrib = "bin", contrast = "RD",
+MOVERCI(x1, x2 = NULL, n1, n2 = NULL, a1 = 0.5, b1 = 0.5, a2 = 0.5,
+  b2 = 0.5, cc = 0, level = 0.95, distrib = "bin", contrast = "RD",
   type = "Jeff", ...)
 }
 \arguments{
@@ -31,7 +31,7 @@ for Jeffreys method).}
 "bin"=binomial, "poi"=Poisson.}
 
 \item{contrast}{Character string indicating the contrast required: ("RD", 
-"RR", or "OR").}
+"RR", or "OR". "p" outputs interval for the single proportion x1/n1).}
 
 \item{type}{Character string indicating the method used for the intervals for
 the individual group rates. "Jeff" = Jeffreys equal-tailed intervals (default), 
@@ -41,8 +41,7 @@ cc = 0.5), "Wilson" = Wilson score intervals (as per Newcombe 1998).}
 \item{...}{Additional arguments.}
 }
 \value{
-A matrix containing estimates of the rates in
-    each group and of the requested contrast, with its confidence interval
+A matrix containing the confidence interval for the requested contrast
 }
 \description{
 Confidence intervals applying the MOVER method across different contrasts and
@@ -53,7 +52,7 @@ priors) instead of Wilson
  scoreCI(5,0,56,29)
 }
 \author{
-Peter J Laud, \email{p.j.laud@sheffield.ac.uk}
+Pete Laud, \email{p.j.laud@sheffield.ac.uk}
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 

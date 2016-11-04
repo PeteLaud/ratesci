@@ -1,0 +1,48 @@
+#' ratesCI: A package for computing confidence intervals for various comparisons
+#' of independent binomial and Poisson rates.
+#' 
+#' Computes confidence intervals for the rate difference, rate ratio, or odds 
+#' ratio, for independent binomial or Poisson rates. Includes score-based 
+#' methods with (or without) skewness correction, developed from the
+#' Miettinen-Nurminen and Gart-Nam methods, and the "Method of Variance
+#' Estimates Recovery", originating from Newcombe.
+#' 
+#' @section ratesCI functions: 
+#' \itemize{ 
+#'   \item scoreCI: for score-based confidence intervals 
+#'   \item MOVERCI: for the MOVER method
+#'   \item SCASCI:(to be added) wrapper function to compute SCAS interval
+#'   \item MNCI: (to be added) wrapper function to compute MN interval
+#'   \item TDASCI:(to be added) wrapper function to compute TDAS stratified
+#'   interval
+#'   \item MOVERJCI: (to be added) wrapper function to compute MOVER-J interval
+#'   \item NewcombeCI: (to be added?) wrapper function to compute Newcombe
+#'   interval
+#' }
+#'   
+#' @docType package
+#' @name ratesCI
+#' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
+#' @references Laud PJ. Equal-tailed confidence intervals for comparison of 
+#' rates: Submitted to Pharmaceutical Statistics for peer review.
+#' 
+#' Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
+#' Medicine 1985; 4:213-226.
+#' 
+#' Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
+#' parameters: A review and corrections for skewness. Biometrics 1988; 
+#' 44(2):323-338.
+#' 
+#' Gart JJ, Nam JM. Approximate interval estimation of the difference in 
+#' binomial parameters: correction for skewness and extension to multiple 
+#' tables. Biometrics 1990; 46(3):637-643.
+#' 
+#'   Newcombe RG. Interval estimation for the difference between independent 
+#'   proportions: comparison of eleven methods. Statistics in Medicine 1998;
+#;   17(8):873-890.
+#'   
+#'   Donner A, Zou G. Closed-form confidence intervals for functions of the
+#'   normal mean and standard deviation. Statistical Methods in Medical Research
+#;   2012; 21(4):347-359.
+#'   
+NULL

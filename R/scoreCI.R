@@ -5,8 +5,7 @@
 #' for independent binomial or Poisson rates, or for odds ratio (OR) (binomial 
 #' only). Including options for bias correction (from MN), skewness correction 
 #' (Laud 2016, developed from GN) and continuity correction. This function is 
-#' vectorised in x1, x2, n1, and n2.   [To do: Need to add output of per-stratum
-#' CIs for stratified method.]
+#' vectorised in x1, x2, n1, and n2.   
 #' 
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
 #'   respectively.
@@ -17,7 +16,7 @@
 #' @param contrast Character string indicating the contrast of interest: ("RD" =
 #'   rate difference, "RR" = rate ratio, "OR" = odds ratio, "p" = single
 #'   proportion).
-#' @param level Number specifying confidence level (between 0 and 1).
+#' @param level Number specifying confidence level (between 0 and 1, default 0.95).
 #' @param skew Logical indicating whether to apply skewness correction (Laud 
 #'   2016).
 #' @param bcf Logical indicating whether to apply bias correction in the score 
@@ -36,9 +35,9 @@
 #'   x-axis of plots (useful for ratio contrasts which can be infinite).
 #' @param stratified Logical indicating whether to combine vector inputs into a 
 #'   single stratified analysis.
-#' @param weighting String indicating which weighting method to use:  "IVS" = 
-#'   Inverse Variance of Score (default), "MH" = Mantel-Haenszel, "MN" = 
-#'   Miettinen-Nurminen iterative weights.
+#' @param weighting String indicating which weighting method to use if
+#'   stratified = "TRUE":  "IVS" = Inverse Variance of Score (default), "MH" =
+#'   Mantel-Haenszel, "MN" = Miettinen-Nurminen iterative weights.
 #' @param wt Numeric vector containing (optional) user-specified weights.
 #' @param tdas Logical indicating whether to use t-distribution method for 
 #'   stratified data (defined in Laud 2016).
@@ -52,7 +51,7 @@
 #'   \item{nstrat}{numeric indicating the number of strata included in the
 #'   analysis} \item{call}{details of the function call} }
 #'  @examples  scoreCI(5,0,56,29)
-#' @author Peter J Laud, \email{p.j.laud@@sheffield.ac.uk}
+#' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references Laud PJ. Equal-tailed confidence intervals for comparison of 
 #' rates: Submitted to Pharmaceutical Statistics for peer review.
 #' 

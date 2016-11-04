@@ -14,22 +14,23 @@ scoreCI(x1, x2 = NULL, n1, n2 = NULL, distrib = "bin", contrast = "RD",
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
 respectively.}
 
-\item{n1, n2}{Numeric vectors of sample sizes (for binomial rates) or exposure 
+\item{n1, n2}{Numeric vectors of sample sizes (for binomial rates) or exposure
 times (for Poisson rates) in each group.}
 
-\item{distrib}{Character string indicating distribution assumed for the input 
+\item{distrib}{Character string indicating distribution assumed for the input
 data: "bin" = binomial, "poi" = Poisson.}
 
-\item{contrast}{Character string indicating the contrast of 
-interest: ("RD" = rate difference, "RR" = rate ratio, "OR" = odds ratio).}
+\item{contrast}{Character string indicating the contrast of interest: ("RD" =
+rate difference, "RR" = rate ratio, "OR" = odds ratio, "p" = single
+proportion).}
 
-\item{level}{Number specifying confidence level (between 0 and 1).}
+\item{level}{Number specifying confidence level (between 0 and 1, default 0.95).}
 
 \item{skew}{Logical indicating whether to apply skewness correction (Laud 
 2016).}
 
 \item{bcf}{Logical indicating whether to apply bias correction in the score 
-denominator. Applicable to distrib = "bin" only. (NB: bcf = FALSE option is 
+denominator. Applicable to distrib = "bin" only. (NB: bcf = FALSE option is
 really only included for legacy validation against previous published 
 methods (i.e. Gart & Nam, Mee).}
 
@@ -43,8 +44,7 @@ delta=0.}
 \item{precis}{Number specifying precision to be used in optimisation 
 subroutine (i.e. number of decimal places).}
 
-\item{plot}{Logical indicating whether to output plot of the score function 
-(need to move this into a separate R function).}
+\item{plot}{Logical indicating whether to output plot of the score function}
 
 \item{plotmax}{Numeric value indicating maximum value to be displayed on 
 x-axis of plots (useful for ratio contrasts which can be infinite).}
@@ -52,9 +52,9 @@ x-axis of plots (useful for ratio contrasts which can be infinite).}
 \item{stratified}{Logical indicating whether to combine vector inputs into a 
 single stratified analysis.}
 
-\item{weighting}{String indicating which weighting method to use:  "IVS" = 
-Inverse Variance of Score (default), "MH" = Mantel-Haenszel, "MN" = 
-Miettinen-Nurminen iterative weights.}
+\item{weighting}{String indicating which weighting method to use if
+stratified = "TRUE":  "IVS" = Inverse Variance of Score (default), "MH" =
+Mantel-Haenszel, "MN" = Miettinen-Nurminen iterative weights.}
 
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
 
@@ -64,18 +64,14 @@ stratified data (defined in Laud 2016).}
 \item{...}{Other arguments.}
 }
 \value{
-A list containing the following components: 
-  \describe{ 
-    \item{estimates}{a matrix containing estimates of the rates in
-    each group and of the requested contrast, with its confidence interval}
-    \item{pval}{a matrix containing details of the corresponding 2-sided
-    significance test against the null hypothesis that p_1 = p_2, and    
-    one-sided significance tests agains the null hypothesis that theta >= or
-    <= delta}
-    \item{nstrat}{numeric indicating the number of
-    strata included in the analysis}
-    \item{call}{details of the function call} 
-  }
+A list containing the following components: \describe{ 
+  \item{estimates}{a matrix containing estimates of the rates in each group
+  and of the requested contrast, with its confidence interval} \item{pval}{a
+  matrix containing details of the corresponding 2-sided significance test
+  against the null hypothesis that p_1 = p_2, and one-sided significance
+  tests agains the null hypothesis that theta >= or <= delta} 
+  \item{nstrat}{numeric indicating the number of strata included in the
+  analysis} \item{call}{details of the function call} }
  @examples  scoreCI(5,0,56,29)
 }
 \description{
@@ -83,29 +79,28 @@ Score-based confidence intervals for the rate difference (RD) or ratio (RR)
 for independent binomial or Poisson rates, or for odds ratio (OR) (binomial 
 only). Including options for bias correction (from MN), skewness correction 
 (Laud 2016, developed from GN) and continuity correction. This function is 
-vectorised in x1, x2, n1, and n2.   [To do: Need to add output of per-stratum
-CIs for stratified method, and move plotting to a separate funtion.]
+vectorised in x1, x2, n1, and n2.
 }
 \author{
-Peter J Laud, \email{p.j.laud@sheffield.ac.uk}
+Pete Laud, \email{p.j.laud@sheffield.ac.uk}
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
-  rates: Submitted to Pharmaceutical Statistics for peer review.
-  
-  Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
-  Medicine 1985; 4:213-226.
-  
-  Farrington CP, Manning G. Test statistics and sample size formulae for 
-  comparative binomial trials with null hypothesis of non-zero risk difference
-  or non-unity relative risk. Statistics in Medicine 1990; 9(12):1447-1454.
-  
-  Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
-  parameters: A review and corrections for skewness. Biometrics 1988; 
-  44(2):323-338.
-  
-  Gart JJ, Nam JM. Approximate interval estimation of the difference in 
-  binomial parameters: correction for skewness and extension to multiple 
-  tables. Biometrics 1990; 46(3):637-643.
+rates: Submitted to Pharmaceutical Statistics for peer review.
+
+Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
+Medicine 1985; 4:213-226.
+
+Farrington CP, Manning G. Test statistics and sample size formulae for 
+comparative binomial trials with null hypothesis of non-zero risk difference 
+or non-unity relative risk. Statistics in Medicine 1990; 9(12):1447-1454.
+
+Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
+parameters: A review and corrections for skewness. Biometrics 1988; 
+44(2):323-338.
+
+Gart JJ, Nam JM. Approximate interval estimation of the difference in 
+binomial parameters: correction for skewness and extension to multiple 
+tables. Biometrics 1990; 46(3):637-643.
 }
 

@@ -22,10 +22,9 @@
 #'   cc = 0.5), "Wilson" = Wilson score intervals (as per Newcombe 1998).
 #' @param ... Additional arguments.
 #' @inheritParams JeffreysCI
-#' @return A matrix containing estimates of the rates in
-#'     each group and of the requested contrast, with its confidence interval
+#' @return A matrix containing the confidence interval for the requested contrast 
 #' @examples  scoreCI(5,0,56,29)
-#' @author Peter J Laud, \email{p.j.laud@@sheffield.ac.uk}
+#' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references 
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of 
 #'   rates: Submitted to Pharmaceutical Statistics for peer review Oct 2016.
@@ -179,6 +178,7 @@ MOVERCI <- function(
 #' @param adj Logical indicating whether to apply the adjustment in Brown et al.
 #'   (Not recommended)
 #' @param ... Other arguments.
+#' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @export
 JeffreysCI <- function(
   x,
