@@ -3,8 +3,8 @@ Type: Package
 Title: Confidence Intervals for Comparisons of Binomial or Poisson Rates
 Version: 0.0.0.9000
 Date: 2016-10-31
-Author: Peter J Laud
-Maintainer: Peter J Laud <p.j.laud@sheffield.ac.uk>
+Author: Pete Laud
+Maintainer: Pete Laud <p.j.laud@sheffield.ac.uk>
 Description: Confidence intervals for the rate difference (RD) or
     ratio (RR) for independent binomial or Poisson rates, or for odds ratio (OR)
     (binomial only). Includes asymptotic score methods including skewness correction,

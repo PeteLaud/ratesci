@@ -605,6 +605,8 @@ scoretheta <- function (
 	    corr <- cc * (1/pmin(n1, n2))  #cc=0.5 gives Hauck-Anderson. Try cc=0.25
   	  if (stratified == TRUE) corr <- (3/16) * (sum(n1 * n2/(n1 + n2)))^(-1)  
   	  # from Mehrotra & Railkar, also Zhao et al.
+	  } else if (contrast == "p") {
+	    corr <- cc/n1
 	  }  
 	}
 		

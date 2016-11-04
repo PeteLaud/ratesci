@@ -17,11 +17,11 @@ Estimates Recovery", originating from Newcombe.
  
 \itemize{ 
   \item scoreCI: for score-based confidence intervals 
+  \item MOVERCI: for the MOVER method
   \item SCASCI:(to be added) wrapper function to compute SCAS interval
   \item MNCI: (to be added) wrapper function to compute MN interval
   \item TDASCI:(to be added) wrapper function to compute TDAS stratified
   interval
-  \item MOVERCI: for the MOVER method
   \item MOVERJCI: (to be added) wrapper function to compute MOVER-J interval
   \item NewcombeCI: (to be added?) wrapper function to compute Newcombe
   interval
