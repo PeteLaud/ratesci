@@ -15,7 +15,7 @@
 #'   for Jeffreys method).
 #' @param cc Number or logical specifying (amount of) continuity correction (default 0).
 #' @param contrast Character string indicating the contrast required: ("RD", 
-#'   "RR", or "OR").
+#'   "RR", or "OR". "p" outputs interval for the single proportion x1/n1).
 #' @param type Character string indicating the method used for the intervals for
 #'   the individual group rates. "Jeff" = Jeffreys equal-tailed intervals (default), 
 #'   "exact" = Clopper-Pearson exact intervals (also obtained using type = "Jeff" with 
@@ -49,18 +49,18 @@
 #' @export
 MOVERCI <- function(
   x1,
-  x2,
+  x2 = NULL,
   n1,
-  n2,
-  a1=0.5,
-  b1=0.5,
-  a2=0.5,
-  b2=0.5,
-  cc=0,
+  n2 = NULL,
+  a1 = 0.5,
+  b1 = 0.5,
+  a2 = 0.5,
+  b2 = 0.5,
+  cc = 0,
   level = 0.95,
-  distrib="bin",
-  contrast="RD",
-  type="Jeff",
+  distrib = "bin",
+  contrast = "RD",
+  type = "Jeff",
   ...
 ){
   alpha <- 1 - level
@@ -115,7 +115,10 @@ MOVERCI <- function(
   l2 <- j2[, 1]
   u2 <- j2[, 2]
 
-  if (contrast == "RD") {
+  if (contrast == "p") {
+    lower <- l1
+    upper <- u1
+  } else if (contrast == "RD") {
     # From Newcombe (1998), p876 "Method 10"
     lower <- p1hat - p2hat - sqrt(pmax(0, (p1hat - l1)^2 + (u2 - p2hat)^2))
     upper <- p1hat - p2hat + sqrt(pmax(0, (u1 - p1hat)^2 + (p2hat - l2)^2))

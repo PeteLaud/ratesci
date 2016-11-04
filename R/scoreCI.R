@@ -10,17 +10,18 @@
 #' 
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
 #'   respectively.
-#' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure 
+#' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
 #'   times (for Poisson rates) in each group.
-#' @param distrib Character string indicating distribution assumed for the input 
+#' @param distrib Character string indicating distribution assumed for the input
 #'   data: "bin" = binomial, "poi" = Poisson.
-#' @param contrast Character string indicating the contrast of 
-#'   interest: ("RD" = rate difference, "RR" = rate ratio, "OR" = odds ratio).
+#' @param contrast Character string indicating the contrast of interest: ("RD" =
+#'   rate difference, "RR" = rate ratio, "OR" = odds ratio, "p" = single
+#'   proportion).
 #' @param level Number specifying confidence level (between 0 and 1).
 #' @param skew Logical indicating whether to apply skewness correction (Laud 
 #'   2016).
 #' @param bcf Logical indicating whether to apply bias correction in the score 
-#'   denominator. Applicable to distrib = "bin" only. (NB: bcf = FALSE option is 
+#'   denominator. Applicable to distrib = "bin" only. (NB: bcf = FALSE option is
 #'   really only included for legacy validation against previous published 
 #'   methods (i.e. Gart & Nam, Mee).
 #' @param cc Number or logical specifying (amount of) continuity correction.
@@ -30,7 +31,7 @@
 #'   delta=0.
 #' @param precis Number specifying precision to be used in optimisation 
 #'   subroutine (i.e. number of decimal places).
-#' @param plot Logical indicating whether to output plot of the score function 
+#' @param plot Logical indicating whether to output plot of the score function
 #' @param plotmax Numeric value indicating maximum value to be displayed on 
 #'   x-axis of plots (useful for ratio contrasts which can be infinite).
 #' @param stratified Logical indicating whether to combine vector inputs into a 
@@ -42,38 +43,33 @@
 #' @param tdas Logical indicating whether to use t-distribution method for 
 #'   stratified data (defined in Laud 2016).
 #' @param ... Other arguments.
-#' @return A list containing the following components: 
-#'   \describe{ 
-#'     \item{estimates}{a matrix containing estimates of the rates in
-#'     each group and of the requested contrast, with its confidence interval}
-#'     \item{pval}{a matrix containing details of the corresponding 2-sided
-#'     significance test against the null hypothesis that p_1 = p_2, and    
-#'     one-sided significance tests agains the null hypothesis that theta >= or
-#'     <= delta}
-#'     \item{nstrat}{numeric indicating the number of
-#'     strata included in the analysis}
-#'     \item{call}{details of the function call} 
-#'   }
+#' @return A list containing the following components: \describe{ 
+#'   \item{estimates}{a matrix containing estimates of the rates in each group
+#'   and of the requested contrast, with its confidence interval} \item{pval}{a
+#'   matrix containing details of the corresponding 2-sided significance test
+#'   against the null hypothesis that p_1 = p_2, and one-sided significance
+#'   tests agains the null hypothesis that theta >= or <= delta} 
+#'   \item{nstrat}{numeric indicating the number of strata included in the
+#'   analysis} \item{call}{details of the function call} }
 #'  @examples  scoreCI(5,0,56,29)
 #' @author Peter J Laud, \email{p.j.laud@@sheffield.ac.uk}
-#' @references 
-#'   Laud PJ. Equal-tailed confidence intervals for comparison of 
-#'   rates: Submitted to Pharmaceutical Statistics for peer review.
-#'   
-#'   Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
-#'   Medicine 1985; 4:213-226.
-#'   
-#'   Farrington CP, Manning G. Test statistics and sample size formulae for 
-#'   comparative binomial trials with null hypothesis of non-zero risk difference
-#'   or non-unity relative risk. Statistics in Medicine 1990; 9(12):1447-1454.
-#'   
-#'   Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
-#'   parameters: A review and corrections for skewness. Biometrics 1988; 
-#'   44(2):323-338.
-#'   
-#'   Gart JJ, Nam JM. Approximate interval estimation of the difference in 
-#'   binomial parameters: correction for skewness and extension to multiple 
-#'   tables. Biometrics 1990; 46(3):637-643.
+#' @references Laud PJ. Equal-tailed confidence intervals for comparison of 
+#' rates: Submitted to Pharmaceutical Statistics for peer review.
+#' 
+#' Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
+#' Medicine 1985; 4:213-226.
+#' 
+#' Farrington CP, Manning G. Test statistics and sample size formulae for 
+#' comparative binomial trials with null hypothesis of non-zero risk difference 
+#' or non-unity relative risk. Statistics in Medicine 1990; 9(12):1447-1454.
+#' 
+#' Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
+#' parameters: A review and corrections for skewness. Biometrics 1988; 
+#' 44(2):323-338.
+#' 
+#' Gart JJ, Nam JM. Approximate interval estimation of the difference in 
+#' binomial parameters: correction for skewness and extension to multiple 
+#' tables. Biometrics 1990; 46(3):637-643.
 #' @export
 scoreCI <- function(
 	x1,
@@ -388,7 +384,11 @@ scoreCI <- function(
 	  #,Q,tau2,het.pval)
 	
 	# optionally add p-value for a test of null hypothesis: theta<=delta
-	if (contrast == "RD") delta0 <- 0 else delta0 <- 1
+	if (contrast == "RD") {
+	  delta0 <- 0 
+	} else if (contrast == "p") {
+	  delta0 <- 0.5
+	} else delta0 <- 1
 	if (is.null(delta)) delta <- delta0
 	scorezero <- scoretheta(delta0, x1, x2, n1, n2, stratified = stratified,
 	                        wt = wt, weighting = weighting, tdas = tdas,
@@ -590,6 +590,7 @@ scoretheta <- function (
 	    V <- theta/n1
 	    mu3 <- theta/(n1^2)
 	  }
+	  p1d <- theta
 	  p2d <- NA
 	}
 	
