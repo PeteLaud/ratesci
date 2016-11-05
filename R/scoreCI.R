@@ -4,8 +4,9 @@
 #' Score-based confidence intervals for the rate difference (RD) or ratio (RR) 
 #' for independent binomial or Poisson rates, or for odds ratio (OR) (binomial 
 #' only). Including options for bias correction (from MN), skewness correction 
-#' (Laud 2016, developed from GN) and continuity correction. This function is 
-#' vectorised in x1, x2, n1, and n2.   
+#' (Laud 2016, developed from GN) and continuity correction. Also includes 
+#' intervals for a single proportion, i.e. Wilson method, with skewness
+#' correction. This function is vectorised in x1, x2, n1, and n2.
 #' 
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
 #'   respectively.
@@ -14,9 +15,10 @@
 #' @param distrib Character string indicating distribution assumed for the input
 #'   data: "bin" = binomial, "poi" = Poisson.
 #' @param contrast Character string indicating the contrast of interest: ("RD" =
-#'   rate difference, "RR" = rate ratio, "OR" = odds ratio, "p" = single
+#'   rate difference, "RR" = rate ratio, "OR" = odds ratio, "p" = single 
 #'   proportion).
-#' @param level Number specifying confidence level (between 0 and 1, default 0.95).
+#' @param level Number specifying confidence level (between 0 and 1, default 
+#'   0.95).
 #' @param skew Logical indicating whether to apply skewness correction (Laud 
 #'   2016).
 #' @param bcf Logical indicating whether to apply bias correction in the score 
@@ -35,45 +37,46 @@
 #'   x-axis of plots (useful for ratio contrasts which can be infinite).
 #' @param stratified Logical indicating whether to combine vector inputs into a 
 #'   single stratified analysis.
-#' @param weighting String indicating which weighting method to use if
-#'   stratified = "TRUE":  "IVS" = Inverse Variance of Score (default), "MH" =
+#' @param weighting String indicating which weighting method to use if 
+#'   stratified = "TRUE":  "IVS" = Inverse Variance of Score (default), "MH" = 
 #'   Mantel-Haenszel, "MN" = Miettinen-Nurminen iterative weights.
 #' @param wt Numeric vector containing (optional) user-specified weights.
 #' @param tdas Logical indicating whether to use t-distribution method for 
 #'   stratified data (defined in Laud 2016).
 #' @param ... Other arguments.
 #' @return A list containing the following components: \describe{ 
-#'   \item{estimates}{a matrix containing estimates of the rates in each group
-#'   and of the requested contrast, with its confidence interval} \item{pval}{a
-#'   matrix containing details of the corresponding 2-sided significance test
-#'   against the null hypothesis that p_1 = p_2, and one-sided significance
+#'   \item{estimates}{a matrix containing estimates of the rates in each group 
+#'   and of the requested contrast, with its confidence interval} \item{pval}{a 
+#'   matrix containing details of the corresponding 2-sided significance test 
+#'   against the null hypothesis that p_1 = p_2, and one-sided significance 
 #'   tests agains the null hypothesis that theta >= or <= delta} 
-#'   \item{nstrat}{numeric indicating the number of strata included in the
+#'   \item{nstrat}{numeric indicating the number of strata included in the 
 #'   analysis} \item{call}{details of the function call} }
 #'  @examples  scoreCI(5,0,56,29)
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references Laud PJ. Equal-tailed confidence intervals for comparison of 
-#' rates: Submitted to Pharmaceutical Statistics for peer review.
-#' 
-#' Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
-#' Medicine 1985; 4:213-226.
-#' 
-#' Farrington CP, Manning G. Test statistics and sample size formulae for 
-#' comparative binomial trials with null hypothesis of non-zero risk difference 
-#' or non-unity relative risk. Statistics in Medicine 1990; 9(12):1447-1454.
-#' 
-#' Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
-#' parameters: A review and corrections for skewness. Biometrics 1988; 
-#' 44(2):323-338.
-#' 
-#' Gart JJ, Nam JM. Approximate interval estimation of the difference in 
-#' binomial parameters: correction for skewness and extension to multiple 
-#' tables. Biometrics 1990; 46(3):637-643.
+#'   rates: Submitted to Pharmaceutical Statistics for peer review.
+#'   
+#'   Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
+#'   Medicine 1985; 4:213-226.
+#'   
+#'   Farrington CP, Manning G. Test statistics and sample size formulae for 
+#'   comparative binomial trials with null hypothesis of non-zero risk 
+#'   difference or non-unity relative risk. Statistics in Medicine 1990; 
+#'   9(12):1447-1454.
+#'   
+#'   Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
+#'   parameters: A review and corrections for skewness. Biometrics 1988; 
+#'   44(2):323-338.
+#'   
+#'   Gart JJ, Nam JM. Approximate interval estimation of the difference in 
+#'   binomial parameters: correction for skewness and extension to multiple 
+#'   tables. Biometrics 1990; 46(3):637-643.
 #' @export
 scoreCI <- function(
 	x1,
-	x2=NULL,
 	n1,
+	x2=NULL,
 	n2=NULL,
 	distrib="bin",
 	contrast="RD",
@@ -451,11 +454,12 @@ bisect <- function(
     } else if (contrast == "RD" && distrib == "poi") {
       scor <- ftn(round(tan(pi * mid/2), 10))  
       # avoid machine precision producing values outside [-1,1]
-    } else if (contrast %in% c("RR", "OR")) {
+    } else if (contrast %in% c("RR", "OR") || 
+               (contrast == "p" && distrib == "poi")) {
       scor <- ftn(round(tan(pi * (mid + 1)/4), 10))  
       # avoid machine precision producing values outside [-1,1]
-    } else if (contrast == "p") {
-      scor <- ftn((mid + 1)/2)  #need to modify for poisson 
+    } else if (contrast == "p" && distrib == "bin") {
+      scor <- ftn((mid + 1)/2) 
     }
     check <- (scor < 0)  | is.na(scor) #??scor=NA only happens when |p1-p2|=1 and |theta|=1 (in which case hi==lo anyway), or if p1=p2=0
     hi[check] <- mid[check]
@@ -468,9 +472,10 @@ bisect <- function(
     return(best)
   } else if ((contrast %in% c("RD") && distrib == "poi")) {
     return(tan(best * pi/2))
-  } else if (contrast %in% c("RR", "OR")) {
+  } else if (contrast %in% c("RR", "OR")|| 
+             (contrast == "p" && distrib == "poi")) {
     return(tan((best + 1) * pi/4))
-  } else if (contrast == "p") 
+  } else if (contrast == "p" && distrib =="bin") 
     return((best + 1)/2)
 }
 
@@ -480,8 +485,8 @@ scoretheta <- function (
 	#This function is vectorised in x1,x2
 	theta,
 	x1,
-	x2=NULL,
 	n1,
+	x2=NULL,
 	n2=NULL,
 	distrib="bin",
 	contrast="RD",

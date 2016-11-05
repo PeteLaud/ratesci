@@ -48,8 +48,8 @@
 #' @export
 MOVERCI <- function(
   x1,
-  x2 = NULL,
   n1,
+  x2 = NULL,
   n2 = NULL,
   a1 = 0.5,
   b1 = 0.5,

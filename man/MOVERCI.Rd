@@ -5,7 +5,7 @@
 \title{MOVER confidence intervals for comparison of independent binomial or Poisson 
 rates.}
 \usage{
-MOVERCI(x1, x2 = NULL, n1, n2 = NULL, a1 = 0.5, b1 = 0.5, a2 = 0.5,
+MOVERCI(x1, n1, x2 = NULL, n2 = NULL, a1 = 0.5, b1 = 0.5, a2 = 0.5,
   b2 = 0.5, cc = 0, level = 0.95, distrib = "bin", contrast = "RD",
   type = "Jeff", ...)
 }

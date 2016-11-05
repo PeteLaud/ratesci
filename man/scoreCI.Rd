@@ -5,7 +5,7 @@
 \title{Score confidence intervals for comparisons of independent binomial or Poisson
 rates.}
 \usage{
-scoreCI(x1, x2 = NULL, n1, n2 = NULL, distrib = "bin", contrast = "RD",
+scoreCI(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
   level = 0.95, skew = TRUE, bcf = TRUE, cc = 0, delta = NULL,
   precis = 6, plot = FALSE, plotmax = 100, stratified = FALSE,
   weighting = "IVS", wt = NULL, tdas = FALSE, ...)
@@ -21,10 +21,11 @@ times (for Poisson rates) in each group.}
 data: "bin" = binomial, "poi" = Poisson.}
 
 \item{contrast}{Character string indicating the contrast of interest: ("RD" =
-rate difference, "RR" = rate ratio, "OR" = odds ratio, "p" = single
+rate difference, "RR" = rate ratio, "OR" = odds ratio, "p" = single 
 proportion).}
 
-\item{level}{Number specifying confidence level (between 0 and 1, default 0.95).}
+\item{level}{Number specifying confidence level (between 0 and 1, default 
+0.95).}
 
 \item{skew}{Logical indicating whether to apply skewness correction (Laud 
 2016).}
@@ -52,8 +53,8 @@ x-axis of plots (useful for ratio contrasts which can be infinite).}
 \item{stratified}{Logical indicating whether to combine vector inputs into a 
 single stratified analysis.}
 
-\item{weighting}{String indicating which weighting method to use if
-stratified = "TRUE":  "IVS" = Inverse Variance of Score (default), "MH" =
+\item{weighting}{String indicating which weighting method to use if 
+stratified = "TRUE":  "IVS" = Inverse Variance of Score (default), "MH" = 
 Mantel-Haenszel, "MN" = Miettinen-Nurminen iterative weights.}
 
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
@@ -65,12 +66,12 @@ stratified data (defined in Laud 2016).}
 }
 \value{
 A list containing the following components: \describe{ 
-  \item{estimates}{a matrix containing estimates of the rates in each group
-  and of the requested contrast, with its confidence interval} \item{pval}{a
-  matrix containing details of the corresponding 2-sided significance test
-  against the null hypothesis that p_1 = p_2, and one-sided significance
+  \item{estimates}{a matrix containing estimates of the rates in each group 
+  and of the requested contrast, with its confidence interval} \item{pval}{a 
+  matrix containing details of the corresponding 2-sided significance test 
+  against the null hypothesis that p_1 = p_2, and one-sided significance 
   tests agains the null hypothesis that theta >= or <= delta} 
-  \item{nstrat}{numeric indicating the number of strata included in the
+  \item{nstrat}{numeric indicating the number of strata included in the 
   analysis} \item{call}{details of the function call} }
  @examples  scoreCI(5,0,56,29)
 }
@@ -78,29 +79,31 @@ A list containing the following components: \describe{
 Score-based confidence intervals for the rate difference (RD) or ratio (RR) 
 for independent binomial or Poisson rates, or for odds ratio (OR) (binomial 
 only). Including options for bias correction (from MN), skewness correction 
-(Laud 2016, developed from GN) and continuity correction. This function is 
-vectorised in x1, x2, n1, and n2.
+(Laud 2016, developed from GN) and continuity correction. Also includes 
+intervals for a single proportion, i.e. Wilson method, with skewness
+correction. This function is vectorised in x1, x2, n1, and n2.
 }
 \author{
 Pete Laud, \email{p.j.laud@sheffield.ac.uk}
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
-rates: Submitted to Pharmaceutical Statistics for peer review.
-
-Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
-Medicine 1985; 4:213-226.
-
-Farrington CP, Manning G. Test statistics and sample size formulae for 
-comparative binomial trials with null hypothesis of non-zero risk difference 
-or non-unity relative risk. Statistics in Medicine 1990; 9(12):1447-1454.
-
-Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
-parameters: A review and corrections for skewness. Biometrics 1988; 
-44(2):323-338.
-
-Gart JJ, Nam JM. Approximate interval estimation of the difference in 
-binomial parameters: correction for skewness and extension to multiple 
-tables. Biometrics 1990; 46(3):637-643.
+  rates: Submitted to Pharmaceutical Statistics for peer review.
+  
+  Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
+  Medicine 1985; 4:213-226.
+  
+  Farrington CP, Manning G. Test statistics and sample size formulae for 
+  comparative binomial trials with null hypothesis of non-zero risk 
+  difference or non-unity relative risk. Statistics in Medicine 1990; 
+  9(12):1447-1454.
+  
+  Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
+  parameters: A review and corrections for skewness. Biometrics 1988; 
+  44(2):323-338.
+  
+  Gart JJ, Nam JM. Approximate interval estimation of the difference in 
+  binomial parameters: correction for skewness and extension to multiple 
+  tables. Biometrics 1990; 46(3):637-643.
 }
 
