@@ -98,7 +98,12 @@ scoreCI <- function(
 	...
 	) { 
 
-	if (!is.numeric(c(x1, n1, x2, n2, delta))) {
+	if (contrast != "p" && (is.null(x2) || is.null(n2))) {
+	  print("argument x2 or n2 missing")
+	  stop()
+	}
+	  
+  if (!is.numeric(c(x1, n1, x2, n2, delta))) {
 		print("Non-numeric inputs!")
 		stop()
 	}
@@ -107,11 +112,16 @@ scoreCI <- function(
 		stop()
 	}	
 	if (!is.null(delta)) {	
-		if(contrast == "RD") {
-			if(distrib == "bin" && (delta < -1 || delta > 1)) {
+		if (contrast == "RD") {
+			if (distrib == "bin" && (delta < -1 || delta > 1)) {
 				print("Impossible delta!")
 				stop()			
 			}
+		} else if (contrast == "p") {
+		  if (delta < 0 || (distrib == "bin" && delta > 1)) {
+		    print("Impossible delta!")
+		    stop()			
+		  }
 		}
 	}
 	if(as.character(cc) == "TRUE") cc <- 0.5
