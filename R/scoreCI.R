@@ -181,7 +181,7 @@ scoreCI <- function(
 	p2hat <- x2/n2
 	
 	myfun <- function(theta, randswitch = tdas, ccswitch = cc) {
-	  scoretheta(theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
+	  scoretheta(theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
 	             contrast = contrast, distrib = distrib, stratified = stratified,
 	             wt = wt, weighting = weighting, tdas = randswitch, skew = skew,
 	             cc = ccswitch)$score  
@@ -232,7 +232,8 @@ scoreCI <- function(
 
 	# identify certain quantities evaluated at the maximum likelihood point
 	# estimate for theta (incorporating random effects)
-	at.MLE <- scoretheta(point, x1, x2, n1, n2, bcf = bcf, contrast = contrast,
+	at.MLE <- scoretheta(theta = point, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
+	                     contrast = contrast,
 	                     distrib = distrib, stratified = stratified,
 	                     weighting = weighting, wt = wt, tdas = tdas, skew = skew,
 	                     cc = cc)
@@ -246,7 +247,8 @@ scoreCI <- function(
 	  # based on tdas=FALSE, but we also want to report the updated weights used
 	  # when tdas=T requires certain quantities evaluated at the fixed effects
 	  # maximum likelihood point estimate for theta, for heterogeneity test
-	  at.FE <- scoretheta(point.FE, x1, x2, n1, n2, bcf = bcf, contrast = contrast,
+	  at.FE <- scoretheta(theta = point.FE, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
+	                      bcf = bcf, contrast = contrast,
 	                      distrib = distrib, stratified = stratified,
 	                      weighting = weighting, wt = wt, tdas = FALSE,
 	                      skew = skew, cc = cc)
@@ -303,10 +305,12 @@ scoreCI <- function(
 	    if (distrib == "bin") {
 	      xlim <- c(max(-1, min(lower - (upper - lower)/2)),
 	                min(1, max(upper + (upper - lower)/2)))
-	    } else if (distrib == "poi") 
+	    } else if (distrib == "poi") {
 	      xlim <- c(lower - (upper - lower)/2, upper + (upper - lower)/2)
-	  } else xlim <- c(max(1e-05, min(0.5 * lower)), min(plotmax, 1.5 * upper))
-	  myseq <- seq(xlim[1], xlim[2], length.out = 400)
+	    }
+	  #} else xlim <- c(max(1e-05, min(0.5 * lower)), min(plotmax, 1.5 * upper))
+	  } else xlim <- c(max(0, min(0.5 * lower)), min(plotmax, 1.5 * upper))
+	myseq <- seq(xlim[1], xlim[2], length.out = 400)
 	  if (stratified) dim1 <- 1 else dim1 <- nstrat
 	  sc <- array(sapply(myseq, function(x) myfun(x)), dim = c(dim1, length(myseq)))
 	  if (stratified == FALSE) {
@@ -317,7 +321,8 @@ scoreCI <- function(
 	           yaxs = "i", ylab = "Score", col = "blue", 
 	           main = paste0("Score function for ",
 	                         ifelse(distrib == "bin", "binomial", "Poisson"), " ",
-	                         contrast, "\n", x1, "/", n1, " vs ", x2, "/", n2),
+	                         contrast, "\n", x1, "/", n1, 
+	                         ifelse(contrast == "p", "", paste0(" vs ", x2, "/", n2)))
 	           #log = ifelse(contrast == "RD", "", "x")
 	           )
 	      text(x = c(lower[i], point[i], upper[i]), y = c(-1.5, -1.75, -2) * qnval,
@@ -338,7 +343,7 @@ scoreCI <- function(
 	    ylim = c(-2.5, 2.5) * qtval
 	    plot(myseq, sc[1, ], type = "l", ylim = ylim, xlab = contrast,
 	         ylab = "Score", yaxs = "i", col = "blue",
-	         main = paste("Score function for", distrib, contrast),
+	         main = paste("Score function for", distrib, contrast)
 	         #log = ifelse(contrast == "RD", "", "x")
 	         )
 	    abline(h = c(-1, 1) * qtval)
@@ -392,11 +397,13 @@ scoreCI <- function(
 	  delta0 <- 0.5
 	} else delta0 <- 1
 	if (is.null(delta)) delta <- delta0
-	scorezero <- scoretheta(delta0, x1, x2, n1, n2, stratified = stratified,
+	scorezero <- scoretheta(theta = delta0, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
+	                        stratified = stratified,
 	                        wt = wt, weighting = weighting, tdas = tdas,
 	                        bcf = bcf, contrast = contrast, distrib = distrib,
 	                        skew = skew, cc = cc)
-	scoredelta <- scoretheta(delta, x1, x2, n1, n2, stratified = stratified,
+	scoredelta <- scoretheta(theta = delta, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
+	                         stratified = stratified,
 	                         wt = wt, weighting = weighting, tdas = tdas,
 	                         bcf = bcf, contrast = contrast, distrib = distrib,
 	                         skew = skew, cc = cc)
@@ -491,7 +498,7 @@ scoretheta <- function (
 	distrib="bin",
 	contrast="RD",
 	bcf=TRUE,
-	skew=FALSE,
+	skew=TRUE,
 	cc=FALSE,
 	stratified=FALSE,
 	wt=NULL,
@@ -714,13 +721,14 @@ scoretheta <- function (
 		B <- 1
 		C_ <- -((Stheta - corr)/sqrt(V) + mu3/(6 * V^(3/2)))
 		num <- (-B + sqrt(pmax(0, B^2 - 4 * A * C_)))
-		score <- ifelse((skew == FALSE | abs(mu3) <= 10e-10),
+		
+		score <- ifelse((skew == FALSE | mu3 == 0 | (distrib == "poi" & abs(mu3) <= 10e-16)),
 		                ifelse(Stheta == 0, 0, (Stheta - corr)/sqrt(V)), num/(2 * A)
-		)
+		                )
 		pval <- pnorm(score)
 	}
 
-	outlist <- list(score = score, p1d = p1d, Stheta = Stheta, V = V,
+	outlist <- list(score = score, p1d = p1d, Stheta = Stheta, num=num, V = V,
 	                p2d = p2d, mu3 = mu3, pval = pval)
 	if (stratified) {
 	  outlist <- append(outlist, list(Sdot = Sdot, Vdot = Vdot, tau2 = tau2,
@@ -728,3 +736,10 @@ scoretheta <- function (
 	}
 	return(outlist)
 }
+
+
+
+
+
+
+
