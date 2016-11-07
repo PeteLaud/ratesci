@@ -1,5 +1,5 @@
-#' ratesCI: A package for computing confidence intervals for various comparisons
-#' of independent binomial and Poisson rates.
+#' ratesCI: A package for computing confidence intervals for various
+#' comparisons of independent binomial and Poisson rates.
 #' 
 #' Computes confidence intervals for the rate difference, rate ratio, or odds 
 #' ratio, for independent binomial or Poisson rates. Includes score-based 
@@ -21,7 +21,7 @@
 #' }
 #'   
 #' @docType package
-#' @name ratesCI
+#' @name ratesCI-package
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references Laud PJ. Equal-tailed confidence intervals for comparison of 
 #' rates: Submitted to Pharmaceutical Statistics for peer review.
@@ -46,3 +46,4 @@
 #;   2012; 21(4):347-359.
 #'   
 NULL
+#"_PACKAGE"

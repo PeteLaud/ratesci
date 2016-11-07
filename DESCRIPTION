@@ -3,14 +3,21 @@ Type: Package
 Title: Confidence Intervals for Comparisons of Binomial or Poisson Rates
 Version: 0.0.0.9000
 Date: 2016-10-31
-Author: Pete Laud
-Maintainer: Pete Laud <p.j.laud@sheffield.ac.uk>
-Description: Confidence intervals for the rate difference (RD) or
-    ratio (RR) for independent binomial or Poisson rates, or for odds ratio (OR)
-    (binomial only). Includes asymptotic score methods including skewness correction,
-    which have been developed from Miettinen & Nurminen and Gart & Nam. Also includes 
-    MOVER methods (Method Of Variance Estimates Recovery), similar to the Newcombe
-    method but using equal-tailed Jeffreys intervals.
+Authors@R: person("Pete", "Laud", email = "p.j.laud@sheffield.ac.uk",
+                  role = c("aut", "cre"))
+Description: Computes confidence intervals for the rate (or risk)
+    difference ("RD") or ratio ("RR") for independent binomial
+    proportions or Poisson rates, or for odds ratio ("OR", binomial
+    only). Also confidence intervals for a single binomial or
+    Poisson rate. Includes asymptotic score methods including
+    skewness corrections, which have been developed from Miettinen
+    & Nurminen and Gart & Nam. Also includes MOVER methods
+    (Method Of Variance Estimates Recovery), derived from the
+    Newcombe method but using equal-tailed Jeffreys intervals.
+Depends: R (>= 3.2.4)
 License: GPL-2
+Encoding: UTF-8
 RoxygenNote: 5.0.1
 Suggests: testthat
+LazyData: true
+

@@ -61,7 +61,7 @@ MOVERCI <- function(
   contrast = "RD",
   type = "Jeff",
   ...
-){
+  ) {
   alpha <- 1 - level
   z <- qnorm(1 - alpha/2)
   if (as.character(cc) == "TRUE") cc <- 0.5

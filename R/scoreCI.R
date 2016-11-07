@@ -1,12 +1,14 @@
 #' Score confidence intervals for comparisons of independent binomial or Poisson
 #' rates.
 #' 
-#' Score-based confidence intervals for the rate difference (RD) or ratio (RR) 
-#' for independent binomial or Poisson rates, or for odds ratio (OR) (binomial 
-#' only). Including options for bias correction (from MN), skewness correction 
-#' (Laud 2016, developed from GN) and continuity correction. Also includes 
-#' intervals for a single proportion, i.e. Wilson method, with skewness
-#' correction. This function is vectorised in x1, x2, n1, and n2.
+#' Score-based confidence intervals for the rate (or risk) difference ("RD") or 
+#' ratio ("RR") for independent binomial or Poisson rates, or for odds ratio
+#' ("OR", binomial only). Including options for bias correction (from Miettinen
+#' & Nurminen), skewness correction (from Laud & Dane, developed from Gart &
+#' Nam, and taken further in forthcoming publication) and continuity correction.
+#' Also includes intervals for a single proportion, i.e. Wilson score method,
+#' with skewness correction, which has slightly better coverage properties than
+#' the Jeffreys method. This function is vectorised in x1, x2, n1, and n2.
 #' 
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
 #'   respectively.
@@ -76,22 +78,22 @@
 scoreCI <- function(
 	x1,
 	n1,
-	x2=NULL,
-	n2=NULL,
-	distrib="bin",
-	contrast="RD",
-	level=0.95,
-	skew=TRUE,
-	bcf=TRUE,
-	cc=0,
-	delta=NULL,
-	precis=6,
-	plot=FALSE,	
-	plotmax=100,
-	stratified=FALSE,
-	weighting="IVS",
-	wt=NULL,
-	tdas=FALSE,	
+	x2 = NULL,
+	n2 = NULL,
+	distrib = "bin",
+	contrast = "RD",
+	level = 0.95,
+	skew = TRUE,
+	bcf = TRUE,
+	cc = 0,
+	delta = NULL,
+	precis = 6,
+	plot = FALSE,	
+	plotmax = 100,
+	stratified = FALSE,
+	weighting = "IVS",
+	wt = NULL,
+	tdas = FALSE,	
 	#warn=TRUE,
 	...
 	) { 
@@ -493,21 +495,21 @@ scoretheta <- function (
 	theta,
 	x1,
 	n1,
-	x2=NULL,
-	n2=NULL,
-	distrib="bin",
-	contrast="RD",
-	bcf=TRUE,
-	skew=TRUE,
-	cc=FALSE,
-	stratified=FALSE,
-	wt=NULL,
-	weighting="IVS",
-	tdas=FALSE,	
-	...)
-	
-{
-	nstrat <- length(n1)
+	x2 = NULL,
+	n2 = NULL,
+	distrib = "bin",
+	contrast = "RD",
+	bcf = TRUE,
+	skew = TRUE,
+	cc = FALSE,
+	stratified = FALSE,
+	wt = NULL,
+	weighting = "IVS",
+	tdas = FALSE,	
+	...
+	) {
+
+  nstrat <- length(n1)
 	lambda <- switch(as.character(bcf), "TRUE" = (n1 + n2)/(n1 + n2 - 1),
 	                 "FALSE" = 1)
 	p1hat <- x1/n1
@@ -736,10 +738,3 @@ scoretheta <- function (
 	}
 	return(outlist)
 }
-
-
-
-
-
-
-
