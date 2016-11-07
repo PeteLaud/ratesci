@@ -73,7 +73,6 @@ A list containing the following components: \describe{
   tests agains the null hypothesis that theta >= or <= delta} 
   \item{nstrat}{numeric indicating the number of strata included in the 
   analysis} \item{call}{details of the function call} }
- @examples  scoreCI(5,0,56,29)
 }
 \description{
 Score-based confidence intervals for the rate (or risk) difference ("RD") or 
@@ -84,6 +83,17 @@ Nam, and taken further in forthcoming publication) and continuity correction.
 Also includes intervals for a single proportion, i.e. Wilson score method,
 with skewness correction, which has slightly better coverage properties than
 the Jeffreys method. This function is vectorised in x1, x2, n1, and n2.
+}
+\examples{
+ 
+  #Binomial RD, SCAS method:
+  scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
+  #Binomial RD, MN method:
+  scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, skew = FALSE)
+  #Poisson RR, SCAS method:
+  scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR")
+  #Poisson RR, MN method:
+  scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR", skew = FALSE)
 }
 \author{
 Pete Laud, \email{p.j.laud@sheffield.ac.uk}

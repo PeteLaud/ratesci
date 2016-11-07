@@ -49,7 +49,11 @@ distributions using Jeffreys intervals (& other more general Beta and Gamma
 priors) instead of Wilson
 }
 \examples{
- scoreCI(5,0,56,29)
+ scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
+  #Binomial RD, MOVER-J method:
+  MOVERCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
+  #Binomial RD, Newcombe method:
+  MOVERCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, type = "Wilson")
 }
 \author{
 Pete Laud, \email{p.j.laud@sheffield.ac.uk}

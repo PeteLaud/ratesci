@@ -23,7 +23,11 @@
 #' @param ... Additional arguments.
 #' @inheritParams JeffreysCI
 #' @return A matrix containing the confidence interval for the requested contrast 
-#' @examples  scoreCI(5,0,56,29)
+#' @examples  scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
+#'   #Binomial RD, MOVER-J method:
+#'   MOVERCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
+#'   #Binomial RD, Newcombe method:
+#'   MOVERCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, type = "Wilson")
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references 
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of 
@@ -62,6 +66,11 @@ MOVERCI <- function(
   type = "Jeff",
   ...
   ) {
+  if (contrast != "p" && (is.null(x2) || is.null(n2))) {
+    print("argument x2 or n2 missing")
+    stop()
+  }
+  
   alpha <- 1 - level
   z <- qnorm(1 - alpha/2)
   if (as.character(cc) == "TRUE") cc <- 0.5

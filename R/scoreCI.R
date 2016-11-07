@@ -54,7 +54,15 @@
 #'   tests agains the null hypothesis that theta >= or <= delta} 
 #'   \item{nstrat}{numeric indicating the number of strata included in the 
 #'   analysis} \item{call}{details of the function call} }
-#'  @examples  scoreCI(5,0,56,29)
+#' @examples  
+#'   #Binomial RD, SCAS method:
+#'   scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
+#'   #Binomial RD, MN method:
+#'   scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, skew = FALSE)
+#'   #Poisson RR, SCAS method:
+#'   scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR")
+#'   #Poisson RR, MN method:
+#'   scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR", skew = FALSE)
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references Laud PJ. Equal-tailed confidence intervals for comparison of 
 #'   rates: Submitted to Pharmaceutical Statistics for peer review.
@@ -97,12 +105,10 @@ scoreCI <- function(
 	#warn=TRUE,
 	...
 	) { 
-
 	if (contrast != "p" && (is.null(x2) || is.null(n2))) {
 	  print("argument x2 or n2 missing")
 	  stop()
 	}
-	  
   if (!is.numeric(c(x1, n1, x2, n2, delta))) {
 		print("Non-numeric inputs!")
 		stop()
