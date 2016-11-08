@@ -9,7 +9,6 @@
 #'   respectively.
 #' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
 #'   times (for Poisson rates) in each group.
-#' @param a1,b1 Numbers defining the Beta prior distribution for group 1 (default a1 = b1 = 0.5 
 #'   for Jeffreys method).
 #' @param a2,b2 Numbers defining the Beta prior distribution for group 2 (default a2 = b2 = 0.5 
 #'   for Jeffreys method).
@@ -100,15 +99,15 @@ MOVERCI <- function(
 
   if (type == "Jeff") {
     # MOVER-J, including optional 'continuity correction' g
-    j1 <- JeffreysCI(x1, n1, ai = a1, bi = b1, cc = cc, alpha = alpha,
+    j1 <- JeffreysCI(x1, n1, ai = a1, bi = b1, cc = cc, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
-    j2 <- JeffreysCI(x2, n2, ai = a2, bi = b2, cc = cc, alpha = alpha,
+    j2 <- JeffreysCI(x2, n2, ai = a2, bi = b2, cc = cc, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
   } else if (type == "exact") {
     # MOVER-E based on Clopper-Pearson exact intervals
-    j1 <- JeffreysCI(x1, n1, ai = a1, bi = b1, cc = 0.5, alpha = alpha,
+    j1 <- JeffreysCI(x1, n1, ai = a1, bi = b1, cc = 0.5, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
-    j2 <- JeffreysCI(x2, n2, ai = a2, bi = b2, cc = 0.5, alpha = alpha,
+    j2 <- JeffreysCI(x2, n2, ai = a2, bi = b2, cc = 0.5, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
   } else {
     # or use Wilson intervals as per Newcombe 1998
