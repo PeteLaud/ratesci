@@ -2,13 +2,17 @@
 #' rates.
 #' 
 #' Score-based confidence intervals for the rate (or risk) difference ("RD") or 
-#' ratio ("RR") for independent binomial or Poisson rates, or for odds ratio
-#' ("OR", binomial only). Including options for bias correction (from Miettinen
-#' & Nurminen), skewness correction (from Laud & Dane, developed from Gart &
-#' Nam, and taken further in forthcoming publication) and continuity correction.
-#' Also includes intervals for a single proportion, i.e. Wilson score method,
-#' with skewness correction, which has slightly better coverage properties than
-#' the Jeffreys method. This function is vectorised in x1, x2, n1, and n2.
+#' ratio ("RR") for independent binomial or Poisson rates, or for odds ratio 
+#' ("OR", binomial only). Including options for bias correction (from Miettinen 
+#' & Nurminen), skewness correction ("GNbc" method from Laud & Dane, developed
+#' from Gart & Nam, and generalised as "SCAS" in forthcoming publication) and
+#' continuity correction. Also includes intervals for a single proportion, i.e.
+#' Wilson score method, with skewness correction, which has slightly better
+#' coverage properties than the Jeffreys method. This function is vectorised in
+#' x1, x2, n1, and n2.  Vector inputs may also be combined into a single
+#' stratified analysis (e.g. meta-analysis), either using fixed effects, or the
+#' more general "TDAS" method, which incorporates stratum variability using a
+#' t-distribution score (inspired by to Hartung-Knapp-Sidik-Jonkman).
 #' 
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
 #'   respectively.
@@ -64,8 +68,13 @@
 #'   #Poisson RR, MN method:
 #'   scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR", skew = FALSE)
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
-#' @references Laud PJ. Equal-tailed confidence intervals for comparison of 
+#' @references 
+#'   Laud PJ. Equal-tailed confidence intervals for comparison of 
 #'   rates: Submitted to Pharmaceutical Statistics for peer review.
+#'   
+#'   Laud PJ, Dane A. Confidence intervals for the difference between independent 
+#'   binomial proportions: comparison using a graphical approach and
+#'   moving averages. Pharmaceutical Statistics 2014; 13(5):294–308
 #'   
 #'   Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
 #'   Medicine 1985; 4:213-226.
@@ -75,11 +84,11 @@
 #'   difference or non-unity relative risk. Statistics in Medicine 1990; 
 #'   9(12):1447-1454.
 #'   
-#'   Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
+#'   Gart JJ, Nam Jm. Approximate interval estimation of the ratio of binomial 
 #'   parameters: A review and corrections for skewness. Biometrics 1988; 
 #'   44(2):323-338.
 #'   
-#'   Gart JJ, Nam JM. Approximate interval estimation of the difference in 
+#'   Gart JJ, Nam Jm. Approximate interval estimation of the difference in 
 #'   binomial parameters: correction for skewness and extension to multiple 
 #'   tables. Biometrics 1990; 46(3):637-643.
 #' @export
@@ -449,6 +458,55 @@ scoreCI <- function(
 	
 }
 
+
+#' Skewness-corrected asymptotic score ("SCAS") confidence intervals for
+#' comparisons of independent binomial or Poisson rates.
+#' 
+#' Score-based confidence intervals for the rate (or risk) difference ("RD") or 
+#' ratio ("RR") for independent binomial or Poisson rates, or for odds ratio 
+#' ("OR", binomial only). ("GNbc" method from Laud & Dane, developed
+#' from Gart & Nam, and generalised as "SCAS" in forthcoming publication) including optional
+#' continuity correction.  This function is vectorised in
+#' x1, x2, n1, and n2.  
+#' 
+#' @inheritParams scoreCI
+#' @export
+SCASCI <- function(
+  x1,
+  n1,
+  x2,
+  n2,
+  distrib = "bin",
+  contrast = "RD",
+  level = 0.95,
+  cc = 0,
+  delta = NULL,
+  precis = 6,
+  plot = FALSE,	
+  plotmax = 100,
+  ...
+) { 
+  scoreCI(
+    x1 = x1,
+    n1 = n1,
+    x2 = x2,
+    n2 = n2,
+    distrib = distrib,
+    contrast = contrast,
+    level = level,
+    skew = TRUE,
+    bcf = TRUE,
+    cc = cc,
+    delta = delta,
+    precis = precis,
+    plot = plot,	
+    plotmax = 100,
+    stratified = FALSE,
+    ...
+  ) 
+}
+
+
 # vectorized limit-finding routine - turns out not to be any quicker but is
 # neater. The bisection method is just as efficient as the secant method
 # suggested by G&N, and affords greater control over whether the final estimate
@@ -456,6 +514,7 @@ scoreCI <- function(
 # there is no upper bound for d, however it is not guaranteed to converge New
 # version not reliant on point estimate This could be modified to solve upper
 # and lower limits simultaneously
+# Internal function
 bisect <- function(
   ftn,
   contrast,
@@ -504,6 +563,7 @@ bisect <- function(
     return((best + 1)/2)
 }
 
+# Internal function
 scoretheta <- function (
 	#function to evaluate the score at a given value of theta, given the observed data
 	#uses the MLE solution (and notation) given in F&M, extended in Laud2015

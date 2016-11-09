@@ -5,6 +5,8 @@ Version: 0.0.0.9000
 Date: 2016-10-31
 Authors@R: person("Pete", "Laud", email = "p.j.laud@sheffield.ac.uk",
                   role = c("aut", "cre"))
+Author: Pete Laud [aut, cre]
+Maintainer: Pete Laud <p.j.laud@sheffield.ac.uk>
 Description: Computes confidence intervals for the rate (or risk)
     difference ("RD") or ratio ("RR") for independent binomial
     proportions or Poisson rates, or for odds ratio ("OR", binomial
@@ -13,9 +15,12 @@ Description: Computes confidence intervals for the rate (or risk)
     skewness corrections, which have been developed from Miettinen
     & Nurminen and Gart & Nam. Also includes MOVER methods
     (Method Of Variance Estimates Recovery), derived from the
-    Newcombe method but using equal-tailed Jeffreys intervals.
+    Newcombe method but using equal-tailed Jeffreys intervals. 
+    Also methods for stratified calculations (e.g. meta-analysis),
+    either assuming fixed effects or incorporating stratum
+    heterogenity.
 Depends: R (>= 3.1.2)
-License: GPL-2
+License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 5.0.1
 Suggests: testthat

@@ -1,20 +1,25 @@
-#' MOVER confidence intervals for comparison of independent binomial or Poisson 
+#' MOVER confidence intervals for comparisons of independent binomial or Poisson 
 #' rates.
 #' 
-#' Confidence intervals applying the MOVER method across different contrasts and
-#' distributions using Jeffreys intervals (& other more general Beta and Gamma 
-#' priors) instead of Wilson
+#' Confidence intervals applying the MOVER method ("Method of Variance Estimates
+#' Recovery", developed from the Newcombe method for binomial RD) across 
+#' different contrasts (RD, RR, OR) and distributions (binomial, Poisson) using 
+#' equal-tailed Jeffreys intervals instead of the Wilson score method for the
+#' event rates.  Also allows more general Beta and Gamma priors for an
+#' approximate Bayesian confidence interval incorporating prior beliefs about
+#' the group event rates.
 #' 
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
 #'   respectively.
 #' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
 #'   times (for Poisson rates) in each group.
 #'   for Jeffreys method).
-#' @param a2,b2 Numbers defining the Beta prior distribution for group 2 (default a2 = b2 = 0.5 
-#'   for Jeffreys method).
+#' @param a1,b1,a2,b2 Numbers defining the Beta(ai,bi) prior distributions for
+#'   each group (default ai = bi = 0.5 for Jeffreys method). Gamma priors for
+#'   Poisson rates require only a1, a2.
 #' @param cc Number or logical specifying (amount of) continuity correction (default 0).
 #' @param contrast Character string indicating the contrast required: ("RD", 
-#'   "RR", or "OR". "p" outputs interval for the single proportion x1/n1).
+#'   "RR", or "OR". "p" gives an interval for the single proportion x1/n1).
 #' @param type Character string indicating the method used for the intervals for
 #'   the individual group rates. "Jeff" = Jeffreys equal-tailed intervals (default), 
 #'   "exact" = Clopper-Pearson exact intervals (also obtained using type = "Jeff" with 
@@ -69,10 +74,18 @@ MOVERCI <- function(
     print("argument x2 or n2 missing")
     stop()
   }
+  if (!is.numeric(c(x1, n1, x2, n2))) {
+    print("Non-numeric inputs!")
+    stop()
+  }
+  if (any(c(x1, n1, x2, n2) < 0)) {
+    print("Negative inputs!")
+    stop()
+  }	
+  if (as.character(cc) == "TRUE") cc <- 0.5
   
   alpha <- 1 - level
   z <- qnorm(1 - alpha/2)
-  if (as.character(cc) == "TRUE") cc <- 0.5
 
   #in case x1,x2 are vectors but n1,n2 are not
   if (length(n1) == 1 & length(x1) > 1) n1 <- rep(n1, length(x1))
@@ -181,8 +194,8 @@ MOVERCI <- function(
 #'   between proximate and conservative coverage.
 #' @param level Number specifying confidence level (between 0 and 1, default
 #'   0.95).
-#' @param distrib Character string indicating distribution of data:
-#'   "bin"=binomial, "poi"=Poisson.
+#' @param distrib Character string indicating distribution assumed for the input
+#'   data: "bin" = binomial, "poi" = Poisson.
 #' @param adj Logical indicating whether to apply the adjustment in Brown et al.
 #'   (Not recommended)
 #' @param ... Other arguments.
@@ -221,6 +234,7 @@ JeffreysCI <- function(
   CI
 }
 
+# Internal function
 quadroot <- function(a, b, c_) {
 	# GET ROOTS OF A QUADRATIC EQUATION
 	r1x <- ( - b + sqrt(b^2 - 4 * a * c_) )/(2 * a)

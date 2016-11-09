@@ -76,13 +76,17 @@ A list containing the following components: \describe{
 }
 \description{
 Score-based confidence intervals for the rate (or risk) difference ("RD") or 
-ratio ("RR") for independent binomial or Poisson rates, or for odds ratio
-("OR", binomial only). Including options for bias correction (from Miettinen
-& Nurminen), skewness correction (from Laud & Dane, developed from Gart &
-Nam, and taken further in forthcoming publication) and continuity correction.
-Also includes intervals for a single proportion, i.e. Wilson score method,
-with skewness correction, which has slightly better coverage properties than
-the Jeffreys method. This function is vectorised in x1, x2, n1, and n2.
+ratio ("RR") for independent binomial or Poisson rates, or for odds ratio 
+("OR", binomial only). Including options for bias correction (from Miettinen 
+& Nurminen), skewness correction ("GNbc" method from Laud & Dane, developed
+from Gart & Nam, and generalised as "SCAS" in forthcoming publication) and
+continuity correction. Also includes intervals for a single proportion, i.e.
+Wilson score method, with skewness correction, which has slightly better
+coverage properties than the Jeffreys method. This function is vectorised in
+x1, x2, n1, and n2.  Vector inputs may also be combined into a single
+stratified analysis (e.g. meta-analysis), either using fixed effects, or the
+more general "TDAS" method, which incorporates stratum variability using a
+t-distribution score (inspired by to Hartung-Knapp-Sidik-Jonkman).
 }
 \examples{
  
@@ -102,6 +106,10 @@ Pete Laud, \email{p.j.laud@sheffield.ac.uk}
 Laud PJ. Equal-tailed confidence intervals for comparison of 
   rates: Submitted to Pharmaceutical Statistics for peer review.
   
+  Laud PJ, Dane A. Confidence intervals for the difference between independent 
+  binomial proportions: comparison using a graphical approach and
+  moving averages. Pharmaceutical Statistics 2014; 13(5):294–308
+  
   Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
   Medicine 1985; 4:213-226.
   
@@ -110,11 +118,11 @@ Laud PJ. Equal-tailed confidence intervals for comparison of
   difference or non-unity relative risk. Statistics in Medicine 1990; 
   9(12):1447-1454.
   
-  Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
+  Gart JJ, Nam Jm. Approximate interval estimation of the ratio of binomial 
   parameters: A review and corrections for skewness. Biometrics 1988; 
   44(2):323-338.
   
-  Gart JJ, Nam JM. Approximate interval estimation of the difference in 
+  Gart JJ, Nam Jm. Approximate interval estimation of the difference in 
   binomial parameters: correction for skewness and extension to multiple 
   tables. Biometrics 1990; 46(3):637-643.
 }

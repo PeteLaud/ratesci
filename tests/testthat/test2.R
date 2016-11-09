@@ -3,8 +3,8 @@ context("p-values")
 
 #n1 <- 150
 #n2 <- 50
-n1 <- 80
-n2 <- 40
+n1 <- 40
+n2 <- 20
 xs<-expand.grid(0:n1,0:n2)
 x1 <- xs[,1]
 x2 <- xs[,2]

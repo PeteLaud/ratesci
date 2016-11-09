@@ -25,8 +25,8 @@ between proximate and conservative coverage.}
 \item{level}{Number specifying confidence level (between 0 and 1, default
 0.95).}
 
-\item{distrib}{Character string indicating distribution of data:
-"bin"=binomial, "poi"=Poisson.}
+\item{distrib}{Character string indicating distribution assumed for the input
+data: "bin" = binomial, "poi" = Poisson.}
 
 \item{adj}{Logical indicating whether to apply the adjustment in Brown et al.
 (Not recommended)}

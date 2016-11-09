@@ -2,7 +2,7 @@
 % Please edit documentation in R/MOVERCI.R
 \name{MOVERCI}
 \alias{MOVERCI}
-\title{MOVER confidence intervals for comparison of independent binomial or Poisson 
+\title{MOVER confidence intervals for comparisons of independent binomial or Poisson 
 rates.}
 \usage{
 MOVERCI(x1, n1, x2 = NULL, n2 = NULL, a1 = 0.5, b1 = 0.5, a2 = 0.5,
@@ -14,24 +14,23 @@ MOVERCI(x1, n1, x2 = NULL, n2 = NULL, a1 = 0.5, b1 = 0.5, a2 = 0.5,
 respectively.}
 
 \item{n1, n2}{Numeric vectors of sample sizes (for binomial rates) or exposure
-times (for Poisson rates) in each group.}
-
-\item{a1, b1}{Numbers defining the Beta prior distribution for group 1 (default a1 = b1 = 0.5 
+times (for Poisson rates) in each group.
 for Jeffreys method).}
 
-\item{a2, b2}{Numbers defining the Beta prior distribution for group 2 (default a2 = b2 = 0.5 
-for Jeffreys method).}
+\item{a1, b1, a2, b2}{Numbers defining the Beta(ai,bi) prior distributions for
+each group (default ai = bi = 0.5 for Jeffreys method). Gamma priors for
+Poisson rates require only a1, a2.}
 
 \item{cc}{Number or logical specifying (amount of) continuity correction (default 0).}
 
 \item{level}{Number specifying confidence level (between 0 and 1, default
 0.95).}
 
-\item{distrib}{Character string indicating distribution of data:
-"bin"=binomial, "poi"=Poisson.}
+\item{distrib}{Character string indicating distribution assumed for the input
+data: "bin" = binomial, "poi" = Poisson.}
 
 \item{contrast}{Character string indicating the contrast required: ("RD", 
-"RR", or "OR". "p" outputs interval for the single proportion x1/n1).}
+"RR", or "OR". "p" gives an interval for the single proportion x1/n1).}
 
 \item{type}{Character string indicating the method used for the intervals for
 the individual group rates. "Jeff" = Jeffreys equal-tailed intervals (default), 
@@ -44,9 +43,13 @@ cc = 0.5), "Wilson" = Wilson score intervals (as per Newcombe 1998).}
 A matrix containing the confidence interval for the requested contrast
 }
 \description{
-Confidence intervals applying the MOVER method across different contrasts and
-distributions using Jeffreys intervals (& other more general Beta and Gamma 
-priors) instead of Wilson
+Confidence intervals applying the MOVER method ("Method of Variance Estimates
+Recovery", developed from the Newcombe method for binomial RD) across 
+different contrasts (RD, RR, OR) and distributions (binomial, Poisson) using 
+equal-tailed Jeffreys intervals instead of the Wilson score method for the
+event rates.  Also allows more general Beta and Gamma priors for an
+approximate Bayesian confidence interval incorporating prior beliefs about
+the group event rates.
 }
 \examples{
  scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
