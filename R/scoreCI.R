@@ -50,42 +50,50 @@
 #' @param tdas Logical indicating whether to use t-distribution method for 
 #'   stratified data (defined in Laud 2016).
 #' @param ... Other arguments.
+#' @importFrom stats pchisq pf pnorm pt qbeta qgamma qnorm qqnorm qt
+#' @importFrom graphics abline lines text
 #' @return A list containing the following components: \describe{ 
 #'   \item{estimates}{a matrix containing estimates of the rates in each group 
 #'   and of the requested contrast, with its confidence interval} \item{pval}{a 
 #'   matrix containing details of the corresponding 2-sided significance test 
 #'   against the null hypothesis that p_1 = p_2, and one-sided significance 
 #'   tests agains the null hypothesis that theta >= or <= delta} 
-#'   \item{nstrat}{numeric indicating the number of strata included in the 
-#'   analysis} \item{call}{details of the function call} }
+#'   \item{call}{details of the function call} }
 #'   If stratified = TRUE, the following outputs are added: \describe{
 #'   \item{Qtest}{a vector of values descibing and testing heterogeneity}
 #'   \item{weighting}{a string indicating the selected weighting method}
 #'   \item{stratdata}{a matrix containing stratum estimates and weights}}
 #' @examples  
 #'   #Binomial RD, SCAS method:
-#'   scoreCI(x1 = c(12,19,5), n1 = c(16,29,56), x2 = c(1,22,0), n2 = c(16,30,29))
+#'   scoreci(x1 = c(12,19,5), n1 = c(16,29,56), x2 = c(1,22,0), n2 = c(16,30,29))
+#'   
 #'   #Binomial RD, MN method:
-#'   scoreCI(x1 = c(12,19,5), n1 = c(16,29,56), x2 = c(1,22,0), n2 = c(16,30,29), skew = FALSE)
+#'   scoreci(x1 = c(12,19,5), n1 = c(16,29,56), x2 = c(1,22,0), n2 = c(16,30,29), skew = FALSE)
+#'   
 #'   #Poisson RR, SCAS method:
-#'   scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR")
+#'   scoreci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR")
+#'   
 #'   #Poisson RR, MN method:
-#'   scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR", skew = FALSE)
+#'   scoreci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR", skew = FALSE)
+#'   
 #'   #Binomial rate, SCAS method:
-#'   scoreCI(x1 = c(5,0), n1 = c(56,29), contrast = "p")
+#'   scoreci(x1 = c(5,0), n1 = c(56,29), contrast = "p")
+#'   
 #'   #Binomial rate, Wilson score method:
-#'   scoreCI(x1 = c(5,0), n1 = c(56,29), contrast = "p", skew = F)
+#'   scoreci(x1 = c(5,0), n1 = c(56,29), contrast = "p", skew = FALSE)
+#'   
 #'   #Poisson rate, SCAS method:
-#'   scoreCI(x1 = c(5,0), n1 = c(56,29), distrib = "poi", contrast = "p")
+#'   scoreci(x1 = c(5,0), n1 = c(56,29), distrib = "poi", contrast = "p")
 #'
 #'   #Stratified example, using data from Hartung & Knapp:
-#'   scoreCI(x1 = c(15,12,29,42,14,44,14,29,10,17,38,19,21),
+#'   scoreci(x1 = c(15,12,29,42,14,44,14,29,10,17,38,19,21),
 #'           x2 = c(9,1,18,31,6,17,7,23,3,6,12,22,19),
 #'           n1 = c(16,16,34,56,22,54,17,58,14,26,44,29,38),
 #'           n2 = c(16,16,34,56,22,55,15,58,15,27,45,30,38),
 #'           stratified = TRUE)
+#'           
 #'   #TDAS example, using data from Hartung & Knapp:
-#'   scoreCI(x1 = c(15,12,29,42,14,44,14,29,10,17,38,19,21),
+#'   scoreci(x1 = c(15,12,29,42,14,44,14,29,10,17,38,19,21),
 #'           x2 = c(9,1,18,31,6,17,7,23,3,6,12,22,19),
 #'           n1 = c(16,16,34,56,22,54,17,58,14,26,44,29,38),
 #'           n2 = c(16,16,34,56,22,55,15,58,15,27,45,30,38),
@@ -116,7 +124,7 @@
 #'   binomial parameters: correction for skewness and extension to multiple 
 #'   tables. Biometrics 1990; 46(3):637-643.
 #' @export
-scoreCI <- function(
+scoreci <- function(
 	x1,
 	n1,
 	x2 = NULL,
@@ -239,7 +247,6 @@ scoreCI <- function(
 	  #NOTE point estimate is obtained without applying continuity correction
 	}
 
-	
 	point.FE <- bisect(ftn = function(theta) 
 	  myfun(theta, randswitch = FALSE, ccswitch = 0) - 0, contrast = contrast,
 	  distrib = distrib, precis = precis + 1, uplow = "low")
@@ -436,9 +443,14 @@ scoreCI <- function(
 	    upper[sum(x1) == sum(n1)] <- Inf
 	  }
 	}
+	if (stratified == FALSE) {
+  	inputs <- cbind(x1 = x1, n1 = n1)
+	  if (contrast != "p") inputs <- cbind(inputs, x2 = x2, n2 = n2)
+	} else inputs <- NULL
 	estimates <- cbind(
 	  round(cbind(Lower = lower, MLE = point, Upper = upper), precis),
-	  level = level, p1hat = p1hat.w, p2hat = p2hat.w, p1mle = p1d.w, p2mle = p2d.w)
+	  level = level, inputs,
+	  p1hat = p1hat.w, p2hat = p2hat.w, p1mle = p1d.w, p2mle = p2d.w)
 	  #,Q,tau2,het.pval)
 	
 	# optionally add p-value for a test of null hypothesis: theta<=delta
@@ -466,22 +478,25 @@ scoreCI <- function(
 	pval <- cbind(chisq = chisq.zero, pval2sided, delta = delta,
 	              scoredelta = scoredelta$score, pval.left, pval.right)
 	
-	outlist <- list(estimates = estimates, pval = pval, nstrat = nstrat)
+	outlist <- list(estimates = estimates, pval = pval) #, nstrat = nstrat)
 	if (stratified == TRUE) {
 	  Qtest <- c(Q = Q.FE, tau2 = tau2.FE, pval.het = pval.het, I2 = I2)
 	  wtpct <- 100 * wt.MLE/sum(wt.MLE)
 	  wt1pct <- 100 * wt.FE/sum(wt.FE)
 	  outlist <- append(outlist,
 	    list(Qtest = Qtest, weighting = weighting, 
-	    stratdata = cbind(p1hat = p1hat, p2hat = p2hat, Q.each = Q.each,
+	    stratdata = cbind(x1 = x1, n1 = n1, x2 = x2, n2 = n2,
+	                      p1hat = p1hat, p2hat = p2hat, Q.each = Q.each,
 	                      wtpct.fixed = wt1pct, wtpct.rand = wtpct))) 
 	    #,p1d=p1d.MLE,p2d=p2d.MLE,Stheta=Stheta.MLE)))
 	}
-	outlist <- append(outlist, list(call = match.call()))
+	outlist <- append(outlist, list(call = c(distrib = distrib,
+	                 contrast = contrast, level = level, skew = skew,
+	                 bcf = bcf, cc = cc)))
+#	outlist <- append(outlist, list(call = match.call()))
 	return(outlist)
 	
 }
-
 
 #' Skewness-corrected asymptotic score ("SCAS") confidence intervals for
 #' comparisons of independent binomial or Poisson rates.
@@ -493,13 +508,17 @@ scoreCI <- function(
 #' continuity correction.  This function is vectorised in
 #' x1, x2, n1, and n2.  
 #' 
-#' @inheritParams scoreCI
+#' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
+#'   respectively.
+#' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
+#'   times (for Poisson rates) in each group.
+#' @inheritParams scoreci
 #' @export
-SCASCI <- function(
+scas <- function(
   x1,
   n1,
-  x2,
-  n2,
+  x2 = NULL,
+  n2 = NULL,
   distrib = "bin",
   contrast = "RD",
   level = 0.95,
@@ -508,9 +527,12 @@ SCASCI <- function(
   precis = 6,
   plot = FALSE,	
   plotmax = 100,
+  stratified = FALSE,
+  weighting = "IVS",
+  wt = NULL,
   ...
 ) { 
-  scoreCI(
+  scoreci(
     x1 = x1,
     n1 = n1,
     x2 = x2,
@@ -518,14 +540,16 @@ SCASCI <- function(
     distrib = distrib,
     contrast = contrast,
     level = level,
-    skew = TRUE,
-    bcf = TRUE,
     cc = cc,
     delta = delta,
     precis = precis,
     plot = plot,	
-    plotmax = 100,
-    stratified = FALSE,
+    plotmax = plotmax,
+    stratified = stratified,
+    weighting = weighting,
+    wt = wt,
+    skew = TRUE,
+    bcf = TRUE,
     ...
   ) 
 }

@@ -13,7 +13,6 @@
 #'   respectively.
 #' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
 #'   times (for Poisson rates) in each group.
-#'   for Jeffreys method).
 #' @param a1,b1,a2,b2 Numbers defining the Beta(ai,bi) prior distributions for
 #'   each group (default ai = bi = 0.5 for Jeffreys method). Gamma priors for
 #'   Poisson rates require only a1, a2.
@@ -21,17 +20,20 @@
 #' @param contrast Character string indicating the contrast required: ("RD", 
 #'   "RR", or "OR". "p" gives an interval for the single proportion x1/n1).
 #' @param type Character string indicating the method used for the intervals for
-#'   the individual group rates. "Jeff" = Jeffreys equal-tailed intervals (default), 
-#'   "exact" = Clopper-Pearson exact intervals (also obtained using type = "Jeff" with 
-#'   cc = 0.5), "Wilson" = Wilson score intervals (as per Newcombe 1998).
+#'   the individual group rates. "jeff" = Jeffreys equal-tailed intervals (default), 
+#'   "exact" = Clopper-Pearson exact intervals (also obtained using type = "jeff" with 
+#'   cc = 0.5), "wilson" = Wilson score intervals (as per Newcombe 1998).
 #' @param ... Additional arguments.
-#' @inheritParams JeffreysCI
+#' @inheritParams jeffreysci
+#' @importFrom stats pchisq pf pnorm pt qbeta qgamma qnorm qqnorm qt
+#' @importFrom graphics abline lines text
 #' @return A matrix containing the confidence interval for the requested contrast 
-#' @examples  scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
+#' @examples  
 #'   #Binomial RD, MOVER-J method:
-#'   MOVERCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
+#'   moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
+#'   
 #'   #Binomial RD, Newcombe method:
-#'   MOVERCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, type = "Wilson")
+#'   moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, type = "Wilson")
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references 
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of 
@@ -54,7 +56,7 @@
 #'   Statistics 2014; 29(3-4):869-889.
 #'   
 #' @export
-MOVERCI <- function(
+moverci <- function(
   x1,
   n1,
   x2 = NULL,
@@ -67,7 +69,7 @@ MOVERCI <- function(
   level = 0.95,
   distrib = "bin",
   contrast = "RD",
-  type = "Jeff",
+  type = "jeff",
   ...
   ) {
   if (contrast != "p" && (is.null(x2) || is.null(n2))) {
@@ -110,17 +112,17 @@ MOVERCI <- function(
     distrib <- "bin"
   }
 
-  if (type == "Jeff") {
-    # MOVER-J, including optional 'continuity correction' g
-    j1 <- JeffreysCI(x1, n1, ai = a1, bi = b1, cc = cc, level = level,
+  if (type == "jeff") {
+    # MOVER-J, including optional 'continuity correction'
+    j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = cc, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
-    j2 <- JeffreysCI(x2, n2, ai = a2, bi = b2, cc = cc, level = level,
+    j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = cc, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
   } else if (type == "exact") {
     # MOVER-E based on Clopper-Pearson exact intervals
-    j1 <- JeffreysCI(x1, n1, ai = a1, bi = b1, cc = 0.5, level = level,
+    j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = 0.5, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
-    j2 <- JeffreysCI(x2, n2, ai = a2, bi = b2, cc = 0.5, level = level,
+    j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = 0.5, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
   } else {
     # or use Wilson intervals as per Newcombe 1998
@@ -199,9 +201,10 @@ MOVERCI <- function(
 #' @param adj Logical indicating whether to apply the adjustment in Brown et al.
 #'   (Not recommended)
 #' @param ... Other arguments.
+#' @importFrom stats qbeta qgamma qnorm
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @export
-JeffreysCI <- function(
+jeffreysci <- function(
   x,
   n,
   ai=0.5,
@@ -232,6 +235,58 @@ JeffreysCI <- function(
   }
   CI <- cbind(Lower = CI.lower, Upper = CI.upper)
   CI
+}
+
+#' Approximate Bayesian ("MOVER-B") confidence intervals for
+#' comparisons of independent binomial or Poisson rates.
+#' 
+#' Approximate Bayesian confidence intervals for the rate (or risk) difference
+#' ("RD") or ratio ("RR") for independent binomial or Poisson rates, or for odds
+#' ratio ("OR", binomial only). (developed from Newcombe, Donner & Zou, Li et
+#' al, and Fagerland & Newcombe, and generalised as "MOVER-B" in forthcoming
+#' publication) including special case "MOVER-J" with optional continuity
+#' correction.  This function is vectorised in x1, x2, n1, and n2.
+#' 
+#' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
+#'   respectively.
+#' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
+#'   times (for Poisson rates) in each group.
+#' @param a1,b1,a2,b2 Numbers defining the Beta(ai,bi) prior distributions for
+#'   each group (default ai = bi = 0.5 for Jeffreys method). Gamma priors for
+#'   Poisson rates require only a1, a2.
+#' @inheritParams moverci
+#' @export
+moverb <- function(
+  x1,
+  n1,
+  x2,
+  n2,
+  a1 = 0.5,
+  b1 = 0.5,
+  a2 = 0.5,
+  b2 = 0.5,
+  distrib = "bin",
+  contrast = "RD",
+  level = 0.95,
+  cc = 0,
+  ...
+) { 
+  moverci(
+    x1 = x1,
+    n1 = n1,
+    x2 = x2,
+    n2 = n2,
+    a1 = a1,
+    b1 = b1,
+    a2 = a2,
+    b2 = b2,
+    distrib = distrib,
+    contrast = contrast,
+    level = level,
+    cc = cc,
+    type = "jeff",
+    ...
+  ) 
 }
 
 # Internal function

@@ -14,17 +14,17 @@ x2 <- xs[,2]
 #1865
 
 #xs[2317,]
-#scoreCI(x1=x1,n1=n1,x2=x2,n2=n2,contrast="RD",distrib="poi",precis=10)$estimates
-#scoreCI(x1=x2,n1=n2,x2=x1,n2=n1,contrast="RD",distrib="poi",precis=10,plot=T)
+#scoreci(x1=x1,n1=n1,x2=x2,n2=n2,contrast="RD",distrib="poi",precis=10)$estimates
+#scoreci(x1=x2,n1=n2,x2=x1,n2=n1,contrast="RD",distrib="poi",precis=10,plot=T)
 #scoretheta(-1.000,x1=28,x2=48,n1=40,n2=80,contrast="RD",distrib="poi",skew=T)
 #scoretheta(1.000,x1=48,x2=28,n1=80,n2=40,contrast="RD",distrib="poi",skew=T)
 
-#mle <- scoreCI(x1=x1,n1=n1,x2=x2,n2=n2,contrast="RD",distrib="poi,precis=10)$estimates[,2]
+#mle <- scoreci(x1=x1,n1=n1,x2=x2,n2=n2,contrast="RD",distrib="poi,precis=10)$estimates[,2]
 #sum(mle == 1)
-#lcl <- scoreCI(x1=x1,n1=n1,x2=x2,n2=n2,contrast="RD",distrib="poi",precis=10)$estimates[,1]
+#lcl <- scoreci(x1=x1,n1=n1,x2=x2,n2=n2,contrast="RD",distrib="poi",precis=10)$estimates[,1]
 #sum(lcl == 1)
 #matrix(lcl,nrow=51,byrow=T)[1:10,1:10]
-#ucl <- scoreCI(x1=x1,n1=n1,x2=x2,n2=n2,contrast="RD",distrib="poi",precis=10)$estimates[,3]
+#ucl <- scoreci(x1=x1,n1=n1,x2=x2,n2=n2,contrast="RD",distrib="poi",precis=10)$estimates[,3]
 #sum(ucl == 1)
 #1/matrix(ucl,nrow=51,byrow=T)[1:10,1:10]
   
@@ -35,24 +35,24 @@ for (cc in c(FALSE,TRUE)) {
   
   test_that("Transposed inputs produce inverted intervals", {
     expect_equal(
-      unname(scoreCI(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RD",precis=10)$estimates[, 1]),
-      -unname(scoreCI(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RD",precis=10)$estimates[, 3])
+      unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RD",precis=10)$estimates[, 1]),
+      -unname(scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RD",precis=10)$estimates[, 3])
     )
     expect_equal(
-      unname(scoreCI(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RD",distrib="poi",precis=10)$estimates[, 1]),
-      -unname(scoreCI(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RD",distrib="poi",precis=10)$estimates[, 3])
+      unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RD",distrib="poi",precis=10)$estimates[, 1]),
+      -unname(scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RD",distrib="poi",precis=10)$estimates[, 3])
     )
     expect_equal(
-      signif(unname(scoreCI(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",precis=100)$estimates)[, 1],digits=5),
-      signif(1/unname(scoreCI(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RR",precis=100)$estimates)[, 3],digits=5)
+      signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",precis=100)$estimates)[, 1],digits=5),
+      signif(1/unname(scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RR",precis=100)$estimates)[, 3],digits=5)
     )
     expect_equal(
-      signif(unname(scoreCI(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",distrib="poi",precis=10)$estimates)[, 1],digits=5),
-      signif(1/unname(scoreCI(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RR",distrib="poi",precis=10)$estimates)[, 3],digits=5)
+      signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",distrib="poi",precis=10)$estimates)[, 1],digits=5),
+      signif(1/unname(scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RR",distrib="poi",precis=10)$estimates)[, 3],digits=5)
     )
     expect_equal(
-      round(signif(unname(scoreCI(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="OR",precis=10)$estimates)[, 1],digits=5),6), 
-      round(signif(unname(1/scoreCI(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="OR",precis=10)$estimates)[, 3],digits=5),6)
+      round(signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="OR",precis=10)$estimates)[, 1],digits=5),6), 
+      round(signif(unname(1/scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="OR",precis=10)$estimates)[, 3],digits=5),6)
     )
   })
   
@@ -64,12 +64,12 @@ for (cc in c(FALSE,TRUE)) {
 
 if (FALSE) {
   
-scoreCI(x1=0,x2=0,n1=20,n2=10,contrast="RR",plot=T)
-scoreCI(x1=100,x2=0,n1=200,n2=5,plot=T)
-scoreCI(x1=0,x2=100,n1=5,n2=200,plot=T)
+scoreci(x1=0,x2=0,n1=20,n2=10,contrast="RR",plot=T)
+scoreci(x1=100,x2=0,n1=200,n2=5,plot=T)
+scoreci(x1=0,x2=100,n1=5,n2=200,plot=T)
 
 
-scoreCI(x1=0,n1=80000,contrast="p",plot=T)
+scoreci(x1=0,n1=80000,contrast="p",plot=T)
 
 x1 <- 0
 n1 <- 800
