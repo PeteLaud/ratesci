@@ -58,15 +58,39 @@
 #'   tests agains the null hypothesis that theta >= or <= delta} 
 #'   \item{nstrat}{numeric indicating the number of strata included in the 
 #'   analysis} \item{call}{details of the function call} }
+#'   If stratified = TRUE, the following outputs are added: \describe{
+#'   \item{Qtest}{a vector of values descibing and testing heterogeneity}
+#'   \item{weighting}{a string indicating the selected weighting method}
+#'   \item{stratdata}{a matrix containing stratum estimates and weights}}
 #' @examples  
 #'   #Binomial RD, SCAS method:
-#'   scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
+#'   scoreCI(x1 = c(12,19,5), n1 = c(16,29,56), x2 = c(1,22,0), n2 = c(16,30,29))
 #'   #Binomial RD, MN method:
-#'   scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, skew = FALSE)
+#'   scoreCI(x1 = c(12,19,5), n1 = c(16,29,56), x2 = c(1,22,0), n2 = c(16,30,29), skew = FALSE)
 #'   #Poisson RR, SCAS method:
 #'   scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR")
 #'   #Poisson RR, MN method:
 #'   scoreCI(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR", skew = FALSE)
+#'   #Binomial rate, SCAS method:
+#'   scoreCI(x1 = c(5,0), n1 = c(56,29), contrast = "p")
+#'   #Binomial rate, Wilson score method:
+#'   scoreCI(x1 = c(5,0), n1 = c(56,29), contrast = "p", skew = F)
+#'   #Poisson rate, SCAS method:
+#'   scoreCI(x1 = c(5,0), n1 = c(56,29), distrib = "poi", contrast = "p")
+#'
+#'   #Stratified example, using data from Hartung & Knapp:
+#'   scoreCI(x1 = c(15,12,29,42,14,44,14,29,10,17,38,19,21),
+#'           x2 = c(9,1,18,31,6,17,7,23,3,6,12,22,19),
+#'           n1 = c(16,16,34,56,22,54,17,58,14,26,44,29,38),
+#'           n2 = c(16,16,34,56,22,55,15,58,15,27,45,30,38),
+#'           stratified = TRUE)
+#'   #TDAS example, using data from Hartung & Knapp:
+#'   scoreCI(x1 = c(15,12,29,42,14,44,14,29,10,17,38,19,21),
+#'           x2 = c(9,1,18,31,6,17,7,23,3,6,12,22,19),
+#'           n1 = c(16,16,34,56,22,54,17,58,14,26,44,29,38),
+#'           n2 = c(16,16,34,56,22,55,15,58,15,27,45,30,38),
+#'           stratified = TRUE, tdas = TRUE)
+#'
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references 
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of 
@@ -414,7 +438,7 @@ scoreCI <- function(
 	}
 	estimates <- cbind(
 	  round(cbind(Lower = lower, MLE = point, Upper = upper), precis),
-	  level = level, p1hat = p1hat.w, p2hat = p2hat.w, p1d = p1d.w, p2d = p2d.w)
+	  level = level, p1hat = p1hat.w, p2hat = p2hat.w, p1mle = p1d.w, p2mle = p2d.w)
 	  #,Q,tau2,het.pval)
 	
 	# optionally add p-value for a test of null hypothesis: theta<=delta
