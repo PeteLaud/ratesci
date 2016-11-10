@@ -143,9 +143,9 @@ scoreci <- function(
 	weighting = "IVS",
 	wt = NULL,
 	tdas = FALSE,	
-	#warn=TRUE,
 	...
 	) { 
+  
 	if (contrast != "p" && (is.null(x2) || is.null(n2))) {
 	  print("argument x2 or n2 missing")
 	  stop()
@@ -158,7 +158,11 @@ scoreci <- function(
 		print("Negative inputs!")
 		stop()
 	}	
-	if (!is.null(delta)) {	
+  if (distrib == "bin" && (any(x1 > n1 + 0.001) || any(x2 > n2 + 0.001))) {
+    print("x1 > n1 or x2 > n2 not possible for distrib = 'bin'")
+    stop()
+  }
+  if (!is.null(delta)) {	
 		if (contrast == "RD") {
 			if (distrib == "bin" && (delta < -1 || delta > 1)) {
 				print("Impossible delta!")
@@ -171,17 +175,16 @@ scoreci <- function(
 		  }
 		}
 	}
-	if(as.character(cc) == "TRUE") cc <- 0.5
-	#etc
-		
+  if (distrib == "poi" && contrast == "OR") {
+    print("Odds ratio not applicable to Poisson rates")
+    stop()
+  }
+  if(as.character(cc) == "TRUE") cc <- 0.5
+
 	nstrat <- length(x1)
 	# in case x1,x2 are input as vectors but n1,n2 are not
-	if (length(n1) == 1 && nstrat > 1) n1 <- rep(n1, nstrat)
-	if (length(n2) == 1 && nstrat > 1) n2 <- rep(n2, nstrat)
-	if (distrib == "poi" && contrast == "OR") {
-	  print("Odds ratio not applicable to Poisson rates")
-	  stop()
-	}
+	if (length(n1) < nstrat && nstrat > 1) n1 <- rep(n1, length.out = nstrat)
+	if (length(n2) < nstrat && nstrat > 1) n2 <- rep(n2, length.out = nstrat)
 	
 	#check for empty strata, and for x1<=n1, x2<=n2
 	if (stratified) {
@@ -215,53 +218,43 @@ scoreci <- function(
 	}	
 	nstrat <- length(x1) # update nstrat after removing empty strata
 
-	# Put these warnings back later
+	#Warnings if removal of empty strata leave 0 or 1 stratum
 	if (stratified == TRUE && nstrat <= 1) {
 	  stratified <- FALSE
 	  tdas = FALSE
 	  print("Warning: only one stratum!")
 	}
 	if (nstrat == 0) {
-	  print("Warning: no data!")
+	  print("Warning: no usable data!")
 	  if (contrast %in% c("RR", "OR")) {
 	    x1 <- x2 <- 0
 	    n1 <- n2 <- 10
 	  }
 	}
-	# quick fix for x>n for Binomial case only (instead of outputting an error message)
-	if (distrib == "bin") {
-	  if (any(x1 > n1 + 0.001) || any(x2 > n2 + 0.001)) 
-	    print("Warning: At least one X>n substituted with X=n")
-	  x1[x1 > n1] <- n1
-	  x2[x2 > n2] <- n2
-	}
 
 	p1hat <- x1/n1
 	p2hat <- x2/n2
 	
+	#wrapper function for scoretheta
 	myfun <- function(theta, randswitch = tdas, ccswitch = cc) {
 	  scoretheta(theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
 	             contrast = contrast, distrib = distrib, stratified = stratified,
 	             wt = wt, weighting = weighting, tdas = randswitch, skew = skew,
 	             cc = ccswitch)$score  
-	  #NOTE point estimate is obtained without applying continuity correction
 	}
 
+	#find point estimate for theta as the value where scoretheta = 0
+	#fixed effects point estimate taken with no cc
 	point.FE <- bisect(ftn = function(theta) 
 	  myfun(theta, randswitch = FALSE, ccswitch = 0) - 0, contrast = contrast,
 	  distrib = distrib, precis = precis + 1, uplow = "low")
-	#fixed effects point estimate taken with no cc
 	point <- point.FE
 	  
-	# point[scoretheta(x1/n1-x2/n2,x1,x2,n1,n2,skew=skew,cc=cc,distrib=distrib,contrast=contrast)==0]
-	# <- 0 #needs developing further - idea is if the score at the point estimate 
-	# is zero, then that should be the MLE
-	
+	# random effects point estimate if required
 	if (stratified == TRUE) {
 	  point <- bisect(ftn = function(theta) 
 	    myfun(theta, randswitch = tdas, ccswitch = 0) - 0, contrast = contrast, 
 	    distrib = distrib, precis = precis + 1, uplow = "low")  
-	  # random effects point estimate if required
 	}
 	
 	# fix some extreme cases with zero counts
@@ -300,11 +293,12 @@ scoreci <- function(
 	p2d.MLE <- at.MLE$p2d
 	wt.MLE <- at.MLE$wt
 
+	# if stratified=TRUE, options are available for assuming fixed effects (tdas=FALSE)
+	# or random effects (tdas=T). The IVS weights are different for each version, which 
+	# in turn can lead to a different point estimate, at which certain quantities are 
+	# evaluated. However, fixed
+	# effects estimates are needed for both, in particular for the heterogeneity test
 	if (stratified == TRUE && nstrat > 1) {
-	  # if stratified=T, perform homogeneity test. NB heterogeneity test should be
-	  # based on tdas=FALSE, but we also want to report the updated weights used
-	  # when tdas=T requires certain quantities evaluated at the fixed effects
-	  # maximum likelihood point estimate for theta, for heterogeneity test
 	  at.FE <- scoretheta(theta = point.FE, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
 	                      bcf = bcf, contrast = contrast,
 	                      distrib = distrib, stratified = stratified,
@@ -325,12 +319,11 @@ scoreci <- function(
 	  p1d.w <- sum(wt.MLE * at.MLE$p1d)/sum(wt.MLE) 
 	  p2d.w <- sum(wt.MLE * at.MLE$p2d)/sum(wt.MLE)
 	  
-	  if (!is.null(wt)) 
-	    weighting <- "User-defined"
+	  if (!is.null(wt)) weighting <- "User-defined"
 	  
 	} else {
 	  # if removing empty strata leaves only one stratum treat as unstratified
-	  stratified <- FALSE
+	  #stratified <- FALSE #this is already done above
 	  p1hat.w <- p1hat
 	  p2hat.w <- p2hat
 	  p1d.w <- p1d.MLE
@@ -339,9 +332,7 @@ scoreci <- function(
 	  Sdot <- Q.each <- NULL
 	}
 	
-	# fix(?) some extreme cases with zero counts
-  #	p2d.w[sum(x2) == 0] <- 0
-	
+	#z- or t- quantile required for specified significance level
 	if (stratified == TRUE && tdas == TRUE) {
 	  qtnorm <- qt(1 - (1 - level)/2, nstrat - 1)  #for t-distribution method
 	} else {
@@ -356,6 +347,7 @@ scoreci <- function(
 	  myfun(theta) + qtnorm, contrast = contrast, distrib = distrib,
 	  precis = precis + 1, uplow = "up")
 
+  # Optional plot of the score function.
 	# Ideally this would be in a separate function, but it is unlikely to be used
 	# much in practice - only included for code development and validation purposes.
 	if (plot == TRUE) {
@@ -421,6 +413,8 @@ scoreci <- function(
 	}
 
 	# fix some extreme cases with zero counts
+	if (contrast == "RR" && skew == FALSE) p2d.w[sum(x2) == 0] <- 0
+	
 	if (contrast %in% c("RR", "OR")) {
 	  if (stratified == FALSE) {
 	    lower[x1 == 0] <- 0
@@ -451,9 +445,9 @@ scoreci <- function(
 	  round(cbind(Lower = lower, MLE = point, Upper = upper), precis),
 	  level = level, inputs,
 	  p1hat = p1hat.w, p2hat = p2hat.w, p1mle = p1d.w, p2mle = p2d.w)
-	  #,Q,tau2,het.pval)
-	
+
 	# optionally add p-value for a test of null hypothesis: theta<=delta
+	# default value of delta depends on contrast
 	if (contrast == "RD") {
 	  delta0 <- 0 
 	} else if (contrast == "p") {
@@ -478,7 +472,7 @@ scoreci <- function(
 	pval <- cbind(chisq = chisq.zero, pval2sided, delta = delta,
 	              scoredelta = scoredelta$score, pval.left, pval.right)
 	
-	outlist <- list(estimates = estimates, pval = pval) #, nstrat = nstrat)
+	outlist <- list(estimates = estimates, pval = pval) 
 	if (stratified == TRUE) {
 	  Qtest <- c(Q = Q.FE, tau2 = tau2.FE, pval.het = pval.het, I2 = I2)
 	  wtpct <- 100 * wt.MLE/sum(wt.MLE)
@@ -487,15 +481,13 @@ scoreci <- function(
 	    list(Qtest = Qtest, weighting = weighting, 
 	    stratdata = cbind(x1 = x1, n1 = n1, x2 = x2, n2 = n2,
 	                      p1hat = p1hat, p2hat = p2hat, Q.each = Q.each,
-	                      wtpct.fixed = wt1pct, wtpct.rand = wtpct))) 
-	    #,p1d=p1d.MLE,p2d=p2d.MLE,Stheta=Stheta.MLE)))
+	                      wtpct.fixed = wt1pct, wtpct.rand = wtpct,#))) 
+	    p1d=p1d.MLE,p2d=p2d.MLE,Stheta=Stheta.MLE)))
 	}
 	outlist <- append(outlist, list(call = c(distrib = distrib,
 	                 contrast = contrast, level = level, skew = skew,
 	                 bcf = bcf, cc = cc)))
-#	outlist <- append(outlist, list(call = match.call()))
 	return(outlist)
-	
 }
 
 #' Skewness-corrected asymptotic score ("SCAS") confidence intervals for
@@ -686,7 +678,6 @@ scoretheta <- function (
 	    p2d <- ifelse(A == 0, -C_/B, ifelse(num == 0, 0, num/(2 * A)))
 	    p1d <- p2d * theta
 	    V <- pmax(0, (p1d * (1 - p1d)/n1 + (theta^2) * p2d * (1 - p2d)/n2) * lambda)
-	    # A bit of a cheat to avoid a problem: change 0 to 0.0000000001?
 	    V[is.na(V)] <- Inf
 	    mu3 <- (p1d * (1 - p1d) * (1 - 2 * p1d)/(n1^2) -
 	              (theta^3) * p2d * (1 - p2d) * (1 - 2 * p2d)/(n2^2))
@@ -698,7 +689,6 @@ scoretheta <- function (
 	  }
 	} else if (contrast == "OR") {
 	  if (distrib == "bin") {
-	    # warning: singularity at theta=1 - this might not matter, except when x1=0
 	    A <- n2 * (theta - 1)
 	    B <- n1 * theta + n2 - x * (theta - 1)
 	    C_ <- -x
@@ -719,7 +709,6 @@ scoretheta <- function (
 	} else if (contrast == "p") {
 	  Stheta <- p1hat - theta
 	  if (distrib == "bin") {
-	    # warning: singularity at theta=1 - this might not matter, except when x1=0
 	    V <- (pmax(0, (theta * (1 - theta)/n1)))  
 	    # set to zero if machine precision error in cos function produces a negative V
 	    mu3 <- (theta * (1 - theta) * (1 - 2 * theta)/(n1^2))
@@ -805,8 +794,7 @@ scoretheta <- function (
 		} else {
 		  tau2 <- max(0, (Q - (nstrat - 1 * (sum(V * wt^2)/W))))/
 		    (sum(1/V) - 1 * (sum(wt^2)/W))  
-		  # only needed if want to output tau2. uncertain derivation - seems to be
-		  # experimenting with wrat=1
+		  # only needed if want to output tau2.
 		}
 		if (tdas == TRUE && weighting == "IVS" && !(all(V == 0) || all(is.na(V)))) {
 		  wt <- 1/(V + tau2)
