@@ -292,6 +292,7 @@ scoreci <- function(
 	p1d.MLE <- at.MLE$p1d
 	p2d.MLE <- at.MLE$p2d
 	wt.MLE <- at.MLE$wt
+	V.MLE <- at.MLE$V
 
 	# if stratified=TRUE, options are available for assuming fixed effects (tdas=FALSE)
 	# or random effects (tdas=T). The IVS weights are different for each version, which 
@@ -413,7 +414,7 @@ scoreci <- function(
 	}
 
 	# fix some extreme cases with zero counts
-	if (contrast == "RR" && skew == FALSE) p2d.w[sum(x2) == 0] <- 0
+	#if (contrast == "RR" && skew == FALSE) p2d.w[sum(x2) == 0] <- 0
 	
 	if (contrast %in% c("RR", "OR")) {
 	  if (stratified == FALSE) {
@@ -479,10 +480,10 @@ scoreci <- function(
 	  wt1pct <- 100 * wt.FE/sum(wt.FE)
 	  outlist <- append(outlist,
 	    list(Qtest = Qtest, weighting = weighting, 
-	    stratdata = cbind(x1 = x1, n1 = n1, x2 = x2, n2 = n2,
-	                      p1hat = p1hat, p2hat = p2hat, Q.each = Q.each,
-	                      wtpct.fixed = wt1pct, wtpct.rand = wtpct,#))) 
-	    p1d=p1d.MLE,p2d=p2d.MLE,Stheta=Stheta.MLE)))
+	    stratdata = cbind(x1j = x1, n1j = n1, x2j = x2, n2j = n2,
+	                      p1hatj = p1hat, p2hatj = p2hat, Qj = Q.each,
+	                      wtpct.fixed = wt1pct, wtpct.rand = wtpct))) 
+#	    p1d=p1d.MLE,p2d=p2d.MLE,Stheta=Stheta.MLE,V.MLE)))
 	}
 	outlist <- append(outlist, list(call = c(distrib = distrib,
 	                 contrast = contrast, level = level, skew = skew,
@@ -746,7 +747,7 @@ scoretheta <- function (
 	      # (without theoretical justification for OR)
 	    } else if (weighting == "IVS") {
 	      # IVS: inverse variance weights updated wih V.tilde
-	      if (all(V == 0) || all(is.na(V))) { 
+	      if (all(V == 0) || all(is.na(V)) || all (V == Inf)) { 
 	        wt <- rep(1, nstrat)
 	      } else wt <- 1/V  
 	    } else if (weighting == "MN") {

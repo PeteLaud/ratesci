@@ -22,7 +22,10 @@
 #' @param type Character string indicating the method used for the intervals for
 #'   the individual group rates. "jeff" = Jeffreys equal-tailed intervals (default), 
 #'   "exact" = Clopper-Pearson exact intervals (also obtained using type = "jeff" with 
-#'   cc = 0.5), "wilson" = Wilson score intervals (as per Newcombe 1998).
+#'   cc = 0.5), "wilson" = Wilson score intervals (as per Newcombe 1998). NB:
+#'   "wilson" option is included only for legacy validation against previous
+#'   published method by Newcombe. It is not recommended, as type="jeff" achieves
+#'   much better coverage properties.
 #' @param ... Additional arguments.
 #' @inheritParams jeffreysci
 #' @importFrom stats pchisq pf pnorm pt qbeta qgamma qnorm qqnorm qt
@@ -84,15 +87,24 @@ moverci <- function(
     print("Negative inputs!")
     stop()
   }	
+  if (distrib == "bin" && (any(x1 > n1 + 0.001) || any(x2 > n2 + 0.001))) {
+    print("x1 > n1 or x2 > n2 not possible for distrib = 'bin'")
+    stop()
+  }
+  if (distrib == "poi" && contrast == "OR") {
+    print("Odds ratio not applicable to Poisson rates")
+    stop()
+  }
   if (as.character(cc) == "TRUE") cc <- 0.5
   
   alpha <- 1 - level
   z <- qnorm(1 - alpha/2)
 
-  #in case x1,x2 are vectors but n1,n2 are not
-  if (length(n1) == 1 & length(x1) > 1) n1 <- rep(n1, length(x1))
-  if (length(n2) == 1 & length(x1) > 1) n2 <- rep(n2, length(x1))
-
+  lenx <- length(x1)
+  # in case x1,x2 are input as vectors but n1,n2 are not
+  if (length(n1) < lenx && lenx > 1) n1 <- rep(n1, length.out = lenx)
+  if (length(n2) < lenx && lenx > 1) n2 <- rep(n2, length.out = lenx)
+  
   if (contrast == "OR") {
     # special cases for OR handled as per Fagerland & Newcombe Table III
     special <- (x2 == n2) | (x1 == n1)
@@ -107,11 +119,6 @@ moverci <- function(
   p1hat <- x1/n1
   p2hat <- x2/n2
 
-  if (contrast == "OR" && distrib != "bin") {
-    print("WARNING: Odds Ratio must use distrib='bin'")
-    distrib <- "bin"
-  }
-
   if (type == "jeff") {
     # MOVER-J, including optional 'continuity correction'
     j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = cc, level = level,
@@ -119,7 +126,8 @@ moverci <- function(
     j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = cc, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
   } else if (type == "exact") {
-    # MOVER-E based on Clopper-Pearson exact intervals
+    # MOVER-E based on Clopper-Pearson exact intervals - this can be 
+    # removed if we have a wrapper function
     j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = 0.5, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
     j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = 0.5, level = level,
@@ -215,8 +223,21 @@ jeffreysci <- function(
   adj=FALSE,
   ...
   ) {
-  alpha <- 1 - level
+  if (!is.numeric(c(x, n))) {
+    print("Non-numeric inputs!")
+    stop()
+  }
+  if (any(c(x, n) < 0)) {
+    print("Negative inputs!")
+    stop()
+  }	
+  if (distrib == "bin" && (any(x > n + 0.001))) {
+    print("x > n not possible for distrib = 'bin'")
+    stop()
+  }
   if (as.character(cc) == "TRUE") cc <- 0.5
+  
+  alpha <- 1 - level
   if (distrib == "bin") {
     CI.lower <- qbeta( alpha/2, x + (ai - cc), n - x + (bi + cc))
     CI.lower[x == 0] <- 0
