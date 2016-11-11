@@ -8,7 +8,7 @@
 #' event rates.  Also allows more general Beta and Gamma priors for an
 #' approximate Bayesian confidence interval incorporating prior beliefs about
 #' the group event rates.
-#' 
+#'
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
 #'   respectively.
 #' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
