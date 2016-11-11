@@ -191,7 +191,9 @@ scoreci <- function(
 	nstrat <- length(x1)
 	# in case x1,x2 are input as vectors but n1,n2 are not
 	if (length(n1) < nstrat && nstrat > 1) n1 <- rep(n1, length.out = nstrat)
-	if (length(n2) < nstrat && nstrat > 1) n2 <- rep(n2, length.out = nstrat)
+	if (contrast != "p" && length(n2) < nstrat && nstrat > 1) {
+	  n2 <- rep(n2, length.out = nstrat)
+	}
 	
 	#check for empty strata, and for x1<=n1, x2<=n2
 	if (stratified) {
@@ -325,7 +327,9 @@ scoreci <- function(
 	  p2hat.w <- sum(wt.MLE * x2/n2)/sum(wt.MLE)
 	  # as per M&N p218 (big R)
 	  p1d.w <- sum(wt.MLE * at.MLE$p1d)/sum(wt.MLE) 
-	  p2d.w <- sum(wt.MLE * at.MLE$p2d)/sum(wt.MLE)
+	  if (contrast != "p") {
+	    p2d.w <- sum(wt.MLE * at.MLE$p2d)/sum(wt.MLE)
+	  } else p2d.w <- NULL
 	  
 	  if (!is.null(wt)) weighting <- "User-defined"
 	  
@@ -335,7 +339,7 @@ scoreci <- function(
 	  p1hat.w <- p1hat
 	  p2hat.w <- p2hat
 	  p1d.w <- p1d.MLE
-	  p2d.w <- p2d.MLE
+	  if (contrast != "p") p2d.w <- p2d.MLE else p2d.w <- NULL
 	  wt.MLE <- NULL
 	  Sdot <- Q.each <- NULL
 	}
@@ -379,8 +383,8 @@ scoreci <- function(
 	           yaxs = "i", ylab = "Score", col = "blue", 
 	           main = paste0("Score function for ",
 	                         ifelse(distrib == "bin", "binomial", "Poisson"), " ",
-	                         contrast, "\n", x1, "/", n1, 
-	                         ifelse(contrast == "p", "", paste0(" vs ", x2, "/", n2)))
+	                         contrast, "\n", x1[i, ], "/", n1[i, ], 
+	                         ifelse(contrast == "p", "", paste0(" vs ", x2[i, ], "/", n2[i, ])))
 	           #log = ifelse(contrast == "RD", "", "x")
 	           )
 	      text(x = c(lower[i], point[i], upper[i]), y = c(-1.5, -1.75, -2) * qnval,
@@ -449,6 +453,7 @@ scoreci <- function(
   	inputs <- cbind(x1 = x1, n1 = n1)
 	  if (contrast != "p") inputs <- cbind(inputs, x2 = x2, n2 = n2)
 	} else inputs <- NULL
+	
 	estimates <- cbind(
 	  round(cbind(Lower = lower, MLE = point, Upper = upper), precis),
 	  level = level, inputs,

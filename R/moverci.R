@@ -223,6 +223,9 @@ moverci <- function(
 #' @param ... Other arguments.
 #' @importFrom stats qbeta qgamma qnorm
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
+#' @examples
+#'   #Jeffreys method:
+#'   jeffreysci(x1 = 5, n1 = 56)
 #' @export
 jeffreysci <- function(
   x,
