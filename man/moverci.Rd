@@ -59,7 +59,7 @@ the group event rates.
   moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
   
   #Binomial RD, Newcombe method:
-  moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, type = "Wilson")
+  moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, type = "wilson")
 }
 \author{
 Pete Laud, \email{p.j.laud@sheffield.ac.uk}

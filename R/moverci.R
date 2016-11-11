@@ -36,7 +36,7 @@
 #'   moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
 #'   
 #'   #Binomial RD, Newcombe method:
-#'   moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, type = "Wilson")
+#'   moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, type = "wilson")
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references 
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of 
@@ -83,10 +83,10 @@ moverci <- function(
     print("Distrib must be one of 'bin' or 'poi'")
     stop()
   }
-  if (!(tolower(substr(contrast, 1, 2)) %in% c("rd", "rr", "or"))) {
-    print("Contrast must be one of 'RD', 'RR' or 'OR'")
+  if (!(tolower(substr(contrast, 1, 2)) %in% c("rd", "rr", "or", "p"))) {
+    print("Contrast must be one of 'RD', 'RR', 'OR' or 'p'")
     stop()
-  }
+  }   
   if (contrast != "p" && (is.null(x2) || is.null(n2))) {
     print("Argument x2 or n2 missing")
     stop()

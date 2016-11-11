@@ -1,4 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-cran-comments.md
-^tests
+^cran-comments.md$
+^tests$
+^ReadMe\.md$
