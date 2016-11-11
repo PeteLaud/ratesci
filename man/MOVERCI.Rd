@@ -34,7 +34,10 @@ data: "bin" = binomial, "poi" = Poisson.}
 \item{type}{Character string indicating the method used for the intervals for
 the individual group rates. "jeff" = Jeffreys equal-tailed intervals (default), 
 "exact" = Clopper-Pearson exact intervals (also obtained using type = "jeff" with 
-cc = 0.5), "wilson" = Wilson score intervals (as per Newcombe 1998).}
+cc = 0.5), "wilson" = Wilson score intervals (as per Newcombe 1998). NB:
+"wilson" option is included only for legacy validation against previous
+published method by Newcombe. It is not recommended, as type="jeff" achieves
+much better coverage properties.}
 
 \item{...}{Additional arguments.}
 }

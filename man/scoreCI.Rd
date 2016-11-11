@@ -71,8 +71,7 @@ A list containing the following components: \describe{
   matrix containing details of the corresponding 2-sided significance test 
   against the null hypothesis that p_1 = p_2, and one-sided significance 
   tests agains the null hypothesis that theta >= or <= delta} 
-  \item{nstrat}{numeric indicating the number of strata included in the 
-  analysis} \item{call}{details of the function call} }
+  \item{call}{details of the function call} }
   If stratified = TRUE, the following outputs are added: \describe{
   \item{Qtest}{a vector of values descibing and testing heterogeneity}
   \item{weighting}{a string indicating the selected weighting method}

@@ -1,4 +1,4 @@
-#' ratesCI: A package for computing confidence intervals for various
+#' ratesci: A package for computing confidence intervals for various
 #' comparisons of independent binomial and Poisson rates.
 #' 
 #' Computes confidence intervals for the rate difference (RD), rate ratio (RR),
@@ -7,21 +7,23 @@
 #' Miettinen-Nurminen and Gart-Nam methods, and the "Method of Variance 
 #' Estimates Recovery", originating from Newcombe.
 #' 
-#' @section ratesCI functions: 
+#' @section ratesci functions: 
 #' \itemize{ 
-#'   \item scoreCI: for score-based confidence intervals 
-#'   \item MOVERCI: for the MOVER method
-#'   \item SCASCI: wrapper function to compute SCAS interval
-#'   \item MNCI: (to be added) wrapper function to compute MN interval
-#'   \item TDASCI:(to be added) wrapper function to compute TDAS stratified
+#'   \item scoreci: for score-based confidence intervals 
+#'   \item moverci: for the MOVER method
+#'   \item scasci: wrapper function to compute SCAS interval
+#'   \item jeffreysci: wrapper function to compute Jeffreys interval for a
+#'   single rate
+#'   \item mnci: (to be added) wrapper function to compute MN interval
+#'   \item tdasci:(to be added) wrapper function to compute TDAS stratified
 #'   interval
-#'   \item MOVERJCI: (to be added) wrapper function to compute MOVER-J interval
-#'   \item NewcombeCI: (to be added?) wrapper function to compute Newcombe
+#'   \item moverbci: (to be added) wrapper function to compute MOVER-B interval
+#'   \item newcombeci: (to be added?) wrapper function to compute Newcombe
 #'   interval
 #' }
 #'   
 #' @docType package
-#' @name ratesCI-package
+#' @name ratesci-package
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references 
 #' Laud PJ. Equal-tailed confidence intervals for comparison of 

@@ -289,7 +289,7 @@ jeffreysci <- function(
 #'   Poisson rates require only a1, a2.
 #' @inheritParams moverci
 #' @export
-moverb <- function(
+moverbci <- function(
   x1,
   n1,
   x2,

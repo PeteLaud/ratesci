@@ -514,7 +514,7 @@ scoreci <- function(
 #'   times (for Poisson rates) in each group.
 #' @inheritParams scoreci
 #' @export
-scas <- function(
+scasci <- function(
   x1,
   n1,
   x2 = NULL,
