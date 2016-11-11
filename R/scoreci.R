@@ -370,8 +370,7 @@ scoreci <- function(
 	    } else if (distrib == "poi") {
 	      xlim <- c(lower - (upper - lower)/2, upper + (upper - lower)/2)
 	    }
-	  #} else xlim <- c(max(1e-05, min(0.5 * lower)), min(plotmax, 1.5 * upper))
-	  } else xlim <- c(max(0, min(0.5 * lower)), min(plotmax, 1.5 * upper))
+	  } else xlim <- c(max(0, min(0.5 * lower)), min(plotmax, max(1.5 * upper)))
 	myseq <- seq(xlim[1], xlim[2], length.out = 400)
 	  if (stratified) dim1 <- 1 else dim1 <- nstrat
 	  sc <- array(sapply(myseq, function(x) myfun(x)), dim = c(dim1, length(myseq)))
@@ -379,12 +378,12 @@ scoreci <- function(
 	    qnval <- qtnorm
 	    ylim = c(-2.5, 2.5) * qnval
 	    for (i in 1:nstrat) {
-	      plot(myseq, sc[i, ], type = "l", ylim = ylim, xlab = contrast,
+	      plot(myseq, sc[i, ], type = "l", xlim = xlim, ylim = ylim, xlab = contrast,
 	           yaxs = "i", ylab = "Score", col = "blue", 
 	           main = paste0("Score function for ",
 	                         ifelse(distrib == "bin", "binomial", "Poisson"), " ",
-	                         contrast, "\n", x1[i, ], "/", n1[i, ], 
-	                         ifelse(contrast == "p", "", paste0(" vs ", x2[i, ], "/", n2[i, ])))
+	                         contrast, "\n", x1[i], "/", n1[i], 
+	                         ifelse(contrast == "p", "", paste0(" vs ", x2[i], "/", n2[i])))
 	           #log = ifelse(contrast == "RD", "", "x")
 	           )
 	      text(x = c(lower[i], point[i], upper[i]), y = c(-1.5, -1.75, -2) * qnval,
