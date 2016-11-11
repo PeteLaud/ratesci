@@ -16,16 +16,18 @@
 #' @param a1,b1,a2,b2 Numbers defining the Beta(ai,bi) prior distributions for
 #'   each group (default ai = bi = 0.5 for Jeffreys method). Gamma priors for
 #'   Poisson rates require only a1, a2.
-#' @param cc Number or logical specifying (amount of) continuity correction (default 0).
-#' @param contrast Character string indicating the contrast required: ("RD", 
-#'   "RR", or "OR". "p" gives an interval for the single proportion x1/n1).
+#' @param cc Number or logical specifying (amount of) continuity correction
+#'   (default 0).
+#' @param contrast Character string indicating the contrast required: "RD"
+#'   (default), "RR", or "OR". "p" gives an interval for the single proportion
+#'   x1/n1.
 #' @param type Character string indicating the method used for the intervals for
-#'   the individual group rates. "jeff" = Jeffreys equal-tailed intervals (default), 
-#'   "exact" = Clopper-Pearson exact intervals (also obtained using type = "jeff" with 
-#'   cc = 0.5), "wilson" = Wilson score intervals (as per Newcombe 1998). NB:
-#'   "wilson" option is included only for legacy validation against previous
-#'   published method by Newcombe. It is not recommended, as type="jeff" achieves
-#'   much better coverage properties.
+#'   the individual group rates. "jeff" = Jeffreys equal-tailed intervals
+#'   (default), "exact" = Clopper-Pearson exact intervals (also obtained using
+#'   type = "jeff" with cc = 0.5), "wilson" = Wilson score intervals (as per
+#'   Newcombe 1998). NB: "wilson" option is included only for legacy validation
+#'   against previous published method by Newcombe. It is not recommended, as
+#'   type="jeff" achieves much better coverage properties.
 #' @param ... Additional arguments.
 #' @inheritParams jeffreysci
 #' @importFrom stats pchisq pf pnorm pt qbeta qgamma qnorm qqnorm qt
@@ -217,15 +219,15 @@ moverci <- function(
 #' @param level Number specifying confidence level (between 0 and 1, default
 #'   0.95).
 #' @param distrib Character string indicating distribution assumed for the input
-#'   data: "bin" = binomial, "poi" = Poisson.
-#' @param adj Logical indicating whether to apply the adjustment in Brown et al.
-#'   (Not recommended)
+#'   data: "bin" = binomial (default), "poi" = Poisson.
+#' @param adj Logical (default FALSE) indicating whether to apply the adjustment
+#'   in Brown et al. (Not recommended)
 #' @param ... Other arguments.
 #' @importFrom stats qbeta qgamma qnorm
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @examples
 #'   #Jeffreys method:
-#'   jeffreysci(x1 = 5, n1 = 56)
+#'   jeffreysci(x = 5, n = 56)
 #' @export
 jeffreysci <- function(
   x,

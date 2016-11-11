@@ -18,40 +18,42 @@ respectively.}
 times (for Poisson rates) in each group.}
 
 \item{distrib}{Character string indicating distribution assumed for the input
-data: "bin" = binomial, "poi" = Poisson.}
+data: "bin" = binomial (default), "poi" = Poisson.}
 
-\item{contrast}{Character string indicating the contrast of interest: ("RD" =
-rate difference, "RR" = rate ratio, "OR" = odds ratio, "p" = single 
-proportion).}
+\item{contrast}{Character string indicating the contrast of interest: "RD" = 
+rate difference (default), "RR" = rate ratio, "OR" = odds ratio, "p" =
+single proportion.}
 
 \item{level}{Number specifying confidence level (between 0 and 1, default 
 0.95).}
 
-\item{skew}{Logical indicating whether to apply skewness correction (Laud 
-2016).}
+\item{skew}{Logical (default TRUE) indicating whether to apply skewness
+correction (Laud 2016).}
 
-\item{bcf}{Logical indicating whether to apply bias correction in the score 
+\item{bcf}{Logical (default TRUE) indicating whether to apply bias correction in the score 
 denominator. Applicable to distrib = "bin" only. (NB: bcf = FALSE option is
 really only included for legacy validation against previous published 
 methods (i.e. Gart & Nam, Mee).}
 
-\item{cc}{Number or logical specifying (amount of) continuity correction.}
+\item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
+correction.}
 
 \item{delta}{Number to be used in a one-sided significance test (e.g. 
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 excludes delta. NB: can also be used for a superiority test by setting 
 delta=0.}
 
-\item{precis}{Number specifying precision to be used in optimisation 
-subroutine (i.e. number of decimal places).}
+\item{precis}{Number (default 6) specifying precision to be used in
+optimisation subroutine (i.e. number of decimal places).}
 
-\item{plot}{Logical indicating whether to output plot of the score function}
+\item{plot}{Logical (default FALSE) indicating whether to output plot of the
+score function}
 
 \item{plotmax}{Numeric value indicating maximum value to be displayed on 
 x-axis of plots (useful for ratio contrasts which can be infinite).}
 
-\item{stratified}{Logical indicating whether to combine vector inputs into a 
-single stratified analysis.}
+\item{stratified}{Logical (default FALSE) indicating whether to combine
+vector inputs into a single stratified analysis.}
 
 \item{weighting}{String indicating which weighting method to use if 
 stratified = "TRUE":  "IVS" = Inverse Variance of Score (default), "MH" = 
@@ -59,8 +61,8 @@ Mantel-Haenszel, "MN" = Miettinen-Nurminen iterative weights.}
 
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
 
-\item{tdas}{Logical indicating whether to use t-distribution method for 
-stratified data (defined in Laud 2016).}
+\item{tdas}{Logical (default FALSE) indicating whether to use t-distribution
+method for stratified data (defined in Laud 2016).}
 
 \item{...}{Other arguments.}
 }

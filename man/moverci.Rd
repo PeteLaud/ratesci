@@ -20,24 +20,26 @@ times (for Poisson rates) in each group.}
 each group (default ai = bi = 0.5 for Jeffreys method). Gamma priors for
 Poisson rates require only a1, a2.}
 
-\item{cc}{Number or logical specifying (amount of) continuity correction (default 0).}
+\item{cc}{Number or logical specifying (amount of) continuity correction
+(default 0).}
 
 \item{level}{Number specifying confidence level (between 0 and 1, default
 0.95).}
 
 \item{distrib}{Character string indicating distribution assumed for the input
-data: "bin" = binomial, "poi" = Poisson.}
+data: "bin" = binomial (default), "poi" = Poisson.}
 
-\item{contrast}{Character string indicating the contrast required: ("RD", 
-"RR", or "OR". "p" gives an interval for the single proportion x1/n1).}
+\item{contrast}{Character string indicating the contrast required: "RD"
+(default), "RR", or "OR". "p" gives an interval for the single proportion
+x1/n1.}
 
 \item{type}{Character string indicating the method used for the intervals for
-the individual group rates. "jeff" = Jeffreys equal-tailed intervals (default), 
-"exact" = Clopper-Pearson exact intervals (also obtained using type = "jeff" with 
-cc = 0.5), "wilson" = Wilson score intervals (as per Newcombe 1998). NB:
-"wilson" option is included only for legacy validation against previous
-published method by Newcombe. It is not recommended, as type="jeff" achieves
-much better coverage properties.}
+the individual group rates. "jeff" = Jeffreys equal-tailed intervals
+(default), "exact" = Clopper-Pearson exact intervals (also obtained using
+type = "jeff" with cc = 0.5), "wilson" = Wilson score intervals (as per
+Newcombe 1998). NB: "wilson" option is included only for legacy validation
+against previous published method by Newcombe. It is not recommended, as
+type="jeff" achieves much better coverage properties.}
 
 \item{...}{Additional arguments.}
 }

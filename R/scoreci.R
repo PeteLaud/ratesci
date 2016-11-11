@@ -19,36 +19,38 @@
 #' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
 #'   times (for Poisson rates) in each group.
 #' @param distrib Character string indicating distribution assumed for the input
-#'   data: "bin" = binomial, "poi" = Poisson.
-#' @param contrast Character string indicating the contrast of interest: ("RD" =
-#'   rate difference, "RR" = rate ratio, "OR" = odds ratio, "p" = single 
-#'   proportion).
+#'   data: "bin" = binomial (default), "poi" = Poisson.
+#' @param contrast Character string indicating the contrast of interest: "RD" = 
+#'   rate difference (default), "RR" = rate ratio, "OR" = odds ratio, "p" =
+#'   single proportion.
 #' @param level Number specifying confidence level (between 0 and 1, default 
 #'   0.95).
-#' @param skew Logical indicating whether to apply skewness correction (Laud 
-#'   2016).
-#' @param bcf Logical indicating whether to apply bias correction in the score 
+#' @param skew Logical (default TRUE) indicating whether to apply skewness
+#'   correction (Laud 2016).
+#' @param bcf Logical (default TRUE) indicating whether to apply bias correction in the score 
 #'   denominator. Applicable to distrib = "bin" only. (NB: bcf = FALSE option is
 #'   really only included for legacy validation against previous published 
 #'   methods (i.e. Gart & Nam, Mee).
-#' @param cc Number or logical specifying (amount of) continuity correction.
+#' @param cc Number or logical (default FALSE) specifying (amount of) continuity
+#'   correction.
 #' @param delta Number to be used in a one-sided significance test (e.g. 
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 #'   excludes delta. NB: can also be used for a superiority test by setting 
 #'   delta=0.
-#' @param precis Number specifying precision to be used in optimisation 
-#'   subroutine (i.e. number of decimal places).
-#' @param plot Logical indicating whether to output plot of the score function
+#' @param precis Number (default 6) specifying precision to be used in
+#'   optimisation subroutine (i.e. number of decimal places).
+#' @param plot Logical (default FALSE) indicating whether to output plot of the
+#'   score function
 #' @param plotmax Numeric value indicating maximum value to be displayed on 
 #'   x-axis of plots (useful for ratio contrasts which can be infinite).
-#' @param stratified Logical indicating whether to combine vector inputs into a 
-#'   single stratified analysis.
+#' @param stratified Logical (default FALSE) indicating whether to combine
+#'   vector inputs into a single stratified analysis.
 #' @param weighting String indicating which weighting method to use if 
 #'   stratified = "TRUE":  "IVS" = Inverse Variance of Score (default), "MH" = 
 #'   Mantel-Haenszel, "MN" = Miettinen-Nurminen iterative weights.
 #' @param wt Numeric vector containing (optional) user-specified weights.
-#' @param tdas Logical indicating whether to use t-distribution method for 
-#'   stratified data (defined in Laud 2016).
+#' @param tdas Logical (default FALSE) indicating whether to use t-distribution
+#'   method for stratified data (defined in Laud 2016).
 #' @param ... Other arguments.
 #' @importFrom stats pchisq pf pnorm pt qbeta qgamma qnorm qqnorm qt
 #' @importFrom graphics abline lines text

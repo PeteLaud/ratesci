@@ -26,10 +26,10 @@ between proximate and conservative coverage.}
 0.95).}
 
 \item{distrib}{Character string indicating distribution assumed for the input
-data: "bin" = binomial, "poi" = Poisson.}
+data: "bin" = binomial (default), "poi" = Poisson.}
 
-\item{adj}{Logical indicating whether to apply the adjustment in Brown et al.
-(Not recommended)}
+\item{adj}{Logical (default FALSE) indicating whether to apply the adjustment
+in Brown et al. (Not recommended)}
 
 \item{...}{Other arguments.}
 }
@@ -42,7 +42,7 @@ way of a "continuity correction".
 }
 \examples{
   #Jeffreys method:
-  jeffreysci(x1 = 5, n1 = 56)
+  jeffreysci(x = 5, n = 56)
 }
 \author{
 Pete Laud, \email{p.j.laud@sheffield.ac.uk}
