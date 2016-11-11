@@ -75,8 +75,20 @@ moverci <- function(
   type = "jeff",
   ...
   ) {
+  if (!(tolower(substr(type, 1, 4)) %in% c("jeff", "wils", "exac"))) {
+    print("Type must be one of 'jeffreys', 'wilson' or 'exact'")
+    stop()
+  }
+  if (!(tolower(substr(distrib, 1, 3)) %in% c("bin", "poi"))) {
+    print("Distrib must be one of 'bin' or 'poi'")
+    stop()
+  }
+  if (!(tolower(substr(contrast, 1, 2)) %in% c("rd", "rr", "or"))) {
+    print("Contrast must be one of 'RD', 'RR' or 'OR'")
+    stop()
+  }
   if (contrast != "p" && (is.null(x2) || is.null(n2))) {
-    print("argument x2 or n2 missing")
+    print("Argument x2 or n2 missing")
     stop()
   }
   if (!is.numeric(c(x1, n1, x2, n2))) {
@@ -132,7 +144,7 @@ moverci <- function(
                      distrib = distrib, adj = paste(contrast == "OR"))
     j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = 0.5, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
-  } else {
+  } else if (type == "wilson") {
     # or use Wilson intervals as per Newcombe 1998
     #(NB could add cc here for completeness)
     j1 <- quadroot(a = 1 + z^2/n1, b = - (2 * p1hat + z^2/n1),

@@ -145,8 +145,15 @@ scoreci <- function(
 	tdas = FALSE,	
 	...
 	) { 
-  
-	if (contrast != "p" && (is.null(x2) || is.null(n2))) {
+  if (!(tolower(substr(distrib, 1, 3)) %in% c("bin", "poi"))) {
+    print("Distrib must be one of 'bin' or 'poi'")
+    stop()
+  }
+  if (!(tolower(substr(contrast, 1, 2)) %in% c("rd", "rr", "or"))) {
+    print("Contrast must be one of 'RD', 'RR' or 'OR'")
+    stop()
+  }
+  if (contrast != "p" && (is.null(x2) || is.null(n2))) {
 	  print("argument x2 or n2 missing")
 	  stop()
 	}
