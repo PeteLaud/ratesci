@@ -19,7 +19,7 @@ Description: Computes confidence intervals for the rate (or risk)
     Also methods for stratified calculations (e.g. meta-analysis),
     either assuming fixed effects or incorporating stratum
     heterogeneity.
-Depends: R (>= 3.1.2)
+Depends: R (>= 3.2.4)
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 5.0.1
