@@ -1,4 +1,4 @@
-library(ratesCI)
+library(ratesci)
 context("Symmetry")
 
 #n1 <- 150

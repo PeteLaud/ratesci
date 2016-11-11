@@ -1,4 +1,4 @@
-library(ratesCI)
+library(ratesci)
 context("p-values")
 
 #n1 <- 150

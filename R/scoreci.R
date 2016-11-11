@@ -505,12 +505,16 @@ scoreci <- function(
 #' Skewness-corrected asymptotic score ("SCAS") confidence intervals for
 #' comparisons of independent binomial or Poisson rates.
 #' 
-#' Score-based confidence intervals for the rate (or risk) difference ("RD") or 
-#' ratio ("RR") for independent binomial or Poisson rates, or for odds ratio 
-#' ("OR", binomial only). ("GNbc" method from Laud & Dane, developed
-#' from Gart & Nam, and generalised as "SCAS" in forthcoming publication) including optional
-#' continuity correction.  This function is vectorised in
-#' x1, x2, n1, and n2.  
+#' Wrapper function for the SCAS method. Score-based confidence intervals for
+#' the rate (or risk) difference ("RD") or ratio ("RR") for independent binomial
+#' or Poisson rates, or for odds ratio ("OR", binomial only), or the single rate
+#' ("p"). (This is the "GNbc" method from Laud & Dane, developed from Gart &
+#' Nam, and generalised as "SCAS" in forthcoming publication) including optional
+#' continuity correction.  This function is vectorised in x1, x2, n1, and n2.
+#' Vector inputs may also be combined into a single stratified analysis (e.g.
+#' meta-analysis). This method assumes the contrast is constant across strata
+#' (fixed effects).  For a 'random-effects' method use tdasci (or scoreci with
+#' tdas = TRUE).
 #' 
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
 #'   respectively.
@@ -558,6 +562,60 @@ scasci <- function(
   ) 
 }
 
+#' t-distribution asymptotic score ("TDAS") confidence intervals for
+#' comparisons of independent binomial or Poisson rates.
+#' 
+#' Wrapper function for the TDAS method. Score-based stratified confidence
+#' intervals for the rate (or risk) difference ("RD") or ratio ("RR") for
+#' independent binomial or Poisson rates, or for odds ratio ("OR", binomial
+#' only), or the single rate ("p"). This function combines vector inputs into a
+#' single stratified analysis (e.g. meta-analysis). The TDAS method incorporates
+#' any stratum variability into the confidence interval.
+#' 
+#' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 
+#'   respectively.
+#' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
+#'   times (for Poisson rates) in each group.
+#' @inheritParams scoreci
+#' @export
+tdasci <- function(
+  x1,
+  n1,
+  x2 = NULL,
+  n2 = NULL,
+  distrib = "bin",
+  contrast = "RD",
+  level = 0.95,
+  cc = 0,
+  delta = NULL,
+  precis = 6,
+  plot = FALSE,	
+  plotmax = 100,
+  weighting = "IVS",
+  wt = NULL,
+  ...
+) { 
+  scoreci(
+    x1 = x1,
+    n1 = n1,
+    x2 = x2,
+    n2 = n2,
+    distrib = distrib,
+    contrast = contrast,
+    level = level,
+    cc = cc,
+    delta = delta,
+    precis = precis,
+    plot = plot,	
+    plotmax = plotmax,
+    stratified = TRUE,
+    weighting = weighting,
+    wt = wt,
+    skew = FALSE,
+    bcf = TRUE,
+    ...
+  ) 
+}
 
 # vectorized limit-finding routine - turns out not to be any quicker but is
 # neater. The bisection method is just as efficient as the secant method

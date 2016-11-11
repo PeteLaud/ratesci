@@ -276,11 +276,12 @@ jeffreysci <- function(
 #' Approximate Bayesian ("MOVER-B") confidence intervals for
 #' comparisons of independent binomial or Poisson rates.
 #' 
-#' Approximate Bayesian confidence intervals for the rate (or risk) difference
-#' ("RD") or ratio ("RR") for independent binomial or Poisson rates, or for odds
-#' ratio ("OR", binomial only). (developed from Newcombe, Donner & Zou, Li et
-#' al, and Fagerland & Newcombe, and generalised as "MOVER-B" in forthcoming
-#' publication) including special case "MOVER-J" with optional continuity
+#' Wrapper function for the MOVER-B methods.  Approximate Bayesian confidence
+#' intervals for the rate (or risk) difference ("RD") or ratio ("RR") for
+#' independent binomial or Poisson rates, or for odds ratio ("OR", binomial
+#' only). (developed from Newcombe, Donner & Zou, Li et al, and Fagerland &
+#' Newcombe, and generalised as "MOVER-B" in forthcoming publication) including
+#' special case "MOVER-J" using non-informative priors with optional continuity
 #' correction.  This function is vectorised in x1, x2, n1, and n2.
 #' 
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2 

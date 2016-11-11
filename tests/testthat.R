@@ -1,4 +1,4 @@
 library(testthat)
-library(ratesCI)
+library(ratesci)
 
-test_check("ratesCI")
+test_check("ratesci")

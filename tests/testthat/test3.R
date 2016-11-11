@@ -1,4 +1,4 @@
-library(ratesCI)
+library(ratesci)
 context("Examples")
 
 test_that("legacy methods match published examples", {

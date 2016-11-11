@@ -10,16 +10,13 @@
 #' @section ratesci functions: 
 #' \itemize{ 
 #'   \item scoreci: for score-based confidence intervals 
-#'   \item moverci: for the MOVER method
 #'   \item scasci: wrapper function to compute SCAS interval
+#'   \item tdasci: wrapper function to compute TDAS stratified
+#'   interval
+#'   \item moverci: for the MOVER method
+#'   \item moverbci: wrapper function to compute MOVER-B interval
 #'   \item jeffreysci: wrapper function to compute Jeffreys interval for a
 #'   single rate
-#'   \item mnci: (to be added) wrapper function to compute MN interval
-#'   \item tdasci:(to be added) wrapper function to compute TDAS stratified
-#'   interval
-#'   \item moverbci: (to be added) wrapper function to compute MOVER-B interval
-#'   \item newcombeci: (to be added?) wrapper function to compute Newcombe
-#'   interval
 #' }
 #'   
 #' @docType package

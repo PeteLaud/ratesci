@@ -40,6 +40,10 @@ the Jeffreys method (with Beta(0.5, 0.5) or Gamma(0.5) respectively), as well
 as any user-specified prior distribution. Clopper-Pearson also included by 
 way of a "continuity correction".
 }
+\examples{
+  #Jeffreys method:
+  jeffreysci(x1 = 5, n1 = 56)
+}
 \author{
 Pete Laud, \email{p.j.laud@sheffield.ac.uk}
 }
