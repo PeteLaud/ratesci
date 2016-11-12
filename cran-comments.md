@@ -1,3 +1,9 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Chosen a version number greater than 0
+* Added DOI references in DESCRIPTION 
+
 ## Test environments
 * local OS X install, R 3.2.4
 * local CentOS 6.8, R 3.2.4
