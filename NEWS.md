@@ -1,6 +1,4 @@
-# ratesci 0.0.0
+# ratesci 0.1-0.9000
 
-* Added a `NEWS.md` file to track changes to the package.
-
-No news yet...
+* 
 
