@@ -10,7 +10,13 @@ An online calculator based on this package is available [here](http://ssu.shef.a
 
 You can install:
 
--   the latest development version from the [GitHub repository](https://github.com/PeteLaud/ratesci) with
+- the latest released version from CRAN with
+
+    ``` r
+    install.packages("ratesci")
+    ```
+
+- the latest development version from the [GitHub repository](https://github.com/PeteLaud/ratesci) with
 
     ``` r
     if (packageVersion("devtools") < 1.6) {
