@@ -613,6 +613,7 @@ tdasci <- function(
     stratified = TRUE,
     weighting = weighting,
     wt = wt,
+    tdas = TRUE,
     skew = FALSE,
     bcf = TRUE,
     ...
@@ -922,3 +923,4 @@ scoretheta <- function (
 	}
 	return(outlist)
 }
+

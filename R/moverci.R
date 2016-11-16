@@ -137,22 +137,28 @@ moverci <- function(
     # MOVER-J, including optional 'continuity correction'
     j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = cc, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
-    j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = cc, level = level,
+    if (contrast != "p") {
+      j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = cc, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
+    } else j2 <- NULL
   } else if (type == "exact") {
     # MOVER-E based on Clopper-Pearson exact intervals - this can be 
     # removed if we have a wrapper function
     j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = 0.5, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
-    j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = 0.5, level = level,
+    if (contrast != "p") {
+      j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = 0.5, level = level,
                      distrib = distrib, adj = paste(contrast == "OR"))
+    } else j2 <- NULL
   } else if (type == "wilson") {
     # or use Wilson intervals as per Newcombe 1998
     #(NB could add cc here for completeness)
     j1 <- quadroot(a = 1 + z^2/n1, b = - (2 * p1hat + z^2/n1),
                    c_ = p1hat^2)
-    j2 <- quadroot(a = 1 + z^2/n2, b = - (2 * p2hat + z^2/n2),
+    if (contrast != "p") {
+      j2 <- quadroot(a = 1 + z^2/n2, b = - (2 * p2hat + z^2/n2),
                    c_ = p2hat^2)
+    } else j2 <- NULL
   }
   l1 <- j1[, 1]
   u1 <- j1[, 2]
