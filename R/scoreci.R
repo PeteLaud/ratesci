@@ -51,6 +51,7 @@
 #' @param wt Numeric vector containing (optional) user-specified weights.
 #' @param tdas Logical (default FALSE) indicating whether to use t-distribution
 #'   method for stratified data (defined in Laud 2016).
+#' @param warn Logical (default TRUE) giving the option to suppress warnings.
 #' @param ... Other arguments.
 #' @importFrom stats pchisq pf pnorm pt qbeta qgamma qnorm qqnorm qt
 #' @importFrom graphics abline lines text
@@ -144,7 +145,8 @@ scoreci <- function(
 	stratified = FALSE,
 	weighting = "IVS",
 	wt = NULL,
-	tdas = FALSE,	
+	tdas = FALSE,
+	warn = TRUE,
 	...
 	) { 
   if (!(tolower(substr(distrib, 1, 3)) %in% c("bin", "poi"))) {
@@ -207,7 +209,7 @@ scoreci <- function(
 	  x2 <- x2[!empty.strat]
 	  n1 <- n1[!empty.strat]
 	  n2 <- n2[!empty.strat]
-	  if(sum(empty.strat)>0) {
+	  if(warn == TRUE && sum(empty.strat)>0) {
 	    print('Warning: at least one stratum contributed no information and was removed')
 	  }
 	  
@@ -233,10 +235,10 @@ scoreci <- function(
 	if (stratified == TRUE && nstrat <= 1) {
 	  stratified <- FALSE
 	  tdas = FALSE
-	  print("Warning: only one stratum!")
+	  if (warn == TRUE) print("Warning: only one stratum!")
 	}
 	if (nstrat == 0) {
-	  print("Warning: no usable data!")
+	  if (warn == TRUE) print("Warning: no usable data!")
 	  if (contrast %in% c("RR", "OR")) {
 	    x1 <- x2 <- 0
 	    n1 <- n2 <- 10
@@ -317,6 +319,7 @@ scoreci <- function(
 	                      weighting = weighting, wt = wt, tdas = FALSE,
 	                      skew = skew, cc = cc)
 	  wt.FE <- at.FE$wt
+	  V.FE <- at.FE$V
 	  tau2.FE <- at.FE$tau2
 	  Q.each <- at.FE$Q.i
 	  Q.FE <- at.FE$Q
@@ -421,8 +424,19 @@ scoreci <- function(
 	         labels = formatC(c(lower, point, upper), format = "fg", 4, flag = "#"),
 	         pos = 4, offset = -0.2, cex = 0.8, xpd = TRUE)
 	  }
-	  if (stratified) 
-	    qqnorm(Stheta.MLE)
+	  if (stratified) {
+	    qqnorm(Stheta.MLE/sqrt(V.FE))
+	    abline(coef = c(0,1))
+	    plot(x = 1/sqrt(V.FE), y = Stheta.MLE/sqrt(V.FE), xlab = expression("1/"*sqrt("V"["j"])), 
+	         ylab = expression("S"["j"]*"("*theta*")/"*sqrt("V")), xlim = c(0,max(1/sqrt(V.FE))),
+	         main = expression("Galbraith plot for S"["j"]*"("*theta*")"))
+	    abline(coef = c(0,0))
+	    abline(coef = c(1.96,0),lty=2)
+	    abline(coef = c(-1.96,0),lty=2)
+	    ord <- order(1/sqrt(V.FE))
+	    lines(1/sqrt(V.FE)[ord],(1.96*sqrt(1-(1/V.FE)/sum(1/V.FE)))[ord],lty=3)
+	    lines(1/sqrt(V.FE)[ord],(-1.96*sqrt(1-(1/V.FE)/sum(1/V.FE)))[ord],lty=3)
+	  }
 	}
 
 	# fix some extreme cases with zero counts
@@ -923,4 +937,3 @@ scoretheta <- function (
 	}
 	return(outlist)
 }
-

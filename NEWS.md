@@ -2,4 +2,6 @@
 
 * Fixed bug for contrast = "p" in moverci
 * Fixed bug in tdasci wrapper function
+* Added option to suppress warnings in scoreci
+* Added Galbraith plot to scoreci
 
