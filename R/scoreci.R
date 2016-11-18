@@ -427,8 +427,11 @@ scoreci <- function(
 	  if (stratified) {
 	    qqnorm(Stheta.MLE/sqrt(V.FE))
 	    abline(coef = c(0,1))
-	    plot(x = 1/sqrt(V.FE), y = Stheta.MLE/sqrt(V.FE), xlab = expression("1/"*sqrt("V"["j"])), 
-	         ylab = expression("S"["j"]*"("*theta*")/"*sqrt("V")), xlim = c(0,max(1/sqrt(V.FE))),
+	    plot(x = 1/sqrt(V.FE), y = Stheta.MLE/sqrt(V.FE), 
+	         xlab = expression("1/"*sqrt("V"["j"])), 
+	         ylab = expression("S"["j"]*"("*theta*")/"*sqrt("V")), 
+	         xlim = c(0,max(1/sqrt(V.FE))),
+	         ylim = range(c(-2.5,2.5,Stheta.MLE/sqrt(V.FE))),
 	         main = expression("Galbraith plot for S"["j"]*"("*theta*")"))
 	    abline(coef = c(0,0))
 	    abline(coef = c(1.96,0),lty=2)
