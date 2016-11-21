@@ -5,4 +5,3 @@
 * Fixed bug for stratified OR
 * Added option to suppress warnings in scoreci
 * Added Galbraith plot to scoreci
-
