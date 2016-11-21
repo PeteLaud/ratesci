@@ -8,7 +8,7 @@ rates.}
 scoreci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
   level = 0.95, skew = TRUE, bcf = TRUE, cc = 0, delta = NULL,
   precis = 6, plot = FALSE, plotmax = 100, stratified = FALSE,
-  weighting = "IVS", wt = NULL, tdas = FALSE, ...)
+  weighting = "IVS", wt = NULL, tdas = FALSE, warn = TRUE, ...)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
@@ -63,6 +63,8 @@ Mantel-Haenszel, "MN" = Miettinen-Nurminen iterative weights.}
 
 \item{tdas}{Logical (default FALSE) indicating whether to use t-distribution
 method for stratified data (defined in Laud 2016).}
+
+\item{warn}{Logical (default TRUE) giving the option to suppress warnings.}
 
 \item{...}{Other arguments.}
 }
