@@ -493,17 +493,17 @@ scoreci <- function(
 	         xlab = expression("1/"*sqrt("V"["j"])), 
 	         ylab = expression("S"["j"]*"("*theta*")/"*sqrt("V")), 
 	         xlim = c(0,max(1/sqrt(V.FE))),
-	         ylim = range(c(-2.5,2.5,Stheta.MLE/sqrt(V.FE))),
+	         ylim = range(c(-2.5,2.5,Stheta.FE/sqrt(V.FE))),
 	         main = expression("Galbraith plot for S"["j"]*"("*theta*")"))
 	    abline(coef = c(0,0))
 	    abline(coef = c(1.96,0),lty=2)
 	    abline(coef = c(-1.96,0),lty=2)
-	    ord <- order(1/sqrt(V.FE))
-	    lines(1/sqrt(V.FE)[ord],(1.96*sqrt(1-(1/V.FE)/sum(1/V.FE)))[ord],lty=3)
-	    lines(1/sqrt(V.FE)[ord],(-1.96*sqrt(1-(1/V.FE)/sum(1/V.FE)))[ord],lty=3)
+	    xrange <- seq(0.1,max(1/sqrt(V.FE)),length.out=30)
+	    lines(xrange,(1.96*sqrt(1-xrange^2/sum(1/V.FE))),lty=3)
+	    lines(xrange,(-1.96*sqrt(1-xrange^2/sum(1/V.FE))),lty=3)
 	  }
 	}
-	
+
 	outlist <- list(estimates = estimates, pval = pval) 
 	if (stratified == TRUE) {
 	  Qtest <- c(Q = Q.FE, tau2 = tau2.FE, pval.het = pval.het, I2 = I2)
