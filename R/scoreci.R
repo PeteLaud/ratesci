@@ -318,6 +318,7 @@ scoreci <- function(
 	                      distrib = distrib, stratified = stratified,
 	                      weighting = weighting, wt = wt, tdas = FALSE,
 	                      skew = skew, cc = cc)
+	  Stheta.FE <- at.FE$Stheta
 	  wt.FE <- at.FE$wt
 	  V.FE <- at.FE$V
 	  tau2.FE <- at.FE$tau2
@@ -364,84 +365,6 @@ scoreci <- function(
 	  myfun(theta) + qtnorm, contrast = contrast, distrib = distrib,
 	  precis = precis + 1, uplow = "up")
 
-  # Optional plot of the score function.
-	# Ideally this would be in a separate function, but it is unlikely to be used
-	# much in practice - only included for code development and validation purposes.
-	if (plot == TRUE) {
-	  if (contrast == "RD") {
-	    if (distrib == "bin") {
-	      xlim <- c(max(-1, min(lower - (upper - lower)/2)),
-	                min(1, max(upper + (upper - lower)/2)))
-	    } else if (distrib == "poi") {
-	      xlim <- c(lower - (upper - lower)/2, upper + (upper - lower)/2)
-	    }
-	  } else xlim <- c(max(0, min(0.5 * lower)), min(plotmax, max(1.5 * upper)))
-	myseq <- seq(xlim[1], xlim[2], length.out = 400)
-	  if (stratified) dim1 <- 1 else dim1 <- nstrat
-	  sc <- array(sapply(myseq, function(x) myfun(x)), dim = c(dim1, length(myseq)))
-	  if (stratified == FALSE) {
-	    qnval <- qtnorm
-	    ylim = c(-2.5, 2.5) * qnval
-	    for (i in 1:nstrat) {
-	      plot(myseq, sc[i, ], type = "l", xlim = xlim, ylim = ylim, xlab = contrast,
-	           yaxs = "i", ylab = "Score", col = "blue", 
-	           main = paste0("Score function for ",
-	                         ifelse(distrib == "bin", "binomial", "Poisson"), " ",
-	                         contrast, "\n", x1[i], "/", n1[i], 
-	                         ifelse(contrast == "p", "", paste0(" vs ", x2[i], "/", n2[i])))
-	           #log = ifelse(contrast == "RD", "", "x")
-	           )
-	      text(x = c(lower[i], point[i], upper[i]), y = c(-1.5, -1.75, -2) * qnval,
-	           labels = formatC(c(lower[i], point[i], upper[i]), format = "fg", 4,
-	                            flag = "#"),
-	           pos = 4, offset = -0.2, cex = 0.8, xpd = TRUE)
-	      abline(h = c(-1, 1) * qnval)
-	      abline(h = 0, lty = 2)
-	      lines(rep(lower[i], 2), c(ylim[1], -1.5 * qnval - 0.3), lty = 3)
-	      lines(rep(lower[i], 2), c(-1.5 * qnval + 0.4, qnval), lty = 3)
-	      lines(rep(upper[i], 2), c(ylim[1], -2 * qnval - 0.3), lty = 3)
-	      lines(rep(upper[i], 2), c(-2 * qnval + 0.4, -qnval), lty = 3)
-	      lines(rep(point[i], 2), c(ylim[1], -1.75 * qnval - 0.3), lty = 3)
-	      lines(rep(point[i], 2), c(-1.75 * qnval + 0.4, 0), lty = 3)
-	    }
-	  } else {
-	    qtval <- qtnorm
-	    ylim = c(-2.5, 2.5) * qtval
-	    plot(myseq, sc[1, ], type = "l", ylim = ylim, xlab = contrast,
-	         ylab = "Score", yaxs = "i", col = "blue",
-	         main = paste("Score function for", distrib, contrast)
-	         #log = ifelse(contrast == "RD", "", "x")
-	         )
-	    abline(h = c(-1, 1) * qtval)
-	    abline(h = 0, lty = 2)
-	    lines(rep(lower, 2), c(ylim[1], -1.5 * qtval - 0.3), lty = 3)
-	    lines(rep(lower, 2), c(-1.5 * qtval + 0.4, qtval), lty = 3)
-	    lines(rep(upper, 2), c(ylim[1], -2 * qtval - 0.3), lty = 3)
-	    lines(rep(upper, 2), c(-2 * qtval + 0.4, -qtval), lty = 3)
-	    lines(rep(point, 2), c(ylim[1], -1.75 * qtval - 0.3), lty = 3)
-	    lines(rep(point, 2), c(-1.75 * qtval + 0.4, 0), lty = 3)
-	    text(x = c(lower, point, upper), y = c(-1.5, -1.75, -2) * qtval,
-	         labels = formatC(c(lower, point, upper), format = "fg", 4, flag = "#"),
-	         pos = 4, offset = -0.2, cex = 0.8, xpd = TRUE)
-	  }
-	  if (stratified) {
-	    qqnorm(Stheta.MLE/sqrt(V.FE))
-	    abline(coef = c(0,1))
-	    plot(x = 1/sqrt(V.FE), y = Stheta.MLE/sqrt(V.FE), 
-	         xlab = expression("1/"*sqrt("V"["j"])), 
-	         ylab = expression("S"["j"]*"("*theta*")/"*sqrt("V")), 
-	         xlim = c(0,max(1/sqrt(V.FE))),
-	         ylim = range(c(-2.5,2.5,Stheta.MLE/sqrt(V.FE))),
-	         main = expression("Galbraith plot for S"["j"]*"("*theta*")"))
-	    abline(coef = c(0,0))
-	    abline(coef = c(1.96,0),lty=2)
-	    abline(coef = c(-1.96,0),lty=2)
-	    ord <- order(1/sqrt(V.FE))
-	    lines(1/sqrt(V.FE)[ord],(1.96*sqrt(1-(1/V.FE)/sum(1/V.FE)))[ord],lty=3)
-	    lines(1/sqrt(V.FE)[ord],(-1.96*sqrt(1-(1/V.FE)/sum(1/V.FE)))[ord],lty=3)
-	  }
-	}
-
 	# fix some extreme cases with zero counts
 	#if (contrast == "RR" && skew == FALSE) p2d.w[sum(x2) == 0] <- 0
 	
@@ -451,7 +374,7 @@ scoreci <- function(
 	    upper[x2 == 0] <- Inf
 	  } else {
 	    lower[sum(x1) == 0] <- 0
-	    lower[myfun(0) - qtnorm < 0] <- 0
+	    lower[myfun(1e-15) - qtnorm < 0] <- 0
 	    upper[sum(x2) == 0] <- Inf
 	    point[sum(x2) == 0 & sum(x1) == 0] <- NA
 	    upper[myfun(10^100) + qtnorm > 0] <- Inf
@@ -502,6 +425,84 @@ scoreci <- function(
 	if (tdas == TRUE) pval2sided <- pf(chisq.zero, 1, nstrat - 1, lower.tail = FALSE)
 	pval <- cbind(chisq = chisq.zero, pval2sided, delta = delta,
 	              scoredelta = scoredelta$score, pval.left, pval.right)
+
+	# Optional plot of the score function.
+	# Ideally this would be in a separate function, but it is unlikely to be used
+	# much in practice - only included for code development and validation purposes.
+	if (plot == TRUE) {
+	  if (contrast == "RD") {
+	    if (distrib == "bin") {
+	      xlim <- c(max(-1, min(lower - (upper - lower)/2)),
+	                min(1, max(upper + (upper - lower)/2)))
+	    } else if (distrib == "poi") {
+	      xlim <- c(lower - (upper - lower)/2, upper + (upper - lower)/2)
+	    }
+	  } else xlim <- c(max(0, min(0.5 * lower)), min(plotmax, max(1.5 * upper)))
+	  myseq <- seq(xlim[1], xlim[2], length.out = 400)
+	  if (stratified) dim1 <- 1 else dim1 <- nstrat
+	  sc <- array(sapply(myseq, function(x) myfun(x)), dim = c(dim1, length(myseq)))
+	  if (stratified == FALSE) {
+	    qnval <- qtnorm
+	    ylim = c(-2.5, 2.5) * qnval
+	    for (i in 1:nstrat) {
+	      plot(myseq, sc[i, ], type = "l", xlim = xlim, ylim = ylim, xlab = contrast,
+	           yaxs = "i", ylab = "Score", col = "blue", 
+	           main = paste0("Score function for ",
+	                         ifelse(distrib == "bin", "binomial", "Poisson"), " ",
+	                         contrast, "\n", x1[i], "/", n1[i], 
+	                         ifelse(contrast == "p", "", paste0(" vs ", x2[i], "/", n2[i])))
+	           #log = ifelse(contrast == "RD", "", "x")
+	      )
+	      text(x = c(lower[i], point[i], upper[i]), y = c(-1.5, -1.75, -2) * qnval,
+	           labels = formatC(c(lower[i], point[i], upper[i]), format = "fg", 4,
+	                            flag = "#"),
+	           pos = 4, offset = -0.2, cex = 0.8, xpd = TRUE)
+	      abline(h = c(-1, 1) * qnval)
+	      abline(h = 0, lty = 2)
+	      lines(rep(lower[i], 2), c(ylim[1], -1.5 * qnval - 0.3), lty = 3)
+	      lines(rep(lower[i], 2), c(-1.5 * qnval + 0.4, qnval), lty = 3)
+	      lines(rep(upper[i], 2), c(ylim[1], -2 * qnval - 0.3), lty = 3)
+	      lines(rep(upper[i], 2), c(-2 * qnval + 0.4, -qnval), lty = 3)
+	      lines(rep(point[i], 2), c(ylim[1], -1.75 * qnval - 0.3), lty = 3)
+	      lines(rep(point[i], 2), c(-1.75 * qnval + 0.4, 0), lty = 3)
+	    }
+	  } else {
+	    qtval <- qtnorm
+	    ylim = c(-2.5, 2.5) * qtval
+	    plot(myseq, sc[1, ], type = "l", ylim = ylim, xlab = contrast,
+	         ylab = "Score", yaxs = "i", col = "blue",
+	         main = paste("Score function for", distrib, contrast)
+	         #log = ifelse(contrast == "RD", "", "x")
+	    )
+	    abline(h = c(-1, 1) * qtval)
+	    abline(h = 0, lty = 2)
+	    lines(rep(lower, 2), c(ylim[1], -1.5 * qtval - 0.3), lty = 3)
+	    lines(rep(lower, 2), c(-1.5 * qtval + 0.4, qtval), lty = 3)
+	    lines(rep(upper, 2), c(ylim[1], -2 * qtval - 0.3), lty = 3)
+	    lines(rep(upper, 2), c(-2 * qtval + 0.4, -qtval), lty = 3)
+	    lines(rep(point, 2), c(ylim[1], -1.75 * qtval - 0.3), lty = 3)
+	    lines(rep(point, 2), c(-1.75 * qtval + 0.4, 0), lty = 3)
+	    text(x = c(lower, point, upper), y = c(-1.5, -1.75, -2) * qtval,
+	         labels = formatC(c(lower, point, upper), format = "fg", 4, flag = "#"),
+	         pos = 4, offset = -0.2, cex = 0.8, xpd = TRUE)
+	  }
+	  if (stratified) {
+	    qqnorm(Stheta.FE/sqrt(V.FE))
+	    abline(coef = c(0,1))
+	    plot(x = 1/sqrt(V.FE), y = Stheta.FE/sqrt(V.FE), 
+	         xlab = expression("1/"*sqrt("V"["j"])), 
+	         ylab = expression("S"["j"]*"("*theta*")/"*sqrt("V")), 
+	         xlim = c(0,max(1/sqrt(V.FE))),
+	         ylim = range(c(-2.5,2.5,Stheta.MLE/sqrt(V.FE))),
+	         main = expression("Galbraith plot for S"["j"]*"("*theta*")"))
+	    abline(coef = c(0,0))
+	    abline(coef = c(1.96,0),lty=2)
+	    abline(coef = c(-1.96,0),lty=2)
+	    ord <- order(1/sqrt(V.FE))
+	    lines(1/sqrt(V.FE)[ord],(1.96*sqrt(1-(1/V.FE)/sum(1/V.FE)))[ord],lty=3)
+	    lines(1/sqrt(V.FE)[ord],(-1.96*sqrt(1-(1/V.FE)/sum(1/V.FE)))[ord],lty=3)
+	  }
+	}
 	
 	outlist <- list(estimates = estimates, pval = pval) 
 	if (stratified == TRUE) {
@@ -786,6 +787,7 @@ scoretheta <- function (
 	    p2d <- ifelse(A == 0, -C_/B, ifelse(num == 0, 0, num/(2 * A))) 
 	    # If A=0 then we solve a linear equation instead
 	    p1d <- p2d * theta/(1 + p2d * (theta - 1))
+	    p1d[theta == 0] <- 0
 	    Stheta <- (p1hat - p1d)/(p1d * (1 - p1d)) - (p2hat - p2d)/(p2d * (1 - p2d))
 	    V <- pmax(0, (1/(n1 * p1d * (1 - p1d)) + 1/(n2 * p2d * (1 - p2d))) * lambda)  
 	    # set to zero if machine precision error in cos function produces a negative V
@@ -836,7 +838,7 @@ scoretheta <- function (
 	      # (without theoretical justification for OR)
 	    } else if (weighting == "IVS") {
 	      # IVS: inverse variance weights updated wih V.tilde
-	      if (all(V == 0) || all(is.na(V)) || all (V == Inf)) { 
+	      if (all(V == 0) || all(V == Inf | is.na(V)) ) { 
 	        wt <- rep(1, nstrat)
 	      } else wt <- 1/V  
 	    } else if (weighting == "MN") {
@@ -876,6 +878,7 @@ scoretheta <- function (
 		  Q.i <- wt * ((Stheta - Sdot)^2)  #This version for iterative weights?
 		} else Q.i <- ((Stheta - Sdot)^2)/V
 		Q <- sum(Q.i)
+#		Q[all(Stheta == Inf)] <- 0 #Attempt to get scoretheta(0) to work for contrast=="OR"
 		W <- sum(wt)
 		
 		if (weighting == "IVS") {
@@ -886,7 +889,8 @@ scoretheta <- function (
 		    (sum(1/V) - 1 * (sum(wt^2)/W))  
 		  # only needed if want to output tau2.
 		}
-		if (tdas == TRUE && weighting == "IVS" && !(all(V == 0) || all(is.na(V)))) {
+		if (tdas == TRUE && weighting == "IVS" && !(all(V == 0) || 
+		                                            all(V == Inf | is.na(V)))) {
 		  wt <- 1/(V + tau2)
 		}  
 		
