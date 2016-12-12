@@ -6,7 +6,7 @@
 binomial or Poisson rate.}
 \usage{
 jeffreysci(x, n, ai = 0.5, bi = 0.5, cc = 0, level = 0.95,
-  distrib = "bin", adj = FALSE, ...)
+  distrib = "bin", adj = TRUE, ...)
 }
 \arguments{
 \item{x}{Numeric vector of number of events.}
@@ -28,8 +28,9 @@ between proximate and conservative coverage.}
 \item{distrib}{Character string indicating distribution assumed for the input
 data: "bin" = binomial (default), "poi" = Poisson.}
 
-\item{adj}{Logical (default FALSE) indicating whether to apply the adjustment
-in Brown et al. (Not recommended)}
+\item{adj}{Logical (default TRUE) indicating whether to apply the boundary 
+adjustment recommended on p108 of Brown et al. (set to FALSE if informative
+priors are used)}
 
 \item{...}{Other arguments.}
 }

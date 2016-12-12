@@ -140,19 +140,19 @@ moverci <- function(
   if (type == "jeff") {
     # MOVER-J, including optional 'continuity correction'
     j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = cc, level = level,
-                     distrib = distrib)) #, adj = paste(contrast == "OR"))
+                     distrib = distrib) #, adj = paste(contrast == "OR"))
     if (contrast != "p") {
       j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = cc, level = level,
-                     distrib = distrib)) #, adj = paste(contrast == "OR"))
+                     distrib = distrib) #, adj = paste(contrast == "OR"))
     } else j2 <- NULL
   } else if (type == "exact") {
     # MOVER-E based on Clopper-Pearson exact intervals - this can be 
     # removed if we have a wrapper function
     j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = 0.5, level = level,
-                     distrib = distrib)) #, adj = paste(contrast == "OR"))
+                     distrib = distrib) #, adj = paste(contrast == "OR"))
     if (contrast != "p") {
       j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = 0.5, level = level,
-                     distrib = distrib)) #, adj = paste(contrast == "OR"))
+                     distrib = distrib) #, adj = paste(contrast == "OR"))
     } else j2 <- NULL
   } else if (type == "wilson") {
     # or use Wilson intervals as per Newcombe 1998
