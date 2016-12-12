@@ -28,6 +28,9 @@
 #'   Newcombe 1998). NB: "wilson" option is included only for legacy validation
 #'   against previous published method by Newcombe. It is not recommended, as
 #'   type="jeff" achieves much better coverage properties.
+#' @param adj Logical (default TRUE) indicating whether to apply the boundary 
+#'   adjustment for Jeffreys intervals recommended on p108 of Brown et al. 
+#'   (set to FALSE if informative priors are used) 
 #' @param ... Additional arguments.
 #' @inheritParams jeffreysci
 #' @importFrom stats pchisq pf pnorm pt qbeta qgamma qnorm qqnorm qt
@@ -75,6 +78,7 @@ moverci <- function(
   distrib = "bin",
   contrast = "RD",
   type = "jeff",
+  adj = TRUE,
   ...
   ) {
   if (!(tolower(substr(type, 1, 4)) %in% c("jeff", "wils", "exac"))) {
@@ -136,19 +140,19 @@ moverci <- function(
   if (type == "jeff") {
     # MOVER-J, including optional 'continuity correction'
     j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = cc, level = level,
-                     distrib = distrib, adj = paste(contrast == "OR"))
+                     distrib = distrib)) #, adj = paste(contrast == "OR"))
     if (contrast != "p") {
       j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = cc, level = level,
-                     distrib = distrib, adj = paste(contrast == "OR"))
+                     distrib = distrib)) #, adj = paste(contrast == "OR"))
     } else j2 <- NULL
   } else if (type == "exact") {
     # MOVER-E based on Clopper-Pearson exact intervals - this can be 
     # removed if we have a wrapper function
     j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = 0.5, level = level,
-                     distrib = distrib, adj = paste(contrast == "OR"))
+                     distrib = distrib)) #, adj = paste(contrast == "OR"))
     if (contrast != "p") {
       j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = 0.5, level = level,
-                     distrib = distrib, adj = paste(contrast == "OR"))
+                     distrib = distrib)) #, adj = paste(contrast == "OR"))
     } else j2 <- NULL
   } else if (type == "wilson") {
     # or use Wilson intervals as per Newcombe 1998
@@ -226,8 +230,9 @@ moverci <- function(
 #'   0.95).
 #' @param distrib Character string indicating distribution assumed for the input
 #'   data: "bin" = binomial (default), "poi" = Poisson.
-#' @param adj Logical (default FALSE) indicating whether to apply the adjustment
-#'   in Brown et al. (Not recommended)
+#' @param adj Logical (default TRUE) indicating whether to apply the boundary 
+#'   adjustment recommended on p108 of Brown et al. (set to FALSE if informative
+#'   priors are used)
 #' @param ... Other arguments.
 #' @importFrom stats qbeta qgamma qnorm
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
@@ -243,7 +248,7 @@ jeffreysci <- function(
   cc=0,
   level=0.95,
   distrib="bin",
-  adj=FALSE,
+  adj=TRUE,
   ...
   ) {
   if (!is.numeric(c(x, n))) {
@@ -263,18 +268,16 @@ jeffreysci <- function(
   alpha <- 1 - level
   if (distrib == "bin") {
     CI.lower <- qbeta( alpha/2, x + (ai - cc), n - x + (bi + cc))
-    CI.lower[x == 0] <- 0
     CI.upper <- qbeta(1 - alpha/2, x + (ai + cc), n - x + (bi - cc))
-    CI.upper[x == n] <- 1
-    if (adj == TRUE) {
-      CI.lower[x == n] <- ( (1 - level)/2)^( 1/n )[x == n]
-      CI.upper[x == 0] <- 1 - ( (1 - level)/2)^( 1/n )[x == 0]
+    if (adj == TRUE) { #recommended adjustment at boundary values
+      CI.lower[x == 0] <- 0
+      CI.upper[x == n] <- 1
     }
   } else if (distrib == "poi") {
     # Jeffreys prior for Poisson rate uses gamma distribution,
     # as defined in Li et al. with "continuity correction" from Laud 2016.
     CI.lower <- qgamma(alpha/2, x + (ai - cc), scale = 1/n)
-    CI.lower[x == 0] <-  0
+    if (adj == TRUE)  CI.lower[x == 0] <-  0
     CI.upper <- qgamma(1 - alpha/2, (x + (ai + cc)), scale = 1/n)
   }
   CI <- cbind(Lower = CI.lower, Upper = CI.upper)
