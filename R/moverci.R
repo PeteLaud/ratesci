@@ -176,10 +176,12 @@ moverci <- function(
   if (contrast == "p") {
     lower <- l1
     upper <- u1
+    est <- j1[, 3]
   } else if (contrast == "RD") {
     # From Newcombe (1998), p876 "Method 10"
     lower <- p1hat - p2hat - sqrt(pmax(0, (p1hat - l1)^2 + (u2 - p2hat)^2))
     upper <- p1hat - p2hat + sqrt(pmax(0, (u1 - p1hat)^2 + (p2hat - l2)^2))
+    est <-  p1hat - p2hat
   } else if (contrast == "OR") {
     # From Fagerland & Newcombe (2013), p2828 "Method 4"
     q1hat <- p1hat/(1 - p1hat)
@@ -194,6 +196,7 @@ moverci <- function(
     upper <- (q1hat * q2hat + sqrt(pmax(0, (q1hat * q2hat)^2 -
                 U1 * L2 * (2 * q1hat - U1) * (2 * q2hat - L2)))) /
                   (L2 * (2 * q2hat - L2))
+    est <- p1hat * (1 - p2hat)/(p2hat * (1 - p1hat))
     if (adj == TRUE) { #This is optional for informative priors
       upper[x2 == 0] <- Inf
       lower[(x1 == 0 & x2 == n2) | (x1 == n1 & x2 == 0)] <- 0
@@ -208,11 +211,12 @@ moverci <- function(
     upper <- (p1hat * p2hat + sqrt(pmax(0, (p1hat * p2hat)^2 -
                u1 * (2 * p2hat - l2) * (l2 * (2 * p1hat - u1))))) /
                   (l2 * (2 * p2hat - l2))
+    est <- p1hat/p2hat
     if (adj == TRUE) { #This is optional for informative priors
       upper[x2 == 0] <- Inf
     }
   }
-  CI <- cbind(Lower = lower, Upper = upper)
+  CI <- cbind(Lower = lower, Estimate = est, Upper = upper)
   CI
 }
 
