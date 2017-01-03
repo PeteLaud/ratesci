@@ -16,7 +16,7 @@ test_that("legacy methods match published examples", {
   )
   expect_equal(
     unname(round(moverci(x1=5,x2=0,n1=56,n2=29,type="jeff")[,c(1,2)],3)),
-    c(-0.009,0.185)
+    c(-0.008,0.185)
   )
   #Gart Nam for skewness corrected RD (unable to replicate other examples)
   expect_equal(
@@ -39,11 +39,11 @@ test_that("legacy methods match published examples", {
   #Li Tang Wong for Poisson RR (don't quite match!)
   expect_equal(
     unname(round(moverci(x1=15,x2=41,n1=19017,n2=28010,distrib="poi",contrast="RR",type="jeff")[,c(1,2)],4)),
-    c(0.2935, 0.9573)
+    c(0.2933, 0.9571)
   )
   expect_equal(
     unname(round(moverci(x1=60,x2=30,n2=54308.8,n1=51477.5,level=0.9,distrib="poi",contrast="RR",type="jeff")[,c(1,2)],4)),
-    c(1.4667, 3.0579)
+    c(1.4668, 3.0586)
   )
   #Zou Donner for RR - they pre-round the Wilson interval to 3dps
   expect_equal(

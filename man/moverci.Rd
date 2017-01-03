@@ -43,7 +43,7 @@ type="jeff" achieves much better coverage properties.}
 
 \item{adj}{Logical (default TRUE) indicating whether to apply the boundary 
 adjustment for Jeffreys intervals recommended on p108 of Brown et al. 
-(set to FALSE if informative priors are used)}
+(set to FALSE if using informative priors)}
 
 \item{...}{Additional arguments.}
 }

@@ -30,7 +30,7 @@
 #'   type="jeff" achieves much better coverage properties.
 #' @param adj Logical (default TRUE) indicating whether to apply the boundary 
 #'   adjustment for Jeffreys intervals recommended on p108 of Brown et al. 
-#'   (set to FALSE if informative priors are used) 
+#'   (set to FALSE if using informative priors) 
 #' @param ... Additional arguments.
 #' @inheritParams jeffreysci
 #' @importFrom stats pchisq pf pnorm pt qbeta qgamma qnorm qqnorm qt
@@ -134,25 +134,29 @@ moverci <- function(
     n2[special] <- nx[special]
   }
 
-  p1hat <- x1/n1
-  p2hat <- x2/n2
+  if (type %in% c("wilson", "exact", "p")) {
+    p1hat <- x1/n1
+    if (type != "p") p2hat <- x2/n2
+  }
 
   if (type == "jeff") {
     # MOVER-J, including optional 'continuity correction'
     j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = cc, level = level,
-                     distrib = distrib) #, adj = paste(contrast == "OR"))
+                     distrib = distrib, adj = adj) 
     if (contrast != "p") {
       j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = cc, level = level,
-                     distrib = distrib) #, adj = paste(contrast == "OR"))
+                     distrib = distrib, adj = adj) 
     } else j2 <- NULL
+    p1hat <- j1[, 3]
+    p2hat <- j2[, 3]
   } else if (type == "exact") {
     # MOVER-E based on Clopper-Pearson exact intervals - this can be 
     # removed if we have a wrapper function
     j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = 0.5, level = level,
-                     distrib = distrib) #, adj = paste(contrast == "OR"))
+                     distrib = distrib, adj = adj) 
     if (contrast != "p") {
       j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = 0.5, level = level,
-                     distrib = distrib) #, adj = paste(contrast == "OR"))
+                     distrib = distrib, adj = adj) 
     } else j2 <- NULL
   } else if (type == "wilson") {
     # or use Wilson intervals as per Newcombe 1998
@@ -190,9 +194,11 @@ moverci <- function(
     upper <- (q1hat * q2hat + sqrt(pmax(0, (q1hat * q2hat)^2 -
                 U1 * L2 * (2 * q1hat - U1) * (2 * q2hat - L2)))) /
                   (L2 * (2 * q2hat - L2))
-    upper[x2 == 0] <- Inf
-    lower[(x1 == 0 & x2 == n2) | (x1 == n1 & x2 == 0)] <- 0
-    upper[(x1 == 0 & x2 == n2) | (x1 == n1 & x2 == 0)] <- Inf
+    if (adj == TRUE) { #This is optional for informative priors
+      upper[x2 == 0] <- Inf
+      lower[(x1 == 0 & x2 == n2) | (x1 == n1 & x2 == 0)] <- 0
+      upper[(x1 == 0 & x2 == n2) | (x1 == n1 & x2 == 0)] <- Inf
+    }
   } else if (contrast == "RR") {
     # From Donner & Zou (2012), p351
     # or Li et al. (2014), p873
@@ -202,7 +208,9 @@ moverci <- function(
     upper <- (p1hat * p2hat + sqrt(pmax(0, (p1hat * p2hat)^2 -
                u1 * (2 * p2hat - l2) * (l2 * (2 * p1hat - u1))))) /
                   (l2 * (2 * p2hat - l2))
-    upper[x2 == 0] <- Inf
+    if (adj == TRUE) { #This is optional for informative priors
+      upper[x2 == 0] <- Inf
+    }
   }
   CI <- cbind(Lower = lower, Upper = upper)
   CI
@@ -268,19 +276,26 @@ jeffreysci <- function(
   alpha <- 1 - level
   if (distrib == "bin") {
     CI.lower <- qbeta( alpha/2, x + (ai - cc), n - x + (bi + cc))
+    est <- qbeta( 0.5, x + (ai), n - x + (bi))
     CI.upper <- qbeta(1 - alpha/2, x + (ai + cc), n - x + (bi - cc))
     if (adj == TRUE) { #recommended adjustment at boundary values
       CI.lower[x == 0] <- 0
       CI.upper[x == n] <- 1
+      est[x == 0] <- 0
+      est[x == n] <- 1
     }
   } else if (distrib == "poi") {
     # Jeffreys prior for Poisson rate uses gamma distribution,
     # as defined in Li et al. with "continuity correction" from Laud 2016.
     CI.lower <- qgamma(alpha/2, x + (ai - cc), scale = 1/n)
-    if (adj == TRUE)  CI.lower[x == 0] <-  0
+    est <- qgamma( 0.5, x + (ai), scale = 1/n)
+    if (adj == TRUE) {
+      CI.lower[x == 0] <-  0
+      est[x == 0] <-  0
+    } 
     CI.upper <- qgamma(1 - alpha/2, (x + (ai + cc)), scale = 1/n)
   }
-  CI <- cbind(Lower = CI.lower, Upper = CI.upper)
+  CI <- cbind(Lower = CI.lower, Upper = CI.upper, est = est)
   CI
 }
 

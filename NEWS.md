@@ -5,3 +5,5 @@
 * Fixed bug for stratified OR
 * Added option to suppress warnings in scoreci
 * Added Galbraith plot to scoreci
+* Altered boundary adjustment options in moverci
+* Changed point estimate used in moverci to posterior median for type = "jeff"
