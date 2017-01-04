@@ -16,8 +16,8 @@ respectively.}
 times (for Poisson rates) in each group.}
 
 \item{a1, b1, a2, b2}{Numbers defining the Beta(ai,bi) prior distributions for
-each group (default ai = bi = 0.5 for Jeffreys method). Gamma priors for
-Poisson rates require only a1, a2.}
+each group (default ai = bi = 0.5 for Jeffreys uninformative priors). Gamma 
+priors for Poisson rates require only a1, a2.}
 
 \item{distrib}{Character string indicating distribution assumed for the input
 data: "bin" = binomial (default), "poi" = Poisson.}

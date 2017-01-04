@@ -28,9 +28,9 @@
 #'   Newcombe 1998). NB: "wilson" option is included only for legacy validation
 #'   against previous published method by Newcombe. It is not recommended, as
 #'   type="jeff" achieves much better coverage properties.
-#' @param adj Logical (default TRUE) indicating whether to apply the boundary 
+#' @param adj Logical (default FALSE) indicating whether to apply the boundary 
 #'   adjustment for Jeffreys intervals recommended on p108 of Brown et al. 
-#'   (set to FALSE if using informative priors) 
+#'   (type = "jeff" only: set to FALSE if using informative priors) 
 #' @param ... Additional arguments.
 #' @inheritParams jeffreysci
 #' @importFrom stats pchisq pf pnorm pt qbeta qgamma qnorm qqnorm qt
@@ -78,7 +78,7 @@ moverci <- function(
   distrib = "bin",
   contrast = "RD",
   type = "jeff",
-  adj = TRUE,
+  adj = FALSE,
   ...
   ) {
   if (!(tolower(substr(type, 1, 4)) %in% c("jeff", "wils", "exac"))) {
@@ -113,6 +113,10 @@ moverci <- function(
     print("Odds ratio not applicable to Poisson rates")
     stop()
   }
+  if (adj == TRUE & !(tolower(substr(type, 1, 4)) == c("jeff"))) {
+    print("adj only applicable for type = 'jeff'")
+    stop()
+  }
   if (as.character(cc) == "TRUE") cc <- 0.5
   
   alpha <- 1 - level
@@ -134,12 +138,13 @@ moverci <- function(
     n2[special] <- nx[special]
   }
 
-  if (type %in% c("wilson", "exact", "p")) {
+  if (type %in% c("wilson", "p")) {
     p1hat <- x1/n1
     if (type != "p") p2hat <- x2/n2
   }
 
-  if (type == "jeff") {
+  if (type %in% c("jeff", "exact")) {
+    if (type =="exact") cc <- 0.5
     # MOVER-J, including optional 'continuity correction'
     j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = cc, level = level,
                      distrib = distrib, adj = adj) 
@@ -149,15 +154,6 @@ moverci <- function(
     } else j2 <- NULL
     p1hat <- j1[, 3]
     p2hat <- j2[, 3]
-  } else if (type == "exact") {
-    # MOVER-E based on Clopper-Pearson exact intervals - this can be 
-    # removed if we have a wrapper function
-    j1 <- jeffreysci(x1, n1, ai = a1, bi = b1, cc = 0.5, level = level,
-                     distrib = distrib, adj = adj) 
-    if (contrast != "p") {
-      j2 <- jeffreysci(x2, n2, ai = a2, bi = b2, cc = 0.5, level = level,
-                     distrib = distrib, adj = adj) 
-    } else j2 <- NULL
   } else if (type == "wilson") {
     # or use Wilson intervals as per Newcombe 1998
     #(NB could add cc here for completeness)
@@ -182,6 +178,10 @@ moverci <- function(
     lower <- p1hat - p2hat - sqrt(pmax(0, (p1hat - l1)^2 + (u2 - p2hat)^2))
     upper <- p1hat - p2hat + sqrt(pmax(0, (u1 - p1hat)^2 + (p2hat - l2)^2))
     est <-  p1hat - p2hat
+    if (adj == TRUE) { #This is optional for informative priors
+      lower[(x1 == 0 & x2 == n2)] <- -1
+      upper[(x1 == n1 & x2 == 0)] <- 1
+    }
   } else if (contrast == "OR") {
     # From Fagerland & Newcombe (2013), p2828 "Method 4"
     q1hat <- p1hat/(1 - p1hat)
@@ -214,6 +214,8 @@ moverci <- function(
     est <- p1hat/p2hat
     if (adj == TRUE) { #This is optional for informative priors
       upper[x2 == 0] <- Inf
+      lower[(x1 == 0)] <- 0
+#      upper[(x1 == n1 & x2 == 0)] <- Inf
     }
   }
   CI <- cbind(Lower = lower, Estimate = est, Upper = upper)
@@ -319,8 +321,8 @@ jeffreysci <- function(
 #' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
 #'   times (for Poisson rates) in each group.
 #' @param a1,b1,a2,b2 Numbers defining the Beta(ai,bi) prior distributions for
-#'   each group (default ai = bi = 0.5 for Jeffreys method). Gamma priors for
-#'   Poisson rates require only a1, a2.
+#'   each group (default ai = bi = 0.5 for Jeffreys uninformative priors). Gamma 
+#'   priors for Poisson rates require only a1, a2.
 #' @inheritParams moverci
 #' @export
 moverbci <- function(
@@ -352,6 +354,7 @@ moverbci <- function(
     level = level,
     cc = cc,
     type = "jeff",
+    adj = FALSE,
     ...
   ) 
 }

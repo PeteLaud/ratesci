@@ -7,7 +7,7 @@ rates.}
 \usage{
 moverci(x1, n1, x2 = NULL, n2 = NULL, a1 = 0.5, b1 = 0.5, a2 = 0.5,
   b2 = 0.5, cc = 0, level = 0.95, distrib = "bin", contrast = "RD",
-  type = "jeff", adj = TRUE, ...)
+  type = "jeff", adj = FALSE, ...)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
@@ -41,9 +41,9 @@ Newcombe 1998). NB: "wilson" option is included only for legacy validation
 against previous published method by Newcombe. It is not recommended, as
 type="jeff" achieves much better coverage properties.}
 
-\item{adj}{Logical (default TRUE) indicating whether to apply the boundary 
+\item{adj}{Logical (default FALSE) indicating whether to apply the boundary 
 adjustment for Jeffreys intervals recommended on p108 of Brown et al. 
-(set to FALSE if using informative priors)}
+(type = "jeff" only: set to FALSE if using informative priors)}
 
 \item{...}{Additional arguments.}
 }
