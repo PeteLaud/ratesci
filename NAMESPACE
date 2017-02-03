@@ -3,6 +3,7 @@
 export(jeffreysci)
 export(moverbci)
 export(moverci)
+export(pairbinci)
 export(scasci)
 export(scoreci)
 export(tdasci)

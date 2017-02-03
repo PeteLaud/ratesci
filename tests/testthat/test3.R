@@ -84,4 +84,13 @@ test_that("legacy methods match published examples", {
                   stratified = TRUE, tdas = TRUE)$estimates[,c(1,3)],4)),
     c(0.1928,0.4647)
   )
+  #paired methods examples from Agresti & Min 2005
+  expect_equal(
+    unname(round(pairbinci(x=c(53,16,8,9),contrast="RD")$estimates[,c(1,3)],4)),
+    c(-0.0191,0.2052)
+  )
+  expect_equal(
+    unname(round(pairbinci(x=c(53,16,8,9),contrast="OR")$estimates[c(1,3)],4)),
+    c(0.8718,4.8816)
+  )
 })
