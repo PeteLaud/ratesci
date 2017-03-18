@@ -4,6 +4,8 @@
 * Added pairbinci function for all comparisons of paired binomial rates
 * Added option to suppress warnings in scoreci
 * Added Galbraith plot to scoreci
+* Added qualitative interaction test to scoreci
+* Added stratum CIs to scoreci output when stratified = TRUE
 
 ## Bug fixes
 * Fixed bug for contrast = "p" in moverci
