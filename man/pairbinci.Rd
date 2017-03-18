@@ -37,7 +37,9 @@ ratio ("RR") or for odds ratio ("OR"), for paired binomial data.
 }
 \examples{
  
-  #RD:
-  pairbinci(c(7,25,2,68),contrast="RD")
+  #Data example from Agresti-Min 2005
+  pairbinci(c(53,16,8,9),contrast="RD")
+  pairbinci(c(53,16,8,9),contrast="RR")
+  pairbinci(c(53,16,8,9),contrast="OR")
 }
 

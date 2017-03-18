@@ -9,6 +9,6 @@
 * Fixed bug for contrast = "p" in moverci
 * Fixed bug in tdasci wrapper function
 * Fixed bug for stratified OR
-* Altered adjustment options for boundary cases in moverci and 
+* Altered adjustment options for boundary cases in moverci 
 * Changed point estimate used in moverci to posterior median for type = "jeff",
   to ensure consistent calculations with informative priors

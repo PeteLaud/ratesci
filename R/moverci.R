@@ -127,8 +127,10 @@ moverci <- function(
   if (length(n1) < lenx && lenx > 1) n1 <- rep(n1, length.out = lenx)
   if (length(n2) < lenx && lenx > 1) n2 <- rep(n2, length.out = lenx)
   
-  if (contrast == "OR") {
-    # special cases for OR handled as per Fagerland & Newcombe Table III
+  if (contrast == "OR" && type == "wilson") {
+    # special cases for OR handled as per Fagerland & Newcombe Table III 
+    # - not needed for MOVER-J now that xi/ni is not used for p.hat
+    # but still needed for legacy Wilson method
     special <- (x2 == n2) | (x1 == n1)
     xx <- x2
     x2[special] <- (n1 - x1)[special]
