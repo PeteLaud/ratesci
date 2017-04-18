@@ -9,14 +9,16 @@ Author: Pete Laud [aut, cre]
 Maintainer: Pete Laud <p.j.laud@sheffield.ac.uk>
 Description: Computes confidence intervals for the rate (or risk)
     difference ("RD") or rate ratio (or relative risk, "RR") for 
-    independent binomial proportions or Poisson rates, or for odds ratio 
+    binomial proportions or Poisson rates, or for odds ratio 
     ("OR", binomial only). Also confidence intervals for a single 
-    binomial or Poisson rate. Includes asymptotic score methods including
-    skewness corrections, which have been developed from Miettinen
-    & Nurminen (1985) <doi:10.1002/sim.4780040211> and Gart & Nam (1988)
-    <doi:10.2307/2531848>. Also includes MOVER methods
+    binomial or Poisson rate, and intervals for matched pairs. 
+    Includes asymptotic score methods including skewness corrections, 
+    which have been developed in Laud (2017) <in press>
+    from Miettinen & Nurminen (1985) <doi:10.1002/sim.4780040211> and 
+    Gart & Nam (1988) <doi:10.2307/2531848>. Also includes MOVER methods
     (Method Of Variance Estimates Recovery), derived from the
-    Newcombe method but using equal-tailed Jeffreys intervals. 
+    Newcombe method but using equal-tailed Jeffreys intervals,
+    and generalised for incorporating prior information. 
     Also methods for stratified calculations (e.g. meta-analysis),
     either assuming fixed effects or incorporating stratum
     heterogeneity.

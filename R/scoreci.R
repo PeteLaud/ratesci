@@ -5,7 +5,7 @@
 #' ratio ("RR") for independent binomial or Poisson rates, or for odds ratio 
 #' ("OR", binomial only). Including options for bias correction (from Miettinen 
 #' & Nurminen), skewness correction ("GNbc" method from Laud & Dane, developed
-#' from Gart & Nam, and generalised as "SCAS" in forthcoming publication) and
+#' from Gart & Nam, and generalised as "SCAS" in Laud 2017 [in press]) and
 #' continuity correction. Also includes intervals for a single proportion, i.e.
 #' Wilson score method, with skewness correction, which has slightly better
 #' coverage properties than the Jeffreys method. This function is vectorised in
@@ -36,7 +36,8 @@
 #' @param delta Number to be used in a one-sided significance test (e.g. 
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 #'   excludes delta. NB: can also be used for a superiority test by setting 
-#'   delta=0.
+#'   delta=0. By default, a two-sided test against delta=0 is also output: 
+#'   if bcf=F and skew=F this is the same as Pearson's Chi-squared test.
 #' @param precis Number (default 6) specifying precision to be used in
 #'   optimisation subroutine (i.e. number of decimal places).
 #' @param plot Logical (default FALSE) indicating whether to output plot of the
@@ -53,7 +54,7 @@
 #'   method for stratified data (defined in Laud 2016).
 #' @param warn Logical (default TRUE) giving the option to suppress warnings.
 #' @param ... Other arguments.
-#' @importFrom stats pchisq pf pnorm pt qbeta qgamma qnorm qqnorm qt
+#' @importFrom stats pchisq pf pnorm pt qbeta qgamma qnorm qqnorm qt dbinom
 #' @importFrom graphics abline lines text
 #' @return A list containing the following components: \describe{ 
 #'   \item{estimates}{a matrix containing estimates of the rates in each group 
@@ -105,7 +106,7 @@
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references 
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of 
-#'   rates: Submitted to Pharmaceutical Statistics for peer review.
+#'   rates. Pharmaceutical Statistics [in press].
 #'   
 #'   Laud PJ, Dane A. Confidence intervals for the difference between independent 
 #'   binomial proportions: comparison using a graphical approach and
@@ -428,19 +429,13 @@ scoreci <- function(
 	} else delta0 <- 1
 	if (is.null(delta)) {
 	  delta <- delta0
-	  qualdelta <- point
-	} else qualdelta <- delta
+	} 
 	scorezero <- scoretheta(theta = delta0, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
 	                        stratified = stratified,
 	                        wt = wt, weighting = weighting, tdas = tdas,
 	                        bcf = bcf, contrast = contrast, distrib = distrib,
 	                        skew = skew, cc = cc)
 	scoredelta <- scoretheta(theta = delta, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
-	                         stratified = stratified,
-	                         wt = wt, weighting = weighting, tdas = tdas,
-	                         bcf = bcf, contrast = contrast, distrib = distrib,
-	                         skew = skew, cc = cc)
-	scorequal <- scoretheta(theta = qualdelta, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
 	                         stratified = stratified,
 	                         wt = wt, weighting = weighting, tdas = tdas,
 	                         bcf = bcf, contrast = contrast, distrib = distrib,
@@ -454,10 +449,10 @@ scoreci <- function(
 	              scoredelta = scoredelta$score, pval.left, pval.right) #, sdot = at.MLE$Sdot)
 
 	#Add qualitative interaction test as per equation S4 of Laud 2017
-	Qc.i <- scorequal$Q.i
-	Qc.i.S3 <- scorequal$Q.i.S3
+	Qc.i <- scoredelta$Q.i
+	Qc.i.S3 <- scoredelta$Q.i.S3
 #	Qc.i.S3 <- at.MLE$Q.i.S3
-	Qc <- min(sum(scorequal$Q.i.S3[scorequal$Stheta > 0]), sum(scorequal$Q.i.S3[scorequal$Stheta < 0]))
+	Qc <- min(sum(scoredelta$Q.i.S3[scoredelta$Stheta > 0]), sum(scoredelta$Q.i.S3[scoredelta$Stheta < 0]))
 #	Qc <- min(sum(scoredelta$Q.i[scoredelta$Stheta > 0]), sum(scoredelta$Q.i[scoredelta$Stheta < 0]))
 	Qcprob <- 0
 	for (h in 1:(nstrat - 1)) {
@@ -916,7 +911,10 @@ scoretheta <- function (
 		if (weighting == "IVS") {
 		  Q.i <- wt * ((Stheta - Sdot)^2)  #This version for iterative weights?
 		  Q.i.S3 <- wt * ((Stheta)^2)  #This version for iterative weights?
-		} else Q.i <- ((Stheta - Sdot)^2)/V
+		} else {
+		  Q.i <- ((Stheta - Sdot)^2)/V
+		  Q.i.S3 <- ((Stheta)^2)/V
+		}
 		Q <- sum(Q.i)
 #		Q[all(Stheta == Inf)] <- 0 #Attempt to get scoretheta(0) to work for contrast=="OR"
 		W <- sum(wt)

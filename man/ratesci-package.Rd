@@ -30,7 +30,7 @@ Pete Laud, \email{p.j.laud@sheffield.ac.uk}
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
-rates: Submitted to Pharmaceutical Statistics for peer review.
+rates. Pharmaceutical Statistics [in press].
 
 Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
 Medicine 1985; 4:213-226.

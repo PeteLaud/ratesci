@@ -41,7 +41,8 @@ correction.}
 \item{delta}{Number to be used in a one-sided significance test (e.g. 
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 excludes delta. NB: can also be used for a superiority test by setting 
-delta=0.}
+delta=0. By default, a two-sided test against delta=0 is also output: 
+if bcf=F and skew=F this is the same as Pearson's Chi-squared test.}
 
 \item{precis}{Number (default 6) specifying precision to be used in
 optimisation subroutine (i.e. number of decimal places).}
@@ -86,7 +87,7 @@ Score-based confidence intervals for the rate (or risk) difference ("RD") or
 ratio ("RR") for independent binomial or Poisson rates, or for odds ratio 
 ("OR", binomial only). Including options for bias correction (from Miettinen 
 & Nurminen), skewness correction ("GNbc" method from Laud & Dane, developed
-from Gart & Nam, and generalised as "SCAS" in forthcoming publication) and
+from Gart & Nam, and generalised as "SCAS" in Laud 2017 [in press]) and
 continuity correction. Also includes intervals for a single proportion, i.e.
 Wilson score method, with skewness correction, which has slightly better
 coverage properties than the Jeffreys method. This function is vectorised in
@@ -138,7 +139,7 @@ Pete Laud, \email{p.j.laud@sheffield.ac.uk}
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
-  rates: Submitted to Pharmaceutical Statistics for peer review.
+  rates. Pharmaceutical Statistics [in press].
   
   Laud PJ, Dane A. Confidence intervals for the difference between independent 
   binomial proportions: comparison using a graphical approach and

@@ -45,7 +45,7 @@
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references 
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of 
-#'   rates: Submitted to Pharmaceutical Statistics for peer review Oct 2016.
+#'   rates. Pharmaceutical Statistics [in press].
 #'   
 #'   Newcombe RG. Interval estimation for the difference between independent 
 #'   proportions: comparison of eleven methods. Statistics in Medicine 1998;

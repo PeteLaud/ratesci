@@ -32,7 +32,8 @@ correction.}
 \item{delta}{Number to be used in a one-sided significance test (e.g. 
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 excludes delta. NB: can also be used for a superiority test by setting 
-delta=0.}
+delta=0. By default, a two-sided test against delta=0 is also output: 
+if bcf=F and skew=F this is the same as Pearson's Chi-squared test.}
 
 \item{precis}{Number (default 6) specifying precision to be used in
 optimisation subroutine (i.e. number of decimal places).}

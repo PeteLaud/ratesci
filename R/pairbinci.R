@@ -3,7 +3,11 @@
 #' 
 #' Score-based confidence intervals for the rate (or risk) difference ("RD"), rate 
 #' ratio ("RR") or for odds ratio ("OR"), for paired binomial data. 
-#' [For paired Poisson rates, use the tdasci function with distrib="poi".]
+#' [For paired Poisson rates, use the tdasci function with distrib="poi",
+#' with pairs as strata.].
+#' This function applies the stratified TDAS method for RD and RR. For OR, an 
+#' interval is produced based on transforming a SCAS interval for the single 
+#' proportion.
 #' 
 #' @param x A numeric vector object specified as c(a,b,c,d) 
 #'   where:
@@ -29,6 +33,14 @@
 #'   pairbinci(c(53,16,8,9),contrast="RD")
 #'   pairbinci(c(53,16,8,9),contrast="RR")
 #'   pairbinci(c(53,16,8,9),contrast="OR")
+#' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
+#' @references 
+#'   Laud PJ. Equal-tailed confidence intervals for comparison of 
+#'   rates. Pharmaceutical Statistics [in press].
+#'   
+#'   Fagerland MW, Lydersen S, Laake P. Recommended tests and
+#'   confidence intervals for paired binomial proportions. Statistics in
+#'   Medicine 2014; 33(16):2850–2875
 #' @export
 
 pairbinci <- function(
