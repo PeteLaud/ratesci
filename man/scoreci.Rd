@@ -7,8 +7,9 @@ rates.}
 \usage{
 scoreci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
   level = 0.95, skew = TRUE, bcf = TRUE, cc = 0, delta = NULL,
-  precis = 6, plot = FALSE, plotmax = 100, stratified = FALSE,
-  weighting = "IVS", wt = NULL, tdas = FALSE, warn = TRUE, ...)
+  theta0 = NULL, precis = 6, plot = FALSE, plotmax = 100,
+  stratified = FALSE, weighting = "IVS", wt = NULL, tdas = FALSE,
+  warn = TRUE, ...)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
@@ -38,11 +39,13 @@ methods (i.e. Gart & Nam, Mee).}
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
 correction.}
 
-\item{delta}{Number to be used in a one-sided significance test (e.g. 
+\item{delta}{(deprecated: parameter renamed to theta0)}
+
+\item{theta0}{Number to be used in a one-sided significance test (e.g. 
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
-excludes delta. NB: can also be used for a superiority test by setting 
-delta=0. By default, a two-sided test against delta=0 is also output: 
-if bcf=F and skew=F this is the same as Pearson's Chi-squared test.}
+excludes theta0. NB: can also be used for a superiority test by setting 
+theta0 = 0 (RD) or 1 (RR/OR). By default, a two-sided test against theta0 = 0 or 1
+is also output: if bcf=F and skew=F this is the same as Pearson's Chi-squared test.}
 
 \item{precis}{Number (default 6) specifying precision to be used in
 optimisation subroutine (i.e. number of decimal places).}
@@ -75,7 +78,7 @@ A list containing the following components: \describe{
   and of the requested contrast, with its confidence interval} \item{pval}{a 
   matrix containing details of the corresponding 2-sided significance test 
   against the null hypothesis that p_1 = p_2, and one-sided significance 
-  tests agains the null hypothesis that theta >= or <= delta} 
+  tests agains the null hypothesis that theta >= or <= theta0} 
   \item{call}{details of the function call} }
   If stratified = TRUE, the following outputs are added: \describe{
   \item{Qtest}{a vector of values descibing and testing heterogeneity}

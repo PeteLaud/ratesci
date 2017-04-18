@@ -33,11 +33,12 @@
 #'   methods (i.e. Gart & Nam, Mee).
 #' @param cc Number or logical (default FALSE) specifying (amount of) continuity
 #'   correction.
-#' @param delta Number to be used in a one-sided significance test (e.g. 
+#' @param delta (deprecated: parameter renamed to theta0)
+#' @param theta0 Number to be used in a one-sided significance test (e.g. 
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
-#'   excludes delta. NB: can also be used for a superiority test by setting 
-#'   delta=0. By default, a two-sided test against delta=0 is also output: 
-#'   if bcf=F and skew=F this is the same as Pearson's Chi-squared test.
+#'   excludes theta0. NB: can also be used for a superiority test by setting 
+#'   theta0 = 0 (RD) or 1 (RR/OR). By default, a two-sided test against theta0 = 0 or 1
+#'   is also output: if bcf=F and skew=F this is the same as Pearson's Chi-squared test.
 #' @param precis Number (default 6) specifying precision to be used in
 #'   optimisation subroutine (i.e. number of decimal places).
 #' @param plot Logical (default FALSE) indicating whether to output plot of the
@@ -61,7 +62,7 @@
 #'   and of the requested contrast, with its confidence interval} \item{pval}{a 
 #'   matrix containing details of the corresponding 2-sided significance test 
 #'   against the null hypothesis that p_1 = p_2, and one-sided significance 
-#'   tests agains the null hypothesis that theta >= or <= delta} 
+#'   tests agains the null hypothesis that theta >= or <= theta0} 
 #'   \item{call}{details of the function call} }
 #'   If stratified = TRUE, the following outputs are added: \describe{
 #'   \item{Qtest}{a vector of values descibing and testing heterogeneity}
@@ -140,6 +141,7 @@ scoreci <- function(
 	bcf = TRUE,
 	cc = 0,
 	delta = NULL,
+	theta0 = NULL,
 	precis = 6,
 	plot = FALSE,	
 	plotmax = 100,
@@ -150,6 +152,11 @@ scoreci <- function(
 	warn = TRUE,
 	...
 	) { 
+  if (!missing(delta)) {
+    warning("argument delta is deprecated; please use theta0 instead.", 
+            call. = FALSE)
+    theta0 <- delta
+  }
   if (!(tolower(substr(distrib, 1, 3)) %in% c("bin", "poi"))) {
     print("Distrib must be one of 'bin' or 'poi'")
     stop()
@@ -162,11 +169,15 @@ scoreci <- function(
 	  print("argument x2 or n2 missing")
 	  stop()
 	}
-  if (!is.numeric(c(x1, n1, x2, n2, delta))) {
-		print("Non-numeric inputs!")
-		stop()
-	}
-	if (any(c(x1, n1, x2, n2) < 0)) {
+  if ((contrast != "p") && !is.numeric(c(x1, n1, x2, n2, theta0))) {
+    print("Non-numeric inputs!")
+    stop()
+  }
+  if ((contrast == "p") && !is.numeric(c(x1, n1, theta0))) {
+    print("Non-numeric inputs!")
+    stop()
+  }
+  if (any(c(x1, n1, x2, n2) < 0)) {
 		print("Negative inputs!")
 		stop()
 	}	
@@ -174,15 +185,15 @@ scoreci <- function(
     print("x1 > n1 or x2 > n2 not possible for distrib = 'bin'")
     stop()
   }
-  if (!is.null(delta)) {	
+  if (!is.null(theta0)) {	
 		if (contrast == "RD") {
-			if (distrib == "bin" && (delta < -1 || delta > 1)) {
-				print("Impossible delta!")
+			if (distrib == "bin" && (theta0 < -1 || theta0 > 1)) {
+				print("Impossible theta0!")
 				stop()			
 			}
 		} else if (contrast == "p") {
-		  if (delta < 0 || (distrib == "bin" && delta > 1)) {
-		    print("Impossible delta!")
+		  if (theta0 < 0 || (distrib == "bin" && theta0 > 1)) {
+		    print("Impossible theta0!")
 		    stop()			
 		  }
 		}
@@ -420,40 +431,40 @@ scoreci <- function(
 	  level = level, inputs,
 	  p1hat = p1hat.w, p2hat = p2hat.w, p1mle = p1d.w, p2mle = p2d.w)
 
-	# optionally add p-value for a test of null hypothesis: theta<=delta
-	# default value of delta depends on contrast
+	# optionally add p-value for a test of null hypothesis: theta<=theta0
+	# default value of theta0 depends on contrast
 	if (contrast == "RD") {
-	  delta0 <- 0 
+	  theta00 <- 0 
 	} else if (contrast == "p") {
-	  delta0 <- 0.5
-	} else delta0 <- 1
-	if (is.null(delta)) {
-	  delta <- delta0
+	  theta00 <- 0.5
+	} else theta00 <- 1
+	if (is.null(theta0)) {
+	  theta0 <- theta00
 	} 
-	scorezero <- scoretheta(theta = delta0, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
+	scorezero <- scoretheta(theta = theta00, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
 	                        stratified = stratified,
 	                        wt = wt, weighting = weighting, tdas = tdas,
 	                        bcf = bcf, contrast = contrast, distrib = distrib,
 	                        skew = skew, cc = cc)
-	scoredelta <- scoretheta(theta = delta, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
+	scorenull <- scoretheta(theta = theta0, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
 	                         stratified = stratified,
 	                         wt = wt, weighting = weighting, tdas = tdas,
 	                         bcf = bcf, contrast = contrast, distrib = distrib,
 	                         skew = skew, cc = cc)
-	pval.left <- scoredelta$pval
+	pval.left <- scorenull$pval
 	pval.right <- 1 - pval.left
 	chisq.zero <- scorezero$score^2
 	pval2sided <- pchisq(chisq.zero, 1, lower.tail = FALSE)
 	if (tdas == TRUE) pval2sided <- pf(chisq.zero, 1, nstrat - 1, lower.tail = FALSE)
-	pval <- cbind(chisq = chisq.zero, pval2sided, delta = delta,
-	              scoredelta = scoredelta$score, pval.left, pval.right) #, sdot = at.MLE$Sdot)
+	pval <- cbind(chisq = chisq.zero, pval2sided, theta0 = theta0,
+	              scorenull = scorenull$score, pval.left, pval.right) #, sdot = at.MLE$Sdot)
 
 	#Add qualitative interaction test as per equation S4 of Laud 2017
-	Qc.i <- scoredelta$Q.i
-	Qc.i.S3 <- scoredelta$Q.i.S3
+	Qc.i <- scorenull$Q.i
+	Qc.i.S3 <- scorenull$Q.i.S3
 #	Qc.i.S3 <- at.MLE$Q.i.S3
-	Qc <- min(sum(scoredelta$Q.i.S3[scoredelta$Stheta > 0]), sum(scoredelta$Q.i.S3[scoredelta$Stheta < 0]))
-#	Qc <- min(sum(scoredelta$Q.i[scoredelta$Stheta > 0]), sum(scoredelta$Q.i[scoredelta$Stheta < 0]))
+	Qc <- min(sum(scorenull$Q.i.S3[scorenull$Stheta > 0]), sum(scorenull$Q.i.S3[scorenull$Stheta < 0]))
+#	Qc <- min(sum(scorenull$Q.i[scorenull$Stheta > 0]), sum(scorenull$Q.i[scorenull$Stheta < 0]))
 	Qcprob <- 0
 	for (h in 1:(nstrat - 1)) {
 	  Qcprob <- Qcprob + (1 - pchisq(Qc,h)) * dbinom(h, size = nstrat - 1, prob = 0.5)
@@ -548,7 +559,7 @@ scoreci <- function(
 	                      p1hatj = p1hat, p2hatj = p2hat, 
 	                      wtpct.fixed = wt1pct, wtpct.rand = wtpct, 
 	                      theta.j = point.FE.unstrat, lower.j = lower.unstrat, upper.j = upper.unstrat))) 
-#	  Qj = Q.each, Qc.j = Qc.i, Qc.j.S3 = Qc.i.S3,atmle = at.MLE$Stheta,  p1d=p1d.MLE,p2d=p2d.MLE,Stheta=Stheta.MLE,V.MLE, atdelta = scoredelta$Stheta, atmle = at.MLE$Stheta)))
+#	  Qj = Q.each, Qc.j = Qc.i, Qc.j.S3 = Qc.i.S3,atmle = at.MLE$Stheta,  p1d=p1d.MLE,p2d=p2d.MLE,Stheta=Stheta.MLE,V.MLE, atnull = scorenull$Stheta, atmle = at.MLE$Stheta)))
 	}
 	outlist <- append(outlist, list(call = c(distrib = distrib,
 	                 contrast = contrast, level = level, skew = skew,
@@ -586,6 +597,7 @@ scasci <- function(
   level = 0.95,
   cc = 0,
   delta = NULL,
+  theta0 = NULL,
   precis = 6,
   plot = FALSE,	
   plotmax = 100,
@@ -594,6 +606,11 @@ scasci <- function(
   wt = NULL,
   ...
 ) { 
+  if (!missing(delta)) {
+    warning("argument delta is deprecated; please use theta0 instead.", 
+            call. = FALSE)
+    theta0 <- delta
+  }
   scoreci(
     x1 = x1,
     n1 = n1,
@@ -603,7 +620,7 @@ scasci <- function(
     contrast = contrast,
     level = level,
     cc = cc,
-    delta = delta,
+    theta0 = theta0,
     precis = precis,
     plot = plot,	
     plotmax = plotmax,
@@ -642,6 +659,7 @@ tdasci <- function(
   level = 0.95,
   cc = 0,
   delta = NULL,
+  theta0 = NULL,
   precis = 6,
   plot = FALSE,	
   plotmax = 100,
@@ -649,6 +667,11 @@ tdasci <- function(
   wt = NULL,
   ...
 ) { 
+  if (!missing(delta)) {
+    warning("argument delta is deprecated; please use theta0 instead.", 
+            call. = FALSE)
+    theta0 <- delta
+  }
   scoreci(
     x1 = x1,
     n1 = n1,
@@ -658,7 +681,7 @@ tdasci <- function(
     contrast = contrast,
     level = level,
     cc = cc,
-    delta = delta,
+    theta0 = theta0,
     precis = precis,
     plot = plot,	
     plotmax = plotmax,

@@ -6,8 +6,8 @@
 comparisons of independent binomial or Poisson rates.}
 \usage{
 tdasci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
-  level = 0.95, cc = 0, delta = NULL, precis = 6, plot = FALSE,
-  plotmax = 100, weighting = "IVS", wt = NULL, ...)
+  level = 0.95, cc = 0, delta = NULL, theta0 = NULL, precis = 6,
+  plot = FALSE, plotmax = 100, weighting = "IVS", wt = NULL, ...)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
@@ -29,11 +29,13 @@ single proportion.}
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
 correction.}
 
-\item{delta}{Number to be used in a one-sided significance test (e.g. 
+\item{delta}{(deprecated: parameter renamed to theta0)}
+
+\item{theta0}{Number to be used in a one-sided significance test (e.g. 
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
-excludes delta. NB: can also be used for a superiority test by setting 
-delta=0. By default, a two-sided test against delta=0 is also output: 
-if bcf=F and skew=F this is the same as Pearson's Chi-squared test.}
+excludes theta0. NB: can also be used for a superiority test by setting 
+theta0 = 0 (RD) or 1 (RR/OR). By default, a two-sided test against theta0 = 0 or 1
+is also output: if bcf=F and skew=F this is the same as Pearson's Chi-squared test.}
 
 \item{precis}{Number (default 6) specifying precision to be used in
 optimisation subroutine (i.e. number of decimal places).}
