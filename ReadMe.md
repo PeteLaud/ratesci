@@ -2,7 +2,7 @@ ratesci
 =====
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ratesci)](http://cran.r-project.org/package=ratesci)
-[![Travis-CI Build Status](https://travis-ci.org/NA/NA.svg?branch=master)](https://travis-ci.org/NA/NA)
+[![Travis-CI Build Status](https://travis-ci.org/PeteLaud/ratesci.svg?branch=master)](https://travis-ci.org/PeteLaud/ratesci)
 
 ratesci is an [R](http://www.r-project.org) package to compute confidence intervals for rate (or risk) difference ('RD'), rate ratio ('RR', also known as relative risk), or odds ratio ('OR'). All three contrasts apply for binomial proportions, and the first two may also be used for the comparison of Poisson 'exposure-adjusted' incidence rates. The package incorporates novel "skewness-corrected" asymptotic score methods, which ensure equal-tailed coverage (or central location), in other words for a nominal 95% confidence interval, the one-sided non-coverage probability is (on average) close to 2.5% on each side. Stratified calculations are also catered for (e.g. meta-analysis, including random effects), as well as confidence intervals for the single binomial or Poisson rate, and for matched pairs.  Corresponding hypothesis tests against any specified null parameter value are provided in each case.
 
