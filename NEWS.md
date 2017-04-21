@@ -1,4 +1,4 @@
-# ratesci 0.1-0.9000
+# ratesci 0.2-0
 
 ## New features
 * Added pairbinci function for all comparisons of paired binomial rates.

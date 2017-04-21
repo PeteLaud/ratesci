@@ -1,7 +1,7 @@
 Package: ratesci
 Type: Package
 Title: Confidence Intervals for Comparisons of Binomial or Poisson Rates
-Version: 0.1-0.9000
+Version: 0.2-0
 Date: 2017-04-21
 Authors@R: person("Pete", "Laud", email = "p.j.laud@sheffield.ac.uk",
                   role = c("aut", "cre"))
