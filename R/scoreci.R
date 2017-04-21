@@ -334,7 +334,7 @@ scoreci <- function(
 	  wt.FE <- at.FE$wt
 	  V.FE <- at.FE$V
 	  tau2.FE <- at.FE$tau2
-	  Q.each <- at.FE$Q.i
+	  Q.each <- at.FE$Q.j
 	  Q.FE <- at.FE$Q
 	  I2 <- max(0, 100 * (Q.FE - (nstrat - 1))/Q.FE)
 	  pval.het <- 1 - pchisq(Q.FE, nstrat - 1)
@@ -377,7 +377,6 @@ scoreci <- function(
 	  myfun(theta) + qtnorm, contrast = contrast, distrib = distrib,
 	  precis = precis + 1, uplow = "up")
 
-	
 	#get estimate & CI for each stratum
 	if(stratified == TRUE) {
 	  at.MLE.unstrat <- scoretheta(theta = point, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
@@ -460,16 +459,17 @@ scoreci <- function(
 	              scorenull = scorenull$score, pval.left, pval.right) #, sdot = at.MLE$Sdot)
 
 	#Add qualitative interaction test as per equation S4 of Laud 2017
-	Qc.i <- scorenull$Q.i
-	Qc.i.S3 <- scorenull$Q.i.S3
-#	Qc.i.S3 <- at.MLE$Q.i.S3
-	Qc <- min(sum(scorenull$Q.i.S3[scorenull$Stheta > 0]), sum(scorenull$Q.i.S3[scorenull$Stheta < 0]))
-#	Qc <- min(sum(scorenull$Q.i[scorenull$Stheta > 0]), sum(scorenull$Q.i[scorenull$Stheta < 0]))
-	Qcprob <- 0
-	for (h in 1:(nstrat - 1)) {
-	  Qcprob <- Qcprob + (1 - pchisq(Qc,h)) * dbinom(h, size = nstrat - 1, prob = 0.5)
+	if (stratified == TRUE && nstrat > 1) {
+  	Qc.j <- (scorenull$Stheta)^2 / at.FE$V #V is evaluated at the fixed effects MLE
+  	Qc_m <- sum(Qc.j[scorenull$Stheta > 0])
+  	Qc_p <- sum(Qc.j[scorenull$Stheta < 0])
+  	Qc <- min(Qc_m, Qc_p)
+  	Qcprob <- 0
+  	for (h in 1:(nstrat - 1)) {
+  	  Qcprob <- Qcprob + (1 - pchisq(Qc,h)) * dbinom(h, size = nstrat - 1, prob = 0.5)
+  	}
 	}
-	
+
 	# Optional plot of the score function.
 	# Ideally this would be in a separate function, but it is unlikely to be used
 	# much in practice - only included for code development and validation purposes.
@@ -550,7 +550,8 @@ scoreci <- function(
 
 	outlist <- list(estimates = estimates, pval = pval) 
 	if (stratified == TRUE) {
-	  Qtest <- c(Q = Q.FE, pval.het = pval.het, I2 = I2, Qc = Qc, pval.qualhet = Qcprob) #tau2 = tau2.FE, 
+	  Qtest <- c(Q = Q.FE, pval.het = pval.het, I2 = I2, Qc = Qc, pval.qualhet = Qcprob) #tau2 = tau2.FE, Qc_m, Qc_p, 
+	  #NB Qc_m + Qc_p = Q only when theta0=MLE 
 	  wtpct <- 100 * wt.MLE/sum(wt.MLE)
 	  wt1pct <- 100 * wt.FE/sum(wt.FE)
 	  outlist <- append(outlist,
@@ -559,7 +560,7 @@ scoreci <- function(
 	                      p1hatj = p1hat, p2hatj = p2hat, 
 	                      wtpct.fixed = wt1pct, wtpct.rand = wtpct, 
 	                      theta.j = point.FE.unstrat, lower.j = lower.unstrat, upper.j = upper.unstrat))) 
-#	  Qj = Q.each, Qc.j = Qc.i, Qc.j.S3 = Qc.i.S3,atmle = at.MLE$Stheta,  p1d=p1d.MLE,p2d=p2d.MLE,Stheta=Stheta.MLE,V.MLE, atnull = scorenull$Stheta, atmle = at.MLE$Stheta)))
+#	  Qj = Q.each, Qc.j = Qc.j, atmle = at.MLE$Stheta,p1d=p1d.MLE,p2d=p2d.MLE,Stheta=Stheta.MLE,V.MLE, atnull = scorenull$Stheta, atmle = at.MLE$Stheta)))
 	}
 	outlist <- append(outlist, list(call = c(distrib = distrib,
 	                 contrast = contrast, level = level, skew = skew,
@@ -930,16 +931,13 @@ scoretheta <- function (
 	    }
 	  } else weighting <- "User-defined"
 
-		Sdot <- sum(wt * Stheta)/sum(wt)
-		if (weighting == "IVS") {
-		  Q.i <- wt * ((Stheta - Sdot)^2)  #This version for iterative weights?
-		  Q.i.S3 <- wt * ((Stheta)^2)  #This version for iterative weights?
-		} else {
-		  Q.i <- ((Stheta - Sdot)^2)/V
-		  Q.i.S3 <- ((Stheta)^2)/V
-		}
-		Q <- sum(Q.i)
-#		Q[all(Stheta == Inf)] <- 0 #Attempt to get scoretheta(0) to work for contrast=="OR"
+		Sdot <- sum(wt * Stheta)/sum(wt)  
+		#NB the skewness correction is omitted for the heterogeneity test statistics.
+	  Q.j <- ((Stheta - Sdot)^2)/V 
+	  #NB it is necessary to include Sdot here for TDAS method to work.
+	  # - for the heterogeneity test evaluated at MLE, Sdot will equal 0 if skew=F
+		Q <- sum(Q.j) #NB it is necessary to use equation S2 here for TDAS method to work
+		#		Q[all(Stheta == Inf)] <- 0 #Attempt to get scoretheta(0) to work for contrast=="OR"
 		W <- sum(wt)
 		
 		if (weighting == "IVS") {
@@ -1001,7 +999,7 @@ scoretheta <- function (
 	                p2d = p2d, mu3 = mu3, pval = pval)
 	if (stratified) {
 	  outlist <- append(outlist, list(Sdot = Sdot, Vdot = Vdot, tau2 = tau2,
-	             VS = VS, t2 = t2, Q.i = Q.i, Q.i.S3 = Q.i.S3, Q = Q, wt = wt, p1ds = p1ds, p2ds = p2ds))
+	             VS = VS, t2 = t2, Q.j = Q.j, Q = Q, wt = wt, p1ds = p1ds, p2ds = p2ds))
 	}
 	return(outlist)
 }
