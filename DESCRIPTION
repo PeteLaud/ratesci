@@ -13,7 +13,7 @@ Description: Computes confidence intervals for the rate (or risk)
     ("OR", binomial only). Also confidence intervals for a single 
     binomial or Poisson rate, and intervals for matched pairs. 
     Includes asymptotic score methods including skewness corrections, 
-    which have been developed in Laud (2017) <in press>
+    which have been developed in Laud (2017, in press) <doi:10.1002/pst.1813>
     from Miettinen & Nurminen (1985) <doi:10.1002/sim.4780040211> and 
     Gart & Nam (1988) <doi:10.2307/2531848>. Also includes MOVER methods
     (Method Of Variance Estimates Recovery), derived from the
