@@ -1,7 +1,7 @@
 Package: ratesci
 Type: Package
 Title: Confidence Intervals for Comparisons of Binomial or Poisson Rates
-Version: 0.2-0
+Version: 0.2-0.9000
 Date: 2017-04-21
 Authors@R: person("Pete", "Laud", email = "p.j.laud@sheffield.ac.uk",
                   role = c("aut", "cre"))
@@ -12,14 +12,16 @@ Description: Computes confidence intervals for the rate (or risk)
     binomial proportions or Poisson rates, or for odds ratio 
     ("OR", binomial only). Also confidence intervals for a single 
     binomial or Poisson rate, and intervals for matched pairs. 
-    Includes asymptotic score methods including skewness corrections, 
-    which have been developed in Laud (2017, in press)
+    Includes skewness-corrected asymptotic score ("SCAS") methods, 
+    which have been developed in Laud (2017) <doi:10.1002/pst.1813>
     from Miettinen & Nurminen (1985) <doi:10.1002/sim.4780040211> and 
     Gart & Nam (1988) <doi:10.2307/2531848>. Also includes MOVER methods
-    (Method Of Variance Estimates Recovery), derived from the
-    Newcombe method but using equal-tailed Jeffreys intervals,
-    and generalised for incorporating prior information. 
-    Also methods for stratified calculations (e.g. meta-analysis),
+    (Method Of Variance Estimates Recovery) for all contrasts, derived 
+    from the Newcombe method but using equal-tailed Jeffreys intervals,
+    and generalised for incorporating prior information. So-called
+    'exact' methods for strictly conservative coverage are approximated
+    using continuity corrections.
+    Also inlcudes methods for stratified calculations (e.g. meta-analysis),
     either assuming fixed effects or incorporating stratum
     heterogeneity.
 Depends: R (>= 3.2.5)

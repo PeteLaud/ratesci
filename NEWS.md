@@ -1,3 +1,7 @@
+# ratesci 0.2-0.9000
+
+* Clarified documentation regarding continuity corrections
+
 # ratesci 0.2-0
 
 ## New features

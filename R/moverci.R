@@ -17,17 +17,21 @@
 #'   each group (default ai = bi = 0.5 for Jeffreys method). Gamma priors for
 #'   Poisson rates require only a1, a2.
 #' @param cc Number or logical specifying (amount of) continuity correction
-#'   (default 0).
-#' @param contrast Character string indicating the contrast required: "RD"
-#'   (default), "RR", or "OR". "p" gives an interval for the single proportion
-#'   x1/n1.
+#'   (default FALSE). Numeric value is taken as the gamma parameter in Laud 2017,
+#'   Appendix S2 (default 0.5 if cc=TRUE). Forced equal to 0.5 if type="exact".
+#'   NB: cc currently not implemented for type="wilson".
+#' @param contrast Character string indicating the contrast of interest: "RD" = 
+#'   rate difference (default), "RR" = rate ratio, "OR" = odds ratio. 
+#'   contrast="p" gives an interval for the single proportion x1/n1.
 #' @param type Character string indicating the method used for the intervals for
 #'   the individual group rates. "jeff" = Jeffreys equal-tailed intervals
-#'   (default), "exact" = Clopper-Pearson exact intervals (also obtained using
-#'   type = "jeff" with cc = 0.5), "wilson" = Wilson score intervals (as per
-#'   Newcombe 1998). NB: "wilson" option is included only for legacy validation
-#'   against previous published method by Newcombe. It is not recommended, as
-#'   type="jeff" achieves much better coverage properties.
+#'   (default); "exact" = Clopper-Pearson exact intervals (note this does NOT
+#'   result in a strictly conservative interval. The scoreci function with
+#'   cc=TRUE is recommended as a superior approximation of 'exact' methods); 
+#'   "wilson" = Wilson score intervals (as per Newcombe 1998).
+#'   NB: "wilson" option is included only for legacy validation against previous
+#'   published method by Newcombe. It is not recommended, as type="jeff"
+#'   achieves much better coverage properties.
 #' @param adj Logical (default FALSE) indicating whether to apply the boundary 
 #'   adjustment for Jeffreys intervals recommended on p108 of Brown et al. 
 #'   (type = "jeff" only: set to FALSE if using informative priors) 
@@ -45,7 +49,7 @@
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references 
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of 
-#'   rates. Pharmaceutical Statistics [in press].
+#'   rates. Pharmaceutical Statistics 2017; [in press].
 #'   
 #'   Newcombe RG. Interval estimation for the difference between independent 
 #'   proportions: comparison of eleven methods. Statistics in Medicine 1998;
@@ -73,7 +77,7 @@ moverci <- function(
   b1 = 0.5,
   a2 = 0.5,
   b2 = 0.5,
-  cc = 0,
+  cc = FALSE,
   level = 0.95,
   distrib = "bin",
   contrast = "RD",
@@ -294,7 +298,7 @@ jeffreysci <- function(
     }
   } else if (distrib == "poi") {
     # Jeffreys prior for Poisson rate uses gamma distribution,
-    # as defined in Li et al. with "continuity correction" from Laud 2016.
+    # as defined in Li et al. with "continuity correction" from Laud 2017.
     CI.lower <- qgamma(alpha/2, x + (ai - cc), scale = 1/n)
     est <- qgamma( 0.5, x + (ai), scale = 1/n)
     if (adj == TRUE) {

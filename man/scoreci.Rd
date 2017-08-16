@@ -81,7 +81,7 @@ A list containing the following components: \describe{
   tests agains the null hypothesis that theta >= or <= theta0} 
   \item{call}{details of the function call} }
   If stratified = TRUE, the following outputs are added: \describe{
-  \item{Qtest}{a vector of values descibing and testing heterogeneity}
+  \item{Qtest}{a vector of values describing and testing heterogeneity}
   \item{weighting}{a string indicating the selected weighting method}
   \item{stratdata}{a matrix containing stratum estimates and weights}}
 }
