@@ -6,7 +6,7 @@
 rates.}
 \usage{
 scoreci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
-  level = 0.95, skew = TRUE, bcf = TRUE, cc = 0, delta = NULL,
+  level = 0.95, skew = TRUE, bcf = TRUE, cc = FALSE, delta = NULL,
   theta0 = NULL, precis = 6, plot = FALSE, plotmax = 100,
   stratified = FALSE, weighting = "IVS", wt = NULL, tdas = FALSE,
   warn = TRUE, ...)
@@ -22,51 +22,54 @@ times (for Poisson rates) in each group.}
 data: "bin" = binomial (default), "poi" = Poisson.}
 
 \item{contrast}{Character string indicating the contrast of interest: "RD" = 
-rate difference (default), "RR" = rate ratio, "OR" = odds ratio, "p" =
-single proportion.}
+rate difference (default), "RR" = rate ratio, "OR" = odds ratio.
+contrast="p" gives an interval for the single proportion x1/n1.}
 
 \item{level}{Number specifying confidence level (between 0 and 1, default 
 0.95).}
 
-\item{skew}{Logical (default TRUE) indicating whether to apply skewness
-correction (Laud 2016).}
+\item{skew}{Logical (default TRUE) indicating whether to apply skewness 
+correction (recommended as per Laud 2017).}
 
-\item{bcf}{Logical (default TRUE) indicating whether to apply bias correction in the score 
-denominator. Applicable to distrib = "bin" only. (NB: bcf = FALSE option is
-really only included for legacy validation against previous published 
-methods (i.e. Gart & Nam, Mee).}
+\item{bcf}{Logical (default TRUE) indicating whether to apply bias correction
+in the score denominator. Applicable to distrib = "bin" only. (NB: bcf = 
+FALSE option is really only included for legacy validation against previous
+published methods (i.e. Gart & Nam, Mee, or standard Chi-squared test).}
 
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
-correction.}
+correction. Numeric value is taken as the gamma parameter in Laud 2017,
+Appendix S2 (default 0.5 if cc=TRUE).}
 
 \item{delta}{(deprecated: parameter renamed to theta0)}
 
 \item{theta0}{Number to be used in a one-sided significance test (e.g. 
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 excludes theta0. NB: can also be used for a superiority test by setting 
-theta0 = 0 (RD) or 1 (RR/OR). By default, a two-sided test against theta0 = 0 or 1
-is also output: if bcf=F and skew=F this is the same as Pearson's Chi-squared test.}
+theta0 = 0 (RD) or 1 (RR/OR). By default, a two-sided test against theta0 =
+0 (or 1 as appropriate) is also output: if bcf=F and skew=F this is the
+same as Pearson's Chi-squared test.}
 
-\item{precis}{Number (default 6) specifying precision to be used in
-optimisation subroutine (i.e. number of decimal places).}
+\item{precis}{Number (default 6) specifying precision (i.e. number of decimal
+places) to be used in optimisation subroutine.}
 
-\item{plot}{Logical (default FALSE) indicating whether to output plot of the
+\item{plot}{Logical (default FALSE) indicating whether to output plot of the 
 score function}
 
 \item{plotmax}{Numeric value indicating maximum value to be displayed on 
 x-axis of plots (useful for ratio contrasts which can be infinite).}
 
-\item{stratified}{Logical (default FALSE) indicating whether to combine
+\item{stratified}{Logical (default FALSE) indicating whether to combine 
 vector inputs into a single stratified analysis.}
 
 \item{weighting}{String indicating which weighting method to use if 
-stratified = "TRUE":  "IVS" = Inverse Variance of Score (default), "MH" = 
-Mantel-Haenszel, "MN" = Miettinen-Nurminen iterative weights.}
+stratified = "TRUE":  "IVS" = Inverse Variance of Score (default, see Laud
+2017 for details), "MH" = Mantel-Haenszel, "MN" = Miettinen-Nurminen
+iterative weights.}
 
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
 
-\item{tdas}{Logical (default FALSE) indicating whether to use t-distribution
-method for stratified data (defined in Laud 2016).}
+\item{tdas}{Logical (default FALSE) indicating whether to use t-distribution 
+method for stratified data (defined in Laud 2017).}
 
 \item{warn}{Logical (default TRUE) giving the option to suppress warnings.}
 
@@ -79,25 +82,26 @@ A list containing the following components: \describe{
   matrix containing details of the corresponding 2-sided significance test 
   against the null hypothesis that p_1 = p_2, and one-sided significance 
   tests agains the null hypothesis that theta >= or <= theta0} 
-  \item{call}{details of the function call} }
-  If stratified = TRUE, the following outputs are added: \describe{
-  \item{Qtest}{a vector of values describing and testing heterogeneity}
-  \item{weighting}{a string indicating the selected weighting method}
-  \item{stratdata}{a matrix containing stratum estimates and weights}}
+  \item{call}{details of the function call} } If stratified = TRUE, the 
+  following outputs are added: \describe{ \item{Qtest}{a vector of values 
+  describing and testing heterogeneity} \item{weighting}{a string indicating 
+  the selected weighting method} \item{stratdata}{a matrix containing stratum
+  estimates and weights}}
 }
 \description{
 Score-based confidence intervals for the rate (or risk) difference ("RD") or 
 ratio ("RR") for independent binomial or Poisson rates, or for odds ratio 
 ("OR", binomial only). Including options for bias correction (from Miettinen 
-& Nurminen), skewness correction ("GNbc" method from Laud & Dane, developed
-from Gart & Nam, and generalised as "SCAS" in Laud 2017 [in press]) and
-continuity correction. Also includes intervals for a single proportion, i.e.
-Wilson score method, with skewness correction, which has slightly better
-coverage properties than the Jeffreys method. This function is vectorised in
-x1, x2, n1, and n2.  Vector inputs may also be combined into a single
-stratified analysis (e.g. meta-analysis), either using fixed effects, or the
-more general "TDAS" method, which incorporates stratum variability using a
-t-distribution score (inspired by to Hartung-Knapp-Sidik-Jonkman).
+& Nurminen), skewness correction ("GNbc" method from Laud & Dane, developed 
+from Gart & Nam, and generalised as "SCAS" in Laud 2017) and continuity
+correction (for strictly conservative coverage). Also includes intervals for
+a single proportion, i.e. Wilson score method, with skewness correction,
+which has slightly better coverage properties than the Jeffreys method. This
+function is vectorised in x1, x2, n1, and n2.  Vector inputs may also be
+combined into a single stratified analysis (e.g. meta-analysis), either using
+fixed effects, or the more general "TDAS" method, which incorporates stratum
+variability using a t-distribution score (inspired by 
+Hartung-Knapp-Sidik-Jonkman).
 }
 \examples{
  
@@ -142,18 +146,18 @@ Pete Laud, \email{p.j.laud@sheffield.ac.uk}
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
-  rates. Pharmaceutical Statistics [in press].
+  rates. Pharmaceutical Statistics 2017; [in press].
   
-  Laud PJ, Dane A. Confidence intervals for the difference between independent 
-  binomial proportions: comparison using a graphical approach and
+  Laud PJ, Dane A. Confidence intervals for the difference between
+  independent binomial proportions: comparison using a graphical approach and
   moving averages. Pharmaceutical Statistics 2014; 13(5):294–308
   
   Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
   Medicine 1985; 4:213-226.
   
   Farrington CP, Manning G. Test statistics and sample size formulae for 
-  comparative binomial trials with null hypothesis of non-zero risk 
-  difference or non-unity relative risk. Statistics in Medicine 1990; 
+  comparative binomial trials with null hypothesis of non-zero risk
+  difference or non-unity relative risk. Statistics in Medicine 1990;
   9(12):1447-1454.
   
   Gart JJ, Nam Jm. Approximate interval estimation of the ratio of binomial 

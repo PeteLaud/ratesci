@@ -10,7 +10,9 @@ Computes confidence intervals for the rate difference (RD), rate ratio (RR),
 or odds ratio (OR), for independent binomial or Poisson rates. Includes
 score-based methods with (or without) skewness correction, developed from the
 Miettinen-Nurminen and Gart-Nam methods, and the "Method of Variance 
-Estimates Recovery", originating from Newcombe.
+Estimates Recovery", originating from Newcombe. For the single-stratum case,
+the SCAS (skewness-corrected asymptotic score) method is recommended (Laud
+2017), on the basis of superior equal-tailed coverage.
 }
 \section{ratesci functions}{
  

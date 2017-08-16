@@ -21,38 +21,41 @@ times (for Poisson rates) in each group.}
 data: "bin" = binomial (default), "poi" = Poisson.}
 
 \item{contrast}{Character string indicating the contrast of interest: "RD" = 
-rate difference (default), "RR" = rate ratio, "OR" = odds ratio, "p" =
-single proportion.}
+rate difference (default), "RR" = rate ratio, "OR" = odds ratio.
+contrast="p" gives an interval for the single proportion x1/n1.}
 
 \item{level}{Number specifying confidence level (between 0 and 1, default 
 0.95).}
 
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
-correction.}
+correction. Numeric value is taken as the gamma parameter in Laud 2017,
+Appendix S2 (default 0.5 if cc=TRUE).}
 
 \item{delta}{(deprecated: parameter renamed to theta0)}
 
 \item{theta0}{Number to be used in a one-sided significance test (e.g. 
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 excludes theta0. NB: can also be used for a superiority test by setting 
-theta0 = 0 (RD) or 1 (RR/OR). By default, a two-sided test against theta0 = 0 or 1
-is also output: if bcf=F and skew=F this is the same as Pearson's Chi-squared test.}
+theta0 = 0 (RD) or 1 (RR/OR). By default, a two-sided test against theta0 =
+0 (or 1 as appropriate) is also output: if bcf=F and skew=F this is the
+same as Pearson's Chi-squared test.}
 
-\item{precis}{Number (default 6) specifying precision to be used in
-optimisation subroutine (i.e. number of decimal places).}
+\item{precis}{Number (default 6) specifying precision (i.e. number of decimal
+places) to be used in optimisation subroutine.}
 
-\item{plot}{Logical (default FALSE) indicating whether to output plot of the
+\item{plot}{Logical (default FALSE) indicating whether to output plot of the 
 score function}
 
 \item{plotmax}{Numeric value indicating maximum value to be displayed on 
 x-axis of plots (useful for ratio contrasts which can be infinite).}
 
-\item{stratified}{Logical (default FALSE) indicating whether to combine
+\item{stratified}{Logical (default FALSE) indicating whether to combine 
 vector inputs into a single stratified analysis.}
 
 \item{weighting}{String indicating which weighting method to use if 
-stratified = "TRUE":  "IVS" = Inverse Variance of Score (default), "MH" = 
-Mantel-Haenszel, "MN" = Miettinen-Nurminen iterative weights.}
+stratified = "TRUE":  "IVS" = Inverse Variance of Score (default, see Laud
+2017 for details), "MH" = Mantel-Haenszel, "MN" = Miettinen-Nurminen
+iterative weights.}
 
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
 
