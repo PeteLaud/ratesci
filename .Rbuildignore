@@ -3,3 +3,4 @@
 ^cran-comments.md$
 ^ReadMe\.md$
 ^\.travis\.yml$
+^R/sandbox.R$
