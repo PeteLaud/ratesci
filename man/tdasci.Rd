@@ -40,7 +40,7 @@ theta0 = 0 (RD) or 1 (RR/OR). By default, a two-sided test against theta0 =
 same as Pearson's Chi-squared test.}
 
 \item{precis}{Number (default 6) specifying precision (i.e. number of decimal
-places) to be used in optimisation subroutine.}
+places) to be used in optimisation subroutine for the confidence interval.}
 
 \item{plot}{Logical (default FALSE) indicating whether to output plot of the 
 score function}

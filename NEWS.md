@@ -1,6 +1,8 @@
 # ratesci 0.2-0.9000
 
 * Clarified documentation regarding continuity corrections
+* Fixed bug in pairbinci for contrast="OR"
+* Added score methods for paired binomial RD and RR
 
 # ratesci 0.2-0
 

@@ -7,11 +7,11 @@
 #' & Nurminen), skewness correction ("GNbc" method from Laud & Dane, developed 
 #' from Gart & Nam, and generalised as "SCAS" in Laud 2017) and continuity
 #' correction (for strictly conservative coverage). Also includes intervals for
-#' a single proportion, i.e. Wilson score method, with skewness correction,
-#' which has slightly better coverage properties than the Jeffreys method. This
-#' function is vectorised in x1, x2, n1, and n2.  Vector inputs may also be
+#' a single proportion, i.e. Wilson score interval, which, when corrected for
+#' skewness, has slightly better coverage properties than the Jeffreys method.
+#' This function is vectorised in x1, x2, n1, and n2.  Vector inputs may also be
 #' combined into a single stratified analysis (e.g. meta-analysis), either using
-#' fixed effects, or the more general "TDAS" method, which incorporates stratum
+#' fixed effects, or the more general "TDAS" method, which incorporates stratum 
 #' variability using a t-distribution score (inspired by 
 #' Hartung-Knapp-Sidik-Jonkman).
 #' 
@@ -43,7 +43,7 @@
 #'   0 (or 1 as appropriate) is also output: if bcf=F and skew=F this is the
 #'   same as Pearson's Chi-squared test.
 #' @param precis Number (default 6) specifying precision (i.e. number of decimal
-#'   places) to be used in optimisation subroutine.
+#'   places) to be used in optimisation subroutine for the confidence interval. 
 #' @param plot Logical (default FALSE) indicating whether to output plot of the 
 #'   score function
 #' @param plotmax Numeric value indicating maximum value to be displayed on 
@@ -110,11 +110,11 @@
 #' 
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references Laud PJ. Equal-tailed confidence intervals for comparison of 
-#'   rates. Pharmaceutical Statistics 2017; [in press].
+#'   rates. Pharmaceutical Statistics 2017; 16:334-346.
 #'   
 #'   Laud PJ, Dane A. Confidence intervals for the difference between
 #'   independent binomial proportions: comparison using a graphical approach and
-#'   moving averages. Pharmaceutical Statistics 2014; 13(5):294–308
+#'   moving averages. Pharmaceutical Statistics 2014; 13(5):294–308.
 #'   
 #'   Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
 #'   Medicine 1985; 4:213-226.

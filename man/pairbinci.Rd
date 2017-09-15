@@ -2,22 +2,22 @@
 % Please edit documentation in R/pairbinci.R
 \name{pairbinci}
 \alias{pairbinci}
-\title{Skewness-corrected confidence intervals for comparisons of paired binomial
-rates.}
+\title{Confidence intervals for comparisons of paired binomial rates.}
 \usage{
-pairbinci(x, contrast = "RD", level = 0.95, delta = NULL)
+pairbinci(x, contrast = "RD", level = 0.95, method.RD = "Score",
+  method.RR = "Score", method.OR = "SCAS", theta0 = NULL, precis = 6)
 }
 \arguments{
 \item{x}{A numeric vector object specified as c(a,b,c,d) 
 where:
-a is the number of pairs with the event (e.g. success) under both conditions 
-  (e.g. treated/untreated, or case/control)
-b is the count of the number with the event on condition 1 only 
-c is the count of the number with the event on condition 2 only
+a is the number of pairs with the event (e.g. success) under both
+  conditions (e.g. treated/untreated, or case/control)
+b is the count of the number with the event on condition 1 only (=n12)
+c is the count of the number with the event on condition 2 only (=n21)
 d is the number of pairs with no event under both conditions
 (Note the order of a and d is only important for contrast="RR".)
-Note for data in columns of success/failure, use the tdasci function instead
-(not recommended for contrast="OR")}
+Note for data in columns of success/failure, use the tdasci function
+instead, with weighting="MH" (not recommended for contrast="OR")}
 
 \item{contrast}{Character string indicating the contrast of interest: 
 "RD" = rate difference (default), "RR" = rate ratio, "OR" = odds ratio.}
@@ -25,16 +25,40 @@ Note for data in columns of success/failure, use the tdasci function instead
 \item{level}{Number specifying confidence level (between 0 and 1, default 
 0.95).}
 
-\item{delta}{Number to be used in a one-sided significance test (e.g. 
+\item{method.RD}{Character string indicating the confidence interval method 
+to be used for contrast="RD". "Score" = Tango asymptotic score (default), 
+"TDAS" = t-distribution asymptotic score (experimental method, seems to
+struggle with low numbers), ("MOVER" = method of variance estimates
+recovery based on Jeffreys interval - not yet included, and probably not
+worth it, given the results shown in Tang 2009).}
+
+\item{method.RR}{Character string indicating the confidence interval method
+to be used for contrast="RR". "Score" = Tang asymptotic score (default),
+"TDAS" t-distribution asymptotic score (experimental method, seems to
+struggle with low numbers), ("MOVER" = method of variance
+estimates recovery based on Jeffreys interval - not yet included, and 
+probably not worth it, given the results shown in Tang 2010).}
+
+\item{method.OR}{Character string indicating the confidence interval method to be used for contrast="OR", all
+of which are based on transformation of an interval for a single
+proportion: "SCAS" = transformed skewness-corrected score (default),
+"Jeffreys" = transformed Jeffreys (to be added),
+("Wilson" = transformed Wilson score - not yet included, would be for
+reference only, not recommended).}
+
+\item{theta0}{Number to be used in a one-sided significance test (e.g. 
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
-excludes delta. NB: can also be used for a superiority test by setting 
-delta=0.}
+excludes theta0. NB: can also be used for a superiority test by setting 
+theta0=0.}
+
+\item{precis}{Number (default 6) specifying precision (i.e. number of decimal
+places) to be used in optimisation subroutine for the confidence interval.}
 }
 \description{
-Score-based confidence intervals for the rate (or risk) difference ("RD"), rate 
-ratio ("RR") or for odds ratio ("OR"), for paired binomial data. 
+Score-based confidence intervals for the rate (or risk) difference ("RD"),
+rate ratio ("RR") or for odds ratio ("OR"), for paired binomial data.
 [For paired Poisson rates, use the tdasci function with distrib="poi",
-with pairs as strata.].
+and weighting="MH", with pairs as strata.].
 This function applies the stratified TDAS method for RD and RR. For OR, an 
 interval is produced based on transforming a SCAS interval for the single 
 proportion.
@@ -42,19 +66,38 @@ proportion.
 \examples{
  
   #Data example from Agresti-Min 2005
-  pairbinci(c(53,16,8,9),contrast="RD")
-  pairbinci(c(53,16,8,9),contrast="RR")
-  pairbinci(c(53,16,8,9),contrast="OR")
+  pairbinci(c(53,16,8,9), contrast="RD", method.RD="Score")
+  pairbinci(c(53,16,8,9), contrast="RD", method.RD="TDAS")
+  pairbinci(c(53,16,8,9), contrast="RR", method.RR="Score")
+  pairbinci(c(53,16,8,9), contrast="RR", method.RR="TDAS")
+  pairbinci(c(53,16,8,9), contrast="OR", method.RD="SCAS")
 }
 \author{
 Pete Laud, \email{p.j.laud@sheffield.ac.uk}
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
-  rates. Pharmaceutical Statistics 2017; [in press].
+  rates. Pharmaceutical Statistics 2017; 16:334-346.
+  
+  Tango T. Equivalence test and confidence interval for the difference
+  in proportions for the paired-sample design. Statistics in Medicine
+  1998; 17:891-908
+  
+  Tango T. Improved confidence intervals for the difference between binomial 
+  proportions based on paired data by Robert G. Newcombe, Statistics in 
+  Medicine, 17, 2635–2650 (1998). Statistics in Medicine 1999;
+  18(24):3511-3513
+  
+  Tang N-S, Tang M-L, Chan ISF. On tests of equivalence via non-unity
+  relative risk for matched-pair design. Statistics in Medicine 2003;
+  22:1217-1233
   
   Fagerland MW, Lydersen S, Laake P. Recommended tests and
   confidence intervals for paired binomial proportions. Statistics in
   Medicine 2014; 33(16):2850–2875
+  
+  Agresti A, Min Y. Simple improved confidence intervals for
+  comparing matched proportions. Statistics in Medicine 2005;
+  24:729-740
 }
 
