@@ -49,11 +49,11 @@
 #   ...more parameters to be added: cc? srmkew??
 #' @examples  
 #'   #Data example from Agresti-Min 2005
-#'   pairbinci(c(53,16,8,9), contrast="RD", method.RD="Score")
-#'   pairbinci(c(53,16,8,9), contrast="RD", method.RD="TDAS")
-#'   pairbinci(c(53,16,8,9), contrast="RR", method.RR="Score")
-#'   pairbinci(c(53,16,8,9), contrast="RR", method.RR="TDAS")
-#'   pairbinci(c(53,16,8,9), contrast="OR", method.RD="SCAS")
+#'   pairbinci(x = c(53,16,8,9), contrast="RD", method.RD="Score")
+#'   pairbinci(x = c(53,16,8,9), contrast="RD", method.RD="TDAS")
+#'   pairbinci(x = c(53,16,8,9), contrast="RR", method.RR="Score")
+#'   pairbinci(x = c(53,16,8,9), contrast="RR", method.RR="TDAS")
+#'   pairbinci(x = c(53,16,8,9), contrast="OR", method.RD="SCAS")
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references 
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of 
@@ -117,10 +117,10 @@ pairbinci <- function(
       if(!is.null(theta0)) trans.th0 <- theta0/(1 + theta0)
       OR.ci <- scasci(x1 = b, n1 = b + c, contrast = "p", distrib = "bin", 
                       level = level, theta0 = trans.th0)
-      estimates <- c(OR.ci$estimates[, c(1:3)]/(1 - OR.ci$estimates[, c(1:3)]), 
-                     OR.ci$estimates[, 4])
+      estimates <- rbind(c(OR.ci$estimates[, c(1:3)]/(1 - OR.ci$estimates[, c(1:3)]), 
+                     OR.ci$estimates[, 4]))
       pval <- OR.ci$pval
-      outlist <- list(xi, stimates = estimates, pval = pval)
+      outlist <- list(xi, estimates = estimates, pval = pval)
     }
   } else {
     if((contrast =="RD" && method.RD == "TDAS") ||
@@ -146,7 +146,7 @@ pairbinci <- function(
                       precis = precis + 1, contrast = contrast, uplow = "low")
       upper <- bisect(ftn = function(theta) myfun(theta) + qtnorm, distrib = "bin", 
                       precis = precis + 1, contrast=contrast, uplow = "up")
-      estimates <- c(lower = lower, MLE = MLE, upper = upper, level = level)
+      estimates <- cbind(lower = lower, MLE = MLE, upper = upper, level = level)
       
       # optionally add p-value for a test of null hypothesis: theta<=theta0
       # default value of theta0 depends on contrast
@@ -213,13 +213,10 @@ scorepair <- function (
     num <- (-B + sqrt(B^2 - 4 * A * C_))
     q21 <- ifelse(num == 0, 0, num/(2 * A))
     q11 <- ((x[1] + x[2] + x[3])/N - (1 + theta) * q21)/theta
-    q12 <- (q21 + (theta - 1) * (x[1] + x[2] + x[3])/n)/theta
+    q12 <- (q21 + (theta - 1) * (x[1] + x[2] + x[3])/N)/theta
     q1 <- q11 + q12
     q2 <- q1/theta
     V <- pmax(0, N * (1 + theta) * q21 + (x[1] + x[2] + x[3]) * (theta - 1))
-    #experimental:
-    mu3 <- (q1 * (1 - q1) * (1 - 2 * q1)/(n^2) -
-              (theta^3) * q2 * (1 - q2) * (1 - 2 * q2)/(n^2))
   }
   score <- ifelse(Stheta == 0, 0, Stheta/sqrt(V))
   pval <- pnorm(score)
