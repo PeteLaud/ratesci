@@ -694,9 +694,6 @@ scasci.nonit <- function(
   return(CI)
 }
 
-scasci.nonit(1,100,cc=0.5)
-scasci(1,100,contrast='p',cc=0.5)
-
 
 #' t-distribution asymptotic score ("TDAS") confidence intervals for
 #' comparisons of independent binomial or Poisson rates.

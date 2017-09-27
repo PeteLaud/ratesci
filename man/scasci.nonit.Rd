@@ -6,7 +6,7 @@
 single binomial or Poisson rate using closed-form calculations.
 This function is vectorised in x, n.}
 \usage{
-scasci.nonit(x, n, distrib = "bin", level = 0.95, ...)
+scasci.nonit(x, n, distrib = "bin", level = 0.95, cc = FALSE, ...)
 }
 \arguments{
 \item{x}{Numeric vector of number of events.}
@@ -19,6 +19,10 @@ data: "bin" = binomial (default), "poi" = Poisson.}
 
 \item{level}{Number specifying confidence level (between 0 and 1, default 
 0.95).}
+
+\item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
+correction. Numeric value is taken as the gamma parameter in Laud 2017,
+Appendix S2 (default 0.5 if cc=TRUE).}
 
 \item{...}{Other arguments.}
 }

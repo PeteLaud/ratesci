@@ -36,10 +36,13 @@ rate difference (default), "RR" = rate ratio, "OR" = odds ratio.
 contrast="p" gives an interval for the single proportion x1/n1.}
 
 \item{type}{Character string indicating the method used for the intervals for
-the individual group rates. "jeff" = Jeffreys equal-tailed intervals
-(default); "exact" = Clopper-Pearson exact intervals (note this does NOT
-result in a strictly conservative interval. The scoreci function with
-cc=TRUE is recommended as a superior approximation of 'exact' methods); 
+the individual group rates. 
+"jeff" = Jeffreys equal-tailed intervals (default);
+"exact" = Clopper-Pearson exact intervals (note this does NOT result in a
+strictly conservative interval for the contrast. The scoreci function with
+cc=TRUE is recommended as a superior approximation of 'exact' methods);
+"midp" = mid-p intervals (to be added); 
+"SCAS" = SCAS non-iterative intervals (to be added); 
 "wilson" = Wilson score intervals (as per Newcombe 1998).
 NB: "wilson" option is included only for legacy validation against previous
 published method by Newcombe. It is not recommended, as type="jeff"

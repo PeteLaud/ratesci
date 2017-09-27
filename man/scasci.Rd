@@ -6,7 +6,7 @@
 comparisons of independent binomial or Poisson rates.}
 \usage{
 scasci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
-  level = 0.95, cc = 0, delta = NULL, theta0 = NULL, precis = 6,
+  level = 0.95, cc = FALSE, delta = NULL, theta0 = NULL, precis = 6,
   plot = FALSE, plotmax = 100, stratified = FALSE, weighting = "IVS",
   wt = NULL, ...)
 }

@@ -40,7 +40,7 @@ to be used for contrast="OR", all of which are based on transformation of
 an interval for a single proportion: "SCAS" = transformed
 skewness-corrected score (default),
 "Jeffreys" = transformed Jeffreys (to be added),
-"mid-p" = transformed CP mid-p (to be added),
+"midp" = transformed mid-p,
 ("Wilson" = transformed Wilson score - not yet included, would be for
 reference only, not recommended).}
 

@@ -29,7 +29,7 @@ contrast="p" gives an interval for the single proportion x1/n1.}
 0.95).}
 
 \item{skew}{Logical (default TRUE) indicating whether to apply skewness 
-correction (for the SCAS method recommended as per Laud 2017) or not (for
+correction (for the SCAS method recommended in Laud 2017) or not (for
 the Miettinen-Nurminen method).}
 
 \item{bcf}{Logical (default TRUE) indicating whether to apply bias correction
