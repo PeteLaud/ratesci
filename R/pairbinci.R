@@ -29,24 +29,23 @@
 #' @param method.RD Character string indicating the confidence interval method 
 #'   to be used for contrast="RD". "Score" = Tango asymptotic score (default), 
 #'   "TDAS" = t-distribution asymptotic score (experimental method, seems to
-#'   struggle with low numbers), ("MOVER" = method of variance estimates
-#'   recovery based on Jeffreys interval - not yet included, and probably not
-#'   worth it, given the results shown in Tang 2009).
+#'   struggle with low numbers).
 #' @param method.RR Character string indicating the confidence interval method
 #'   to be used for contrast="RR". "Score" = Tang asymptotic score (default),
 #'   "TDAS" t-distribution asymptotic score (experimental method, seems to
-#'   struggle with low numbers), ("MOVER" = method of variance
-#'   estimates recovery based on Jeffreys interval - not yet included, and 
-#'   probably not worth it, given the results shown in Tang 2010).
-#' @param method.OR Character string indicating the confidence interval method to be used for contrast="OR", all
-#'   of which are based on transformation of an interval for a single
-#'   proportion: "SCAS" = transformed skewness-corrected score (default),
+#'   struggle with low numbers).
+#' @param method.OR Character string indicating the confidence interval method
+#'   to be used for contrast="OR", all of which are based on transformation of
+#'   an interval for a single proportion: "SCAS" = transformed
+#'   skewness-corrected score (default),
 #'   "Jeffreys" = transformed Jeffreys (to be added),
+#'   "midp" = transformed mid-p,
 #'   ("Wilson" = transformed Wilson score - not yet included, would be for
 #'   reference only, not recommended).
 #' @param precis Number (default 6) specifying precision (i.e. number of decimal
 #'   places) to be used in optimisation subroutine for the confidence interval. 
-#   ...more parameters to be added: cc? srmkew??
+#   ...more parameters to be added: cc? skew??
+#' @importFrom stats uniroot
 #' @examples  
 #'   #Data example from Agresti-Min 2005
 #'   pairbinci(x = c(53,16,8,9), contrast="RD", method.RD="Score")
@@ -110,18 +109,23 @@ pairbinci <- function(
    if (contrast =="OR") {
     #special case for OR, use conditional method based on transforming the 
     #SCAS interval for a single proportion
-    if (method.OR == "SCAS") { #could add transformed Wilson version for reference
-      b <- x[2] 
-      c <- x[3] 
-      trans.th0 <- NULL
-      if(!is.null(theta0)) trans.th0 <- theta0/(1 + theta0)
-      OR.ci <- scasci(x1 = b, n1 = b + c, contrast = "p", distrib = "bin", 
+     b <- x[2] 
+     c <- x[3] 
+     if (method.OR == "SCAS") { #could add transformed Wilson version for reference
+       trans.th0 <- NULL
+       if(!is.null(theta0)) trans.th0 <- theta0/(1 + theta0)
+       OR.ci <- scasci(x1 = b, n1 = b + c, contrast = "p", distrib = "bin", 
                       level = level, theta0 = trans.th0)
-      estimates <- rbind(c(OR.ci$estimates[, c(1:3)]/(1 - OR.ci$estimates[, c(1:3)]), 
+       estimates <- rbind(c(OR.ci$estimates[, c(1:3)]/(1 - OR.ci$estimates[, c(1:3)]), 
                      OR.ci$estimates[, 4]))
-      pval <- OR.ci$pval
-      outlist <- list(xi, estimates = estimates, pval = pval)
-    }
+       pval <- OR.ci$pval
+       outlist <- list(xi, estimates = estimates, pval = pval)
+     } else if (method.OR == "midp") {
+#       trans.ci <- binom.exact(x = b, n = b + c, midp = TRUE)$conf.int
+       trans.ci <- midpci(x = b, n = b + c, level = level)
+       estimates <- c(trans.ci/(1 - trans.ci))
+       outlist <- list(xi, estimates = estimates)
+     }
   } else {
     if((contrast =="RD" && method.RD == "TDAS") ||
        (contrast =="RR" && method.RR == "TDAS")) {
@@ -224,6 +228,29 @@ scorepair <- function (
   return(outlist)
 }
  
+# Internal function
+midpci <- function(x, n, level = 0.95) {
+  #function to calculate exact 'mid-p' confidence interval for a single proportion x/n
+  alpha <- 1 - level
+  lowroot <- function(p) {
+    pbinom(x - 1, n, p, lower.tail = FALSE) - 0.5 * dbinom(x, n, p) - alpha/2
+  }
+  uproot <- function(p) {
+    pbinom(x, n, p) - 0.5 * dbinom(x, n, p) - alpha/2
+  }
+  if (x == 0) {
+    p.L <- 0
+  } else  {
+    p.L <- uniroot(f = lowroot, interval = c(0, 1))$root
+  }
+  if (x == n){
+    p.U <- 1
+  } else  {
+    p.U <- uniroot(f = uproot, interval = c(0, 1))$root
+  }
+  return(c(p.L, p.U))
+}
+
 
 if(FALSE) {
   #  if (contrast == "RD") { #per Tango 1998 - something's flipped

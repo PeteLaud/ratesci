@@ -2,7 +2,9 @@
 
 * Clarified documentation regarding continuity corrections
 * Fixed bug in pairbinci for contrast="OR"
-* Added score methods for paired binomial RD and RR
+* Added score methods for paired binomial RD and RR (Tango & Tang)
+* Added non-iterative SCAS methods for single binomial or Poisson rate
+* Added transformed mid-p method for paired OR for comparison with transformed SCAS
 
 # ratesci 0.2-0
 

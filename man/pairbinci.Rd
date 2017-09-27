@@ -28,21 +28,19 @@ instead, with weighting="MH" (not recommended for contrast="OR")}
 \item{method.RD}{Character string indicating the confidence interval method 
 to be used for contrast="RD". "Score" = Tango asymptotic score (default), 
 "TDAS" = t-distribution asymptotic score (experimental method, seems to
-struggle with low numbers), ("MOVER" = method of variance estimates
-recovery based on Jeffreys interval - not yet included, and probably not
-worth it, given the results shown in Tang 2009).}
+struggle with low numbers).}
 
 \item{method.RR}{Character string indicating the confidence interval method
 to be used for contrast="RR". "Score" = Tang asymptotic score (default),
 "TDAS" t-distribution asymptotic score (experimental method, seems to
-struggle with low numbers), ("MOVER" = method of variance
-estimates recovery based on Jeffreys interval - not yet included, and 
-probably not worth it, given the results shown in Tang 2010).}
+struggle with low numbers).}
 
-\item{method.OR}{Character string indicating the confidence interval method to be used for contrast="OR", all
-of which are based on transformation of an interval for a single
-proportion: "SCAS" = transformed skewness-corrected score (default),
+\item{method.OR}{Character string indicating the confidence interval method
+to be used for contrast="OR", all of which are based on transformation of
+an interval for a single proportion: "SCAS" = transformed
+skewness-corrected score (default),
 "Jeffreys" = transformed Jeffreys (to be added),
+"mid-p" = transformed CP mid-p (to be added),
 ("Wilson" = transformed Wilson score - not yet included, would be for
 reference only, not recommended).}
 
