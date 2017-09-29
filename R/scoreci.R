@@ -36,7 +36,6 @@
 #' @param cc Number or logical (default FALSE) specifying (amount of) continuity
 #'   correction. Numeric value is taken as the gamma parameter in Laud 2017,
 #'   Appendix S2 (default 0.5 if cc=TRUE).
-#' @param delta (deprecated: parameter renamed to theta0)
 #' @param theta0 Number to be used in a one-sided significance test (e.g. 
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 #'   excludes theta0. NB: can also be used for a superiority test by setting 
@@ -144,7 +143,6 @@ scoreci <- function(
 	skew = TRUE,
 	bcf = TRUE,
 	cc = FALSE,
-	delta = NULL,
 	theta0 = NULL,
 	precis = 6,
 	plot = FALSE,	
@@ -156,11 +154,6 @@ scoreci <- function(
 	warn = TRUE,
 	...
 	) { 
-  if (!missing(delta)) {
-    warning("argument delta is deprecated; please use theta0 instead.", 
-            call. = FALSE)
-    theta0 <- delta
-  }
   if (!(tolower(substr(distrib, 1, 3)) %in% c("bin", "poi"))) {
     print("Distrib must be one of 'bin' or 'poi'")
     stop()
@@ -601,7 +594,6 @@ scasci <- function(
   contrast = "RD",
   level = 0.95,
   cc = FALSE,
-  delta = NULL,
   theta0 = NULL,
   precis = 6,
   plot = FALSE,	
@@ -611,11 +603,6 @@ scasci <- function(
   wt = NULL,
   ...
 ) { 
-  if (!missing(delta)) {
-    warning("argument delta is deprecated; please use theta0 instead.", 
-            call. = FALSE)
-    theta0 <- delta
-  }
   scoreci(
     x1 = x1,
     n1 = n1,
@@ -720,7 +707,6 @@ tdasci <- function(
   contrast = "RD",
   level = 0.95,
   cc = 0,
-  delta = NULL,
   theta0 = NULL,
   precis = 6,
   plot = FALSE,	
@@ -729,11 +715,6 @@ tdasci <- function(
   wt = NULL,
   ...
 ) { 
-  if (!missing(delta)) {
-    warning("argument delta is deprecated; please use theta0 instead.", 
-            call. = FALSE)
-    theta0 <- delta
-  }
   scoreci(
     x1 = x1,
     n1 = n1,

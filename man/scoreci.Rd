@@ -6,10 +6,9 @@
 rates.}
 \usage{
 scoreci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
-  level = 0.95, skew = TRUE, bcf = TRUE, cc = FALSE, delta = NULL,
-  theta0 = NULL, precis = 6, plot = FALSE, plotmax = 100,
-  stratified = FALSE, weighting = "IVS", wt = NULL, tdas = FALSE,
-  warn = TRUE, ...)
+  level = 0.95, skew = TRUE, bcf = TRUE, cc = FALSE, theta0 = NULL,
+  precis = 6, plot = FALSE, plotmax = 100, stratified = FALSE,
+  weighting = "IVS", wt = NULL, tdas = FALSE, warn = TRUE, ...)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
@@ -40,8 +39,6 @@ published methods (i.e. Gart & Nam, Mee, or standard Chi-squared test).}
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
 correction. Numeric value is taken as the gamma parameter in Laud 2017,
 Appendix S2 (default 0.5 if cc=TRUE).}
-
-\item{delta}{(deprecated: parameter renamed to theta0)}
 
 \item{theta0}{Number to be used in a one-sided significance test (e.g. 
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI

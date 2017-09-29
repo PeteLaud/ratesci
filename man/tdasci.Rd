@@ -6,8 +6,8 @@
 comparisons of independent binomial or Poisson rates.}
 \usage{
 tdasci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
-  level = 0.95, cc = 0, delta = NULL, theta0 = NULL, precis = 6,
-  plot = FALSE, plotmax = 100, weighting = "IVS", wt = NULL, ...)
+  level = 0.95, cc = 0, theta0 = NULL, precis = 6, plot = FALSE,
+  plotmax = 100, weighting = "IVS", wt = NULL, ...)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
@@ -29,8 +29,6 @@ contrast="p" gives an interval for the single proportion x1/n1.}
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
 correction. Numeric value is taken as the gamma parameter in Laud 2017,
 Appendix S2 (default 0.5 if cc=TRUE).}
-
-\item{delta}{(deprecated: parameter renamed to theta0)}
 
 \item{theta0}{Number to be used in a one-sided significance test (e.g. 
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
