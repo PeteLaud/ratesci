@@ -32,12 +32,12 @@ for (skew in c(TRUE, FALSE)) {
       scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,contrast="RR",distrib="poi",precis=10)$pval[,"pval2sided"]<0.05 
     )
     expect_equal(
-      scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,contrast="RR",distrib="poi",precis=10,delta=2)$estimates[,"Lower"] > 2, 
-      scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,contrast="RR",distrib="poi",precis=10,delta=2)$pval[,"pval.right"] < 0.025 
+      scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,contrast="RR",distrib="poi",precis=10,theta0=2)$estimates[,"Lower"] > 2, 
+      scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,contrast="RR",distrib="poi",precis=10,theta0=2)$pval[,"pval.right"] < 0.025 
     )
     expect_equal(
-      scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,contrast="RR",distrib="poi",precis=10,delta=2)$estimates[,"Upper"] < 2, 
-      scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,contrast="RR",distrib="poi",precis=10,delta=2)$pval[,"pval.left"] < 0.025 
+      scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,contrast="RR",distrib="poi",precis=10,theta0=2)$estimates[,"Upper"] < 2, 
+      scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,contrast="RR",distrib="poi",precis=10,theta0=2)$pval[,"pval.left"] < 0.025 
     )
     expect_equal(
       scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,contrast="OR",precis=10)$estimates[,"Lower"] > 1 | 

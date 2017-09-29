@@ -45,18 +45,18 @@ for (i in 1:3) {
   n2 <- n2hkp[i]
   mytab <-rbind(SCAS=
                   cbind(
-                    RDbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,delta=0.5,skew=T,contrast="RD")$estimates[,c(1,3)],3),
-                    RDpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,delta=0.5,skew=T,contrast="RD",distrib="poi")$estimates[,c(1,3)],3),
-                    RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,delta=0.5,skew=T,contrast="RR")$estimates[,c(1,3)],3),
-                    RRpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,delta=0.5,skew=T,contrast="RR",distrib="poi")$estimates[,c(1,3)],3),
-                    OR=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,delta=0.5,skew=T,contrast="OR")$estimates[,c(1,3)],3)
+                    RDbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,contrast="RD")$estimates[,c(1,3)],3),
+                    RDpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,contrast="RD",distrib="poi")$estimates[,c(1,3)],3),
+                    RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,contrast="RR")$estimates[,c(1,3)],3),
+                    RRpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,contrast="RR",distrib="poi")$estimates[,c(1,3)],3),
+                    OR=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,contrast="OR")$estimates[,c(1,3)],3)
                   ), MN=
                   cbind(
-                    RDbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,delta=0.5,skew=F,contrast="RD")$estimates[,c(1,3)],3),
-                    RDpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,delta=0.5,skew=F,contrast="RD",distrib="poi")$estimates[,c(1,3)],3),
-                    RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,delta=0.5,skew=F,contrast="RR")$estimates[,c(1,3)],3),
-                    RRpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,delta=0.5,skew=F,contrast="RR",distrib="poi")$estimates[,c(1,3)],3),
-                    OR=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,delta=0.5,skew=F,contrast="OR")$estimates[,c(1,3)],3)
+                    RDbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=F,contrast="RD")$estimates[,c(1,3)],3),
+                    RDpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=F,contrast="RD",distrib="poi")$estimates[,c(1,3)],3),
+                    RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=F,contrast="RR")$estimates[,c(1,3)],3),
+                    RRpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=F,contrast="RR",distrib="poi")$estimates[,c(1,3)],3),
+                    OR=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=F,contrast="OR")$estimates[,c(1,3)],3)
                   ), MOVERJ=
                   cbind(
                     RDbin=fround(moverci(x1=x1,x2=x2,n1=n1,n2=n2,distrib="bin",contrast="RD",adj=F)[,c(1,3)],3),
