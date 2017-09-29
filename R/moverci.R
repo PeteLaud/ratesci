@@ -237,8 +237,9 @@ moverci <- function(
 #' Generalised approximate Bayesian confidence intervals based on a Beta (for 
 #' binomial rates) or Gamma (for Poisson rates) conjugate priors. Encompassing 
 #' the Jeffreys method (with Beta(0.5, 0.5) or Gamma(0.5) respectively), as well
-#' as any user-specified prior distribution. Clopper-Pearson also included by 
-#' way of a "continuity correction".
+#' as any user-specified prior distribution. Clopper-Pearson method (as
+#' quantiles of a Beta distribution as described in Brown et al. 2001) also
+#' included by way of a "continuity correction" parameter.
 #' 
 #' @param x Numeric vector of number of events.
 #' @param n Numeric vector of sample sizes (for binomial rates) or exposure 
@@ -262,6 +263,12 @@ moverci <- function(
 #' @examples
 #'   #Jeffreys method:
 #'   jeffreysci(x = 5, n = 56)
+#' @references 
+#'   Laud PJ. Equal-tailed confidence intervals for comparison of 
+#'   rates. Pharmaceutical Statistics 2017; 16:334-346.
+#'   
+#'   Brown LD, Cai TT, DasGupta A. Interval estimation for a binomial
+#'   proportion. Statistical Science 2001; 16(2):101-133
 #' @export
 jeffreysci <- function(
   x,
