@@ -51,7 +51,7 @@ Pete Laud, \email{p.j.laud@sheffield.ac.uk}
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
-  rates. Pharmaceutical Statistics 2017; 16:334-346.
+  rates. Pharmaceutical Statistics 2017; 16:334-348.
   
   Brown LD, Cai TT, DasGupta A. Interval estimation for a binomial
   proportion. Statistical Science 2001; 16(2):101-133

@@ -56,7 +56,7 @@
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references 
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of 
-#'   rates. Pharmaceutical Statistics 2017; 16:334-346.
+#'   rates. Pharmaceutical Statistics 2017; 16:334-348.
 #'   
 #'   Tango T. Equivalence test and confidence interval for the difference
 #'   in proportions for the paired-sample design. Statistics in Medicine
