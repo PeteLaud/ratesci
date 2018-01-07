@@ -27,9 +27,7 @@ the SCAS (skewness-corrected asymptotic score) method is recommended (Laud
   single rate
 }
 }
-\author{
-Pete Laud, \email{p.j.laud@sheffield.ac.uk}
-}
+
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
 rates. Pharmaceutical Statistics [in press].
@@ -53,4 +51,6 @@ Donner A, Zou G. Closed-form confidence intervals for functions of the
 normal mean and standard deviation. Statistical Methods in Medical Research
 2012; 21(4):347-359.
 }
-
+\author{
+Pete Laud, \email{p.j.laud@sheffield.ac.uk}
+}

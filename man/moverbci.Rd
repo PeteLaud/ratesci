@@ -45,4 +45,3 @@ Newcombe, and generalised as "MOVER-B" in forthcoming publication) including
 special case "MOVER-J" using non-informative priors with optional continuity
 correction.  This function is vectorised in x1, x2, n1, and n2.
 }
-

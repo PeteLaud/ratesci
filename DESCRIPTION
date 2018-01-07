@@ -8,7 +8,7 @@ Authors@R: person("Pete", "Laud", email = "p.j.laud@sheffield.ac.uk",
 Author: Pete Laud [aut, cre]
 Maintainer: Pete Laud <p.j.laud@sheffield.ac.uk>
 Description: Computes confidence intervals for the rate (or risk)
-    difference ('RD') or rate ratio (or relative risk, 'RR) for 
+    difference ('RD') or rate ratio (or relative risk, 'RR') for 
     binomial proportions or Poisson rates, or for odds ratio 
     ('OR', binomial only). Also confidence intervals for a single 
     binomial or Poisson rate, and intervals for matched pairs. 
@@ -27,7 +27,6 @@ Description: Computes confidence intervals for the rate (or risk)
 Depends: R (>= 3.2.5)
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Suggests: testthat
 LazyData: true
-

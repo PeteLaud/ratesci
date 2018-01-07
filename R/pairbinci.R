@@ -45,7 +45,7 @@
 #' @param precis Number (default 6) specifying precision (i.e. number of decimal
 #'   places) to be used in optimisation subroutine for the confidence interval. 
 #   ...more parameters to be added: cc? skew??
-#' @importFrom stats uniroot
+#' @importFrom stats uniroot pbinom
 #' @examples  
 #'   #Data example from Agresti-Min 2005
 #'   pairbinci(x = c(53,16,8,9), contrast="RD", method.RD="Score")

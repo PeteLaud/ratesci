@@ -70,4 +70,3 @@ meta-analysis). This method assumes the contrast is constant across strata
 (fixed effects).  For a 'random-effects' method use tdasci (or scoreci with
 tdas = TRUE).
 }
-

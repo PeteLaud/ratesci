@@ -63,4 +63,3 @@ only), or the single rate ("p"). This function combines vector inputs into a
 single stratified analysis (e.g. meta-analysis). The TDAS method incorporates
 any stratum variability into the confidence interval.
 }
-

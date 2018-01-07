@@ -46,9 +46,6 @@ included by way of a "continuity correction" parameter.
   #Jeffreys method:
   jeffreysci(x = 5, n = 56)
 }
-\author{
-Pete Laud, \email{p.j.laud@sheffield.ac.uk}
-}
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
   rates. Pharmaceutical Statistics 2017; 16:334-348.
@@ -56,4 +53,6 @@ Laud PJ. Equal-tailed confidence intervals for comparison of
   Brown LD, Cai TT, DasGupta A. Interval estimation for a binomial
   proportion. Statistical Science 2001; 16(2):101-133
 }
-
+\author{
+Pete Laud, \email{p.j.laud@sheffield.ac.uk}
+}

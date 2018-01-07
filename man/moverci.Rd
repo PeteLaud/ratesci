@@ -74,9 +74,6 @@ the group event rates.
   #Binomial RD, Newcombe method:
   moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, type = "wilson")
 }
-\author{
-Pete Laud, \email{p.j.laud@sheffield.ac.uk}
-}
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
   rates. Pharmaceutical Statistics 2017; 16:334-348.
@@ -95,4 +92,6 @@ Laud PJ. Equal-tailed confidence intervals for comparison of
   rates using the method of variance estimates recovery. Computational 
   Statistics 2014; 29(3-4):869-889.
 }
-
+\author{
+Pete Laud, \email{p.j.laud@sheffield.ac.uk}
+}

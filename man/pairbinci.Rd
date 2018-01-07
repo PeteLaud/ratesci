@@ -70,9 +70,6 @@ proportion.
   pairbinci(x = c(53,16,8,9), contrast="RR", method.RR="TDAS")
   pairbinci(x = c(53,16,8,9), contrast="OR", method.RD="SCAS")
 }
-\author{
-Pete Laud, \email{p.j.laud@sheffield.ac.uk}
-}
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
   rates. Pharmaceutical Statistics 2017; 16:334-348.
@@ -98,4 +95,6 @@ Laud PJ. Equal-tailed confidence intervals for comparison of
   comparing matched proportions. Statistics in Medicine 2005;
   24:729-740
 }
-
+\author{
+Pete Laud, \email{p.j.laud@sheffield.ac.uk}
+}
