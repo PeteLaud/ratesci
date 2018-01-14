@@ -6,9 +6,10 @@
 rates.}
 \usage{
 scoreci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
-  level = 0.95, skew = TRUE, bcf = TRUE, cc = FALSE, theta0 = NULL,
-  precis = 6, plot = FALSE, plotmax = 100, stratified = FALSE,
-  weighting = "IVS", wt = NULL, tdas = FALSE, warn = TRUE, ...)
+  level = 0.95, skew = TRUE, ORbias = FALSE, bcf = TRUE, cc = FALSE,
+  theta0 = NULL, precis = 6, plot = FALSE, plotmax = 100,
+  stratified = FALSE, weighting = "IVS", wt = NULL, tdas = FALSE,
+  warn = TRUE, ...)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
@@ -22,7 +23,7 @@ data: "bin" = binomial (default), "poi" = Poisson.}
 
 \item{contrast}{Character string indicating the contrast of interest: "RD" = 
 rate difference (default), "RR" = rate ratio, "OR" = odds ratio.
-contrast="p" gives an interval for the single proportion x1/n1.}
+contrast="p" gives an interval for the single proportion or rate x1/n1.}
 
 \item{level}{Number specifying confidence level (between 0 and 1, default 
 0.95).}
@@ -30,6 +31,9 @@ contrast="p" gives an interval for the single proportion x1/n1.}
 \item{skew}{Logical (default TRUE) indicating whether to apply skewness 
 correction (for the SCAS method recommended in Laud 2017) or not (for
 the Miettinen-Nurminen method).}
+
+\item{ORbias}{Logican (default = FALSE) indicating whether to apply
+additional bias correction for OR as per Gart 1985.}
 
 \item{bcf}{Logical (default TRUE) indicating whether to apply bias correction
 in the score denominator. Applicable to distrib = "bin" only. (NB: bcf = 
@@ -92,9 +96,11 @@ ratio ("RR") for independent binomial or Poisson rates, or for odds ratio
 ("OR", binomial only). Including options for bias correction (from Miettinen 
 & Nurminen), skewness correction ("GNbc" method from Laud & Dane, developed 
 from Gart & Nam, and generalised as "SCAS" in Laud 2017) and continuity
-correction (for strictly conservative coverage). Also includes intervals for
-a single proportion, i.e. Wilson score interval, which, when corrected for
-skewness, has slightly better coverage properties than the Jeffreys method.
+correction (for strictly conservative coverage). 
+Also includes score intervals for a single binomial proportion or Poisson 
+rate. Based on the Wilson score interval, when corrected for skewness, 
+coverage is almost identical to the mid-p method, or Clopper-Pearson 
+when also continuity-corrected.
 This function is vectorised in x1, x2, n1, and n2.  Vector inputs may also be
 combined into a single stratified analysis (e.g. meta-analysis), either using
 fixed effects, or the more general "TDAS" method, which incorporates stratum 

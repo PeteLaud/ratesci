@@ -25,12 +25,14 @@
 #'   data: "bin" = binomial (default), "poi" = Poisson.
 #' @param contrast Character string indicating the contrast of interest: "RD" = 
 #'   rate difference (default), "RR" = rate ratio, "OR" = odds ratio.
-#'   contrast="p" gives an interval for the single proportion x1/n1.
+#'   contrast="p" gives an interval for the single proportion or rate x1/n1.
 #' @param level Number specifying confidence level (between 0 and 1, default 
 #'   0.95).
 #' @param skew Logical (default TRUE) indicating whether to apply skewness 
 #'   correction (for the SCAS method recommended in Laud 2017) or not (for
 #'   the Miettinen-Nurminen method).
+#' @param ORbias Logican (default = FALSE) indicating whether to apply
+#'   additional bias correction for OR as per Gart 1985.
 #' @param bcf Logical (default TRUE) indicating whether to apply bias correction
 #'   in the score denominator. Applicable to distrib = "bin" only. (NB: bcf = 
 #'   FALSE option is really only included for legacy validation against previous
@@ -143,6 +145,7 @@ scoreci <- function(
 	contrast = "RD",
 	level = 0.95,
 	skew = TRUE,
+	ORbias = FALSE,
 	bcf = TRUE,
 	cc = FALSE,
 	theta0 = NULL,
@@ -263,7 +266,7 @@ scoreci <- function(
 	myfun <- function(theta, randswitch = tdas, ccswitch = cc, stratswitch = stratified) {
 	  scoretheta(theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
 	             contrast = contrast, distrib = distrib, stratified = stratswitch,
-	             wt = wt, weighting = weighting, tdas = randswitch, skew = skew,
+	             wt = wt, weighting = weighting, tdas = randswitch, skew = skew, ORbias=ORbias,
 	             cc = ccswitch)$score  
 	}
 
@@ -310,7 +313,7 @@ scoreci <- function(
 	at.MLE <- scoretheta(theta = point, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
 	                     contrast = contrast,
 	                     distrib = distrib, stratified = stratified,
-	                     weighting = weighting, wt = wt, tdas = tdas, skew = skew,
+	                     weighting = weighting, wt = wt, tdas = tdas, skew = skew, ORbias=ORbias,
 	                     cc = cc)
 	Stheta.MLE <- at.MLE$Stheta
 	p1d.MLE <- at.MLE$p1d
@@ -328,7 +331,7 @@ scoreci <- function(
 	                      bcf = bcf, contrast = contrast,
 	                      distrib = distrib, stratified = stratified,
 	                      weighting = weighting, wt = wt, tdas = FALSE,
-	                      skew = skew, cc = cc)
+	                      skew = skew, ORbias=ORbias, cc = cc)
 	  Stheta.FE <- at.FE$Stheta
 	  wt.FE <- at.FE$wt
 	  V.FE <- at.FE$V
@@ -381,7 +384,7 @@ scoreci <- function(
 	  at.MLE.unstrat <- scoretheta(theta = point, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
 	                               contrast = contrast,
 	                               distrib = distrib, stratified = FALSE,
-	                               weighting = weighting, wt = wt, tdas = tdas, skew = skew,
+	                               weighting = weighting, wt = wt, tdas = tdas, skew = skew, ORbias=ORbias,
 	                               cc = cc)
 	  point.FE.unstrat <- bisect(ftn = function(theta) 
 	    myfun(theta, randswitch = FALSE, ccswitch = 0, stratswitch = FALSE) - 0, contrast = contrast,
@@ -443,12 +446,12 @@ scoreci <- function(
 	                        stratified = stratified,
 	                        wt = wt, weighting = weighting, tdas = tdas,
 	                        bcf = bcf, contrast = contrast, distrib = distrib,
-	                        skew = skew, cc = cc)
+	                        skew = skew, ORbias=ORbias, cc = cc)
 	scorenull <- scoretheta(theta = theta0, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
 	                         stratified = stratified,
 	                         wt = wt, weighting = weighting, tdas = tdas,
 	                         bcf = bcf, contrast = contrast, distrib = distrib,
-	                         skew = skew, cc = cc)
+	                         skew = skew, ORbias=ORbias, cc = cc)
 	pval.left <- scorenull$pval
 	pval.right <- 1 - pval.left
 	chisq.zero <- scorezero$score^2
@@ -562,7 +565,7 @@ scoreci <- function(
 #	  Qj = Q.each, Qc.j = Qc.j, atmle = at.MLE$Stheta,p1d=p1d.MLE,p2d=p2d.MLE,Stheta=Stheta.MLE,V.MLE, atnull = scorenull$Stheta, atmle = at.MLE$Stheta)))
 	}
 	outlist <- append(outlist, list(call = c(distrib = distrib,
-	                 contrast = contrast, level = level, skew = skew,
+	                 contrast = contrast, level = level, skew = skew, ORbias=ORbias,
 	                 bcf = bcf, cc = cc)))
 	return(outlist)
 }
@@ -810,6 +813,7 @@ scoretheta <- function (
 	contrast = "RD",
 	bcf = TRUE,
 	skew = TRUE,
+	ORbias = FALSE,
 	cc = FALSE,
 	stratified = FALSE,
 	wt = NULL,
@@ -826,6 +830,8 @@ scoretheta <- function (
 	x <- x1 + x2
 	N <- n1 + n2
 
+	biasGN <- 0
+	
  	#RMLE of p1|theta depends on whether theta=RD or RR, and on whether a binomial
  	#or Poisson distribution is assumed Binomial RD
 	if (contrast == "RD") {
@@ -897,7 +903,13 @@ scoretheta <- function (
 	      (1 - 2 * p2d)/((n2 * p2d * (1 - p2d))^2)
 	    Stheta[(x1 == 0 & x2 == 0) | (x1 == n1 & x2 == n2)] <- 0
 	    mu3[(x1 == 0 & x2 == 0) | (x1 == n1 & x2 == n2)] <- 0
-	  } else if (distrib == "poi") {
+	    
+	#    if(ORbias==TRUE) biasGN <- V^(-3/2)*(p1d-p2d)/(n1*p1d*(1-p1d)*n2*p2d*(1-p2d)) #Aiming to match the bias correction from Gart 1985
+	    if(ORbias==TRUE) biasGN <- (p1d-p2d)/(n1*p1d*(1-p1d) + n2*p2d*(1-p2d)) #Aiming to match the bias correction from Gart 1985
+      #note V = (npq1 + npq2)/(npq1npq2) and this version puts biasGN within (Stheta-biasGN)/V
+	    #instead of Stheta/V - biasGN
+	    
+	   } else if (distrib == "poi") {
 	    print("Odds ratio not applicable to Poisson rates")
 	  }
 	} else if (contrast == "p") {
@@ -930,6 +942,7 @@ scoretheta <- function (
 	    corr <- cc/n1
 	  }  
 	}
+	corr <- corr*sign(Stheta) 
 		
 	if (stratified == TRUE) {
 	  pval <- NA
@@ -1005,7 +1018,14 @@ scoretheta <- function (
 		# from equation (15) of Miettinen&Nurminen, with the addition of between
 		# strata variance from Whitehead&Whitehead
 		
-		score1 <- sum((wt/sum(wt)) * (Stheta - corr))/pmax(0, sqrt(Vdot))
+		if (contrast == "OR" && cc > 0) {
+		  corr <- cc * Vdot * sign(sum((wt/sum(wt))*Stheta))
+		  # cc=0.5 gives Cornfield correction. Try cc=0.25 instead
+		}
+#		if(contrast == "OR" && ORbias==TRUE ) biasGN <- Vdot^(-1/2)*(p1d-p2d)/(n1*p1d*(1-p1d) + n2*p2d*(1-p2d)) #Aiming to match the bias correction from Gart 1985
+		if(contrast == "OR" && ORbias==TRUE ) biasGN <- (p1d-p2d)/(n1*p1d*(1-p1d) + n2*p2d*(1-p2d)) #Aiming to match the bias correction from Gart 1985
+		
+		score1 <- sum( (wt/sum(wt)) * (Stheta - corr - biasGN))/pmax(0, sqrt(Vdot))
 		scterm <- sum(((wt/sum(wt))^3) * mu3)/(6 * Vdot^(3/2))
 		A <- scterm
 		B <- 1
@@ -1021,7 +1041,6 @@ scoretheta <- function (
 		p1ds <- sum(wt * p1d/sum(wt))
 	} 
 	else if (stratified==FALSE) {
- 		corr <- corr*sign(Stheta) 
 		p1ds <- p1d
 		p2ds <- p2d
 		
@@ -1030,7 +1049,7 @@ scoretheta <- function (
 		# Note that in the special case of mu3=0, this reduces to the skew=FALSE case.
 		A <- mu3/(6 * V^(3/2))
 		B <- 1
-		C_ <- -((Stheta - corr)/sqrt(V) + mu3/(6 * V^(3/2)))
+		C_ <- -((Stheta - corr - biasGN)/sqrt(V) + mu3/(6 * V^(3/2)))
 		num <- (-B + sqrt(pmax(0, B^2 - 4 * A * C_)))
 		
 		score <- ifelse((skew == FALSE | mu3 == 0 | (distrib == "poi" & abs(mu3) <= 10e-16)),
