@@ -95,6 +95,38 @@ test_that("no change to published examples", {
 
 if(FALSE) {  
 
+  
+ #Gart 1985 
+  if(FALSE) {
+    scoreci(x1=28,n1=99,x2=23,n2=182,contrast='OR',bcf=F,skew=T,ORbias=T,cc=T)
+    scoreci(x1=c(4,2,4,1),n1=c(16,16,18,15),x2=c(5,3,10,3),n2=c(79,87,90,82),contrast='OR',bcf=F,skew=T,ORbias=T,cc=T,stratified=T)
+    scoreci(x1=c(4,2,4,1),n1=c(16,16,18,15),x2=c(5,3,10,3),n2=c(79,87,90,82),contrast='OR',bcf=F,skew=T,ORbias=T,cc=F,stratified=T,plot=T)
+    
+  #Cornfield
+    scoreci(x1=3,n1=14,x2=60,n2=92,contrast='OR',bcf=F,skew=F,ORbias=F,cc=T)
+    
+  #Fagerland
+    scoreci(x1=7,n1=34,x2=1,n2=34,contrast='OR',bcf=F,skew=F,ORbias=F,cc=T)
+    scoreci(x1=7,n1=34,x2=1,n2=34,contrast='OR',bcf=T,skew=T,ORbias=T,cc=F)
+    
+  #Gart & Thomas
+    scoreci(x1=28,n1=51,x2=71,n2=230,contrast='OR',bcf=F,skew=F,ORbias=F,cc=F) #tick
+    
+  #Fagerland Newcombe
+    scoreci(x1=29,n1=55,x2=11,n2=11,contrast='OR',bcf=F,skew=F,ORbias=F,cc=F) #?
+    scoreci(x1=29,n1=55,x2=11,n2=11,contrast='OR',bcf=T,skew=F,ORbias=F,cc=F) #tick
+    scoreci(x1=29,n1=55,x2=11,n2=11,contrast='OR',bcf=T,skew=T,ORbias=T,cc=F) 
+    
+    scoreci(x1=7,n1=18,x2=1,n2=18,contrast='OR',bcf=T,skew=F,ORbias=F,cc=F) #tick
+    scoreci(x1=7,n1=18,x2=1,n2=18,contrast='OR',bcf=T,skew=T,ORbias=T,cc=F) #
+
+    scoreci(x1=24,n1=73,x2=53,n2=65,contrast='OR',bcf=T,skew=F,ORbias=F,cc=F) #tick
+    scoreci(x1=24,n1=73,x2=53,n2=65,contrast='OR',bcf=T,skew=T,ORbias=T,cc=F) #tick
+    
+  }
+  
+  
+  
 ###################
 #Table 3: Stratified confidence intervals using cisapride data
 ###################
