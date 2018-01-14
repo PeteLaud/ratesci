@@ -6,9 +6,11 @@
 #' ("OR", binomial only). Including options for bias correction (from Miettinen 
 #' & Nurminen), skewness correction ("GNbc" method from Laud & Dane, developed 
 #' from Gart & Nam, and generalised as "SCAS" in Laud 2017) and continuity
-#' correction (for strictly conservative coverage). Also includes intervals for
-#' a single proportion, i.e. Wilson score interval, which, when corrected for
-#' skewness, has slightly better coverage properties than the Jeffreys method.
+#' correction (for strictly conservative coverage). 
+#' Also includes score intervals for a single binomial proportion or Poisson 
+#' rate. Based on the Wilson score interval, when corrected for skewness, 
+#' coverage is almost identical to the mid-p method, or Clopper-Pearson 
+#' when also continuity-corrected.
 #' This function is vectorised in x1, x2, n1, and n2.  Vector inputs may also be
 #' combined into a single stratified analysis (e.g. meta-analysis), either using
 #' fixed effects, or the more general "TDAS" method, which incorporates stratum 

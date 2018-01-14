@@ -1,12 +1,14 @@
 #' Confidence intervals for comparisons of paired binomial rates.
 #' 
-#' Score-based confidence intervals for the rate (or risk) difference ("RD"),
-#' rate ratio ("RR") or for odds ratio ("OR"), for paired binomial data.
-#' [For paired Poisson rates, use the tdasci function with distrib="poi",
-#' and weighting="MH", with pairs as strata.].
-#' This function applies the stratified TDAS method for RD and RR. For OR, an 
-#' interval is produced based on transforming a SCAS interval for the single 
-#' proportion.
+#' Score-based confidence intervals for the rate (or risk) difference ('RD'),
+#' rate ratio ('RR') or odds ratio ('OR'), for paired binomial data.
+#' [For paired Poisson rates, use the tdasci function with distrib='poi',
+#' and weighting='MH', with pairs as strata.].
+#' This function applies the Tango and Tang methods for RD and RR respectively, 
+#' as well as an experimental method using the stratified TDAS method with 
+#' pairs as strata. 
+#' For OR, intervals are produced based on transforming various intervals for 
+#' the single proportion, inclusing SCAS, mid-p and Jeffreys.
 #' 
 #' @param x A numeric vector object specified as c(a,b,c,d) 
 #'   where:
@@ -16,8 +18,6 @@
 #'   c is the count of the number with the event on condition 2 only (=n21)
 #'   d is the number of pairs with no event under both conditions
 #'   (Note the order of a and d is only important for contrast="RR".)
-#'   Note for data in columns of success/failure, use the tdasci function
-#'   instead, with weighting="MH" (not recommended for contrast="OR")
 #' @param contrast Character string indicating the contrast of interest: 
 #'   "RD" = rate difference (default), "RR" = rate ratio, "OR" = odds ratio.
 #' @param level Number specifying confidence level (between 0 and 1, default 
@@ -36,8 +36,8 @@
 #'   struggle with low numbers).
 #' @param method.OR Character string indicating the confidence interval method
 #'   to be used for contrast="OR", all of which are based on transformation of
-#'   an interval for a single proportion: "SCAS" = transformed
-#'   skewness-corrected score (default),
+#'   an interval for a single proportion b/(b+c):
+#'   "SCAS" = transformed skewness-corrected score (default),
 #'   "Jeffreys" = transformed Jeffreys (to be added),
 #'   "midp" = transformed mid-p,
 #'   ("Wilson" = transformed Wilson score - not yet included, would be for

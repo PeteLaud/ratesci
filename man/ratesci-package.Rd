@@ -25,12 +25,13 @@ the SCAS (skewness-corrected asymptotic score) method is recommended (Laud
   \item moverbci: wrapper function to compute MOVER-B interval
   \item jeffreysci: wrapper function to compute Jeffreys interval for a
   single rate
+  \item pairbinci: for paired binomial data
 }
 }
 
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 
-rates. Pharmaceutical Statistics [in press].
+rates. Pharmaceutical Statistics 2017; 16:334-348.
 
 Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
 Medicine 1985; 4:213-226.
