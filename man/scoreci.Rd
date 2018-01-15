@@ -32,7 +32,7 @@ contrast="p" gives an interval for the single proportion or rate x1/n1.}
 correction (for the SCAS method recommended in Laud 2017) or not (for
 the Miettinen-Nurminen method).}
 
-\item{ORbias}{Logican (default = FALSE) indicating whether to apply
+\item{ORbias}{Logical (default = FALSE) indicating whether to apply
 additional bias correction for OR as per Gart 1985.}
 
 \item{bcf}{Logical (default TRUE) indicating whether to apply bias correction
@@ -161,8 +161,12 @@ Laud PJ. Equal-tailed confidence intervals for comparison of
   difference or non-unity relative risk. Statistics in Medicine 1990;
   9(12):1447-1454.
   
+  Gart JJ. Analysis of the common odds ratio: corrections for bias and
+  skewness. Bulletin of the International Statistical Institute, 45th
+  session, book 1, 175-176.
+  
   Gart JJ, Nam Jm. Approximate interval estimation of the ratio of binomial 
-  parameters: A review and corrections for skewness. Biometrics 1988; 
+  parameters: a review and corrections for skewness. Biometrics 1988; 
   44(2):323-338.
   
   Gart JJ, Nam Jm. Approximate interval estimation of the difference in 

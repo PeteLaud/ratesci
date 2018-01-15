@@ -10,6 +10,8 @@
 
 ## New features
 * Added pairbinci function for all comparisons of paired binomial rates.
+* Refined SCAS method for OR using bias correction from Gart (1985)
+* Corrected error in cc for stratified SCAS method for OR
 * Added option to suppress warnings in scoreci.
 * Added Galbraith plot (for assessing stratum heterogeneity) to scoreci.
 * Added qualitative interaction test to scoreci.
