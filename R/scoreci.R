@@ -906,7 +906,8 @@ scoretheta <- function (
 	    
 	#    if(ORbias==TRUE) biasGN <- V^(-3/2)*(p1d-p2d)/(n1*p1d*(1-p1d)*n2*p2d*(1-p2d)) #Aiming to match the bias correction from Gart 1985
 	    if(ORbias==TRUE) biasGN <- (p1d-p2d)/(n1*p1d*(1-p1d) + n2*p2d*(1-p2d)) #Aiming to match the bias correction from Gart 1985
-      #note V = (npq1 + npq2)/(npq1npq2) and this version puts biasGN within (Stheta-biasGN)/V
+	#    if(ORbias==TRUE) biasGN <- (p1d-p2d)/(V*n1*p1d*(1-p1d)*n2*p2d*(1-p2d)) #Aiming to match the bias correction from Gart 1985
+	    #note V = (npq1 + npq2)/(npq1npq2) and this version puts biasGN within (Stheta-biasGN)/V
 	    #instead of Stheta/V - biasGN
 	    
 	   } else if (distrib == "poi") {
@@ -962,6 +963,10 @@ scoretheta <- function (
 	        wtx <- (1/n1 + theta/n2)^(-1)
 	        p2ds <- sum(wtx * p2d)/sum(wtx)
 	        p1ds <- sum(wtx * p1d)/sum(wtx)
+	        wty <- ((1 - p1ds)/(n1 * (1 - p2ds)) + theta/n2)^(-1)
+	        wty[p2ds == 1] <- 0
+	        p2ds <- sum(wty * p2d)/sum(wty)
+	        p1ds <- sum(wty * p1d)/sum(wty)
 	        wty <- ((1 - p1ds)/(n1 * (1 - p2ds)) + theta/n2)^(-1)
 	        wty[p2ds == 1] <- 0
 	        p2ds <- sum(wty * p2d)/sum(wty)
@@ -1024,6 +1029,8 @@ scoretheta <- function (
 		}
 #		if(contrast == "OR" && ORbias==TRUE ) biasGN <- Vdot^(-1/2)*(p1d-p2d)/(n1*p1d*(1-p1d) + n2*p2d*(1-p2d)) #Aiming to match the bias correction from Gart 1985
 		if(contrast == "OR" && ORbias==TRUE ) biasGN <- (p1d-p2d)/(n1*p1d*(1-p1d) + n2*p2d*(1-p2d)) #Aiming to match the bias correction from Gart 1985
+#		if(contrast == "OR" && ORbias==TRUE ) biasGN <- (p1d-p2d)/(V*n1*p1d*(1-p1d)*n2*p2d*(1-p2d))
+#		if(contrast == "OR" && ORbias==TRUE ) biasGN <- ( ((1/V))*(p1d-p2d)/(n1*p1d*(1-p1d)*n2*p2d*(1-p2d))) #Gart version - note his v is 1/V
 		
 		score1 <- sum( (wt/sum(wt)) * (Stheta - corr - biasGN))/pmax(0, sqrt(Vdot))
 		scterm <- sum(((wt/sum(wt))^3) * mu3)/(6 * Vdot^(3/2))
