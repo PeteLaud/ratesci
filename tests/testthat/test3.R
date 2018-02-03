@@ -61,7 +61,7 @@ test_that("legacy & new methods match published examples", {
     matrix(c(0.050,0.242,0,0.427,1.395,75.890),byrow=T,nrow=3)
   )
   expect_equal(
-    unname(round(scoreci(x1=c(24,29,7),n1=c(73,55,18),x2=c(53,11,1),n2=c(65,11,18),contrast="OR",skew=F)$estimates[,c(1,3)],3)),
+    unname(round(scoreci(x1=c(24,29,7),n1=c(73,55,18),x2=c(53,11,1),n2=c(65,11,18),contrast="OR",skew=F,ORbias=F)$estimates[,c(1,3)],3)),
     matrix(c(0.050,0.245,0,0.417,1.416,76.428),byrow=T,nrow=3)
   )
   #Fagerland Newcombe for RR
