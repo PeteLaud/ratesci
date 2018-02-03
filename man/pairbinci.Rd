@@ -68,7 +68,7 @@ the single proportion, inclusing SCAS, mid-p and Jeffreys.
   pairbinci(x = c(53,16,8,9), contrast="RD", method.RD="TDAS")
   pairbinci(x = c(53,16,8,9), contrast="RR", method.RR="Score")
   pairbinci(x = c(53,16,8,9), contrast="RR", method.RR="TDAS")
-  pairbinci(x = c(53,16,8,9), contrast="OR", method.RD="SCAS")
+  pairbinci(x = c(53,16,8,9), contrast="OR", method.OR="SCAS")
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of 

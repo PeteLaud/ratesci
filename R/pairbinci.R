@@ -52,7 +52,7 @@
 #'   pairbinci(x = c(53,16,8,9), contrast="RD", method.RD="TDAS")
 #'   pairbinci(x = c(53,16,8,9), contrast="RR", method.RR="Score")
 #'   pairbinci(x = c(53,16,8,9), contrast="RR", method.RR="TDAS")
-#'   pairbinci(x = c(53,16,8,9), contrast="OR", method.RD="SCAS")
+#'   pairbinci(x = c(53,16,8,9), contrast="OR", method.OR="SCAS")
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references 
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of 
