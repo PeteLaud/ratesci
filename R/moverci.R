@@ -302,7 +302,7 @@ jeffreysci <- function(
     CI.lower <- qbeta( alpha/2, x + (ai - cc), n - x + (bi + cc))
     est <- qbeta( 0.5, x + (ai), n - x + (bi)) #Obtain phat as the median
     CI.upper <- qbeta(1 - alpha/2, x + (ai + cc), n - x + (bi - cc))
-    if (adj == TRUE) { #recommended adjustment at boundary values
+    if (adj == TRUE) { # adjustment at boundary values
       CI.lower[x == 0] <- 0
       CI.upper[x == n] <- 1
       est[x == 0] <- 0
