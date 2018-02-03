@@ -182,7 +182,7 @@ moverci <- function(
   if (contrast == "p") {
     lower <- l1
     upper <- u1
-    est <- j1[, 3]
+    est <- p1hat
   } else if (contrast == "RD") {
     # From Newcombe (1998), p876 "Method 10"
     lower <- p1hat - p2hat - sqrt(pmax(0, (p1hat - l1)^2 + (u2 - p2hat)^2))
@@ -212,6 +212,7 @@ moverci <- function(
       lower[(x1 == 0 & x2 == n2) | (x1 == n1 & x2 == 0)] <- 0
       upper[(x1 == 0 & x2 == n2) | (x1 == n1 & x2 == 0)] <- Inf
     }
+    if (cc > 0) lower[u2 == 1] <- 0 #Avoids LCL=NaN
   } else if (contrast == "RR") {
     # From Donner & Zou (2012), p351
     # or Li et al. (2014), p873
@@ -299,7 +300,7 @@ jeffreysci <- function(
   alpha <- 1 - level
   if (distrib == "bin") {
     CI.lower <- qbeta( alpha/2, x + (ai - cc), n - x + (bi + cc))
-    est <- qbeta( 0.5, x + (ai), n - x + (bi))
+    est <- qbeta( 0.5, x + (ai), n - x + (bi)) #Obtain phat as the median
     CI.upper <- qbeta(1 - alpha/2, x + (ai + cc), n - x + (bi - cc))
     if (adj == TRUE) { #recommended adjustment at boundary values
       CI.lower[x == 0] <- 0
