@@ -2,16 +2,17 @@
 
 * Clarified documentation regarding continuity corrections
 * Fixed bug in pairbinci for contrast="OR"
+* Fixed bug in moverci for contrast="p" and type="wilson"
 * Added score methods for paired binomial RD and RR (Tango & Tang)
 * Added non-iterative SCAS methods for single binomial or Poisson rate
 * Added transformed mid-p method for paired OR for comparison with transformed SCAS
+* Added bias correction to SCAS method for OR (based on Gart 1985)
+* Corrected error in cc for stratified SCAS method for OR
 
 # ratesci 0.2-0
 
 ## New features
 * Added pairbinci function for all comparisons of paired binomial rates.
-* Refined SCAS method for OR using bias correction from Gart (1985)
-* Corrected error in cc for stratified SCAS method for OR
 * Added option to suppress warnings in scoreci.
 * Added Galbraith plot (for assessing stratum heterogeneity) to scoreci.
 * Added qualitative interaction test to scoreci.
