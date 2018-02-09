@@ -45,7 +45,7 @@
 #' @param precis Number (default 6) specifying precision (i.e. number of decimal
 #'   places) to be used in optimisation subroutine for the confidence interval. 
 #   ...more parameters to be added: cc? skew??
-#' @importFrom stats uniroot pbinom
+#' @importFrom stats uniroot pbinom ppois dpois
 #' @examples  
 #'   #Data example from Agresti-Min 2005
 #'   pairbinci(x = c(53,16,8,9), contrast="RD", method.RD="Score")
@@ -121,7 +121,6 @@ pairbinci <- function(
        pval <- OR.ci$pval
        outlist <- list(xi, estimates = estimates, pval = pval)
      } else if (method.OR == "midp") {
-#       trans.ci <- binom.exact(x = b, n = b + c, midp = TRUE)$conf.int
        trans.ci <- midpci(x = b, n = b + c, level = level)
        estimates <- c(trans.ci/(1 - trans.ci))
        outlist <- list(xi, estimates = estimates)
@@ -150,7 +149,7 @@ pairbinci <- function(
                       precis = precis + 1, contrast = contrast, uplow = "low")
       upper <- bisect(ftn = function(theta) myfun(theta) + qtnorm, distrib = "bin", 
                       precis = precis + 1, contrast=contrast, uplow = "up")
-      estimates <- cbind(lower = lower, MLE = MLE, upper = upper, level = level)
+      estimates <- cbind(Lower = lower, MLE = MLE, Upper = upper, level = level)
       
       # optionally add p-value for a test of null hypothesis: theta<=theta0
       # default value of theta0 depends on contrast
@@ -172,6 +171,7 @@ pairbinci <- function(
       outlist <- list(xi, estimates = estimates, pval = pval)
     }
     
+    #Placeholder:
     #Add code for MOVER Jeffreys methods from Tang2010 (and add SCAS version)? 
     #For both RD & RR this appears to be inferior to the Score methods
 #    if((contrast =="RD" && method.RD == "MOVER") ||
@@ -205,7 +205,7 @@ scorepair <- function (
     A <- 2 * N
     B <- -x[2] - x[3] + (2*N - x[2] + x[3]) * theta
     C_ <- -x[3] * theta * (1 - theta) 
-    num <- (-B + sqrt(B^2 - 4 * A * C_))
+    num <- (-B + Re(sqrt(as.complex(B^2 - 4 * A * C_))))
     p2d <- ifelse(num == 0, 0, num/(2 * A))
     V <- pmax(0, N*(2 * p2d + theta * (1 - theta)))
   }
@@ -214,7 +214,7 @@ scorepair <- function (
     A <- N * (1 + theta)
     B <- (x[1] + x[3]) * theta^2 - (x[1] + x[2] + 2*x[3])
     C_ <- x[3] * (1 - theta) * (x[1] + x[2] + x[3])/N
-    num <- (-B + sqrt(B^2 - 4 * A * C_))
+    num <- (-B + Re(sqrt(as.complex(B^2 - 4 * A * C_))))
     q21 <- ifelse(num == 0, 0, num/(2 * A))
     q11 <- ((x[1] + x[2] + x[3])/N - (1 + theta) * q21)/theta
     q12 <- (q21 + (theta - 1) * (x[1] + x[2] + x[3])/N)/theta
@@ -227,33 +227,75 @@ scorepair <- function (
   outlist <- list(score = score, pval = pval)
   return(outlist)
 }
- 
-# Internal function
-midpci <- function(x, n, level = 0.95) {
-  #function to calculate exact 'mid-p' confidence interval for a single proportion x/n
+
+# Internal function for both Clopper-Pearson and mid-p, binomial or Poisson
+midpci <- function(
+  #function to calculate exact 'mid-p' confidence interval for a single 
+  #binomial or Poisson rate x/n
+  x, 
+  n, 
+  level = 0.95, 
+  exact = FALSE, 
+  distrib = 'bin',
+  precis = 8
+  ) {
+
   alpha <- 1 - level
-  lowroot <- function(p) {
-    pbinom(x - 1, n, p, lower.tail = FALSE) - 0.5 * dbinom(x, n, p) - alpha/2
+  cc <- (exact==FALSE) * 0.5
+  if(distrib =='bin') {
+    lowroot <- function (p) pbinom(x - 1, n, p) + cc * dbinom(x, n, p) - (1 - alpha/2)
+    uproot <- function (p) pbinom(x, n, p) - cc * dbinom(x, n, p) - alpha/2
+  } else if(distrib =='poi') {
+    lowroot <- function (p) ppois(x, p) + cc * dpois(x, p) - (1 - alpha/2)
+    uproot <- function (p) ppois(x, p) - cc * dpois(x, p) - alpha/2
   }
-  uproot <- function(p) {
-    pbinom(x, n, p) - 0.5 * dbinom(x, n, p) - alpha/2
-  }
-  if (x == 0) {
-    p.L <- 0
-  } else  {
-    p.L <- uniroot(f = lowroot, interval = c(0, 1))$root
-  }
-  if (x == n){
-    p.U <- 1
-  } else  {
-    p.U <- uniroot(f = uproot, interval = c(0, 1))$root
-  }
-  return(c(p.L, p.U))
+  lower <- bisect(ftn = lowroot, precis = precis, uplow = "low", contrast = 'p', distrib = distrib)
+  upper <- bisect(ftn = uproot, precis = precis, uplow = "up", contrast = 'p', distrib = distrib)
+  return(cbind(Lower = lower, Upper = upper)/ifelse(distrib=='poi',n,1))
 }
 
 
 if(FALSE) {
-  #  if (contrast == "RD") { #per Tango 1998 - something's flipped
+n
+  alpha <- 0.0000
+  ps <- seq(0,0.1,0.001)
+  root <- lowroot(ps)
+  plot(ps,root,type='l')
+  max(root)
+
+    #
+  midpci(0:10,rep(10,11),level=0.000001)
+  scasci.nonit(0:10,rep(10,11),level=0.999)
+  scasci(0:10,rep(10,11),contrast='p',level=0.999)
+  # midpci(1,29,exact=T)
+  #midpci(1,29,exact=F)
+  #midpci(1,29,exact=F,distrib='poi')
+  
+  # Internal function - previous version, precision not high enough
+  midpci0 <- function(x, n, level = 0.95) {
+    #function to calculate exact 'mid-p' confidence interval for a single proportion x/n
+    alpha <- 1 - level
+    lowroot <- function(p) {
+      pbinom(x - 1, n, p, lower.tail = FALSE) - 0.5 * dbinom(x, n, p) - alpha/2
+    }
+    uproot <- function(p) {
+      pbinom(x, n, p) - 0.5 * dbinom(x, n, p) - alpha/2
+    }
+    if (x == 0) {
+      p.L <- 0
+    } else  {
+      p.L <- uniroot(f = lowroot, interval = c(0, 1))$root
+    }
+    if (x == n){
+      p.U <- 1
+    } else  {
+      p.U <- uniroot(f = uproot, interval = c(0, 1))$root
+    }
+    return(c(p.L, p.U))
+  }
+  
+  
+    #  if (contrast == "RD") { #per Tango 1998 - something's flipped
   #    Stheta <- ((x[2] - x[3]) + N*theta)
   #    A <- 2 * N
   #    B <- -x[2] - x[3] - (2*N - x[2] + x[3])*theta
