@@ -21,7 +21,7 @@ Description: Computes confidence intervals for the rate (or risk)
     and generalised for Bayesian applications incorporating prior 
     information. So-called 'exact' methods for strictly conservative 
     coverage are approximated using continuity corrections.
-    Also inlcudes methods for stratified calculations (e.g. meta-analysis),
+    Also includes methods for stratified calculations (e.g. meta-analysis),
     either assuming fixed effects or incorporating stratum
     heterogeneity.
 Depends: R (>= 3.2.5)
