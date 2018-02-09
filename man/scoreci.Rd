@@ -6,7 +6,7 @@
 rates.}
 \usage{
 scoreci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
-  level = 0.95, skew = TRUE, ORbias = TRUE, bcf = TRUE, cc = FALSE,
+  level = 0.95, skew = TRUE, ORbias = NULL, bcf = TRUE, cc = FALSE,
   theta0 = NULL, precis = 6, plot = FALSE, plotmax = 100,
   stratified = FALSE, weighting = "IVS", wt = NULL, tdas = FALSE,
   warn = TRUE, ...)
@@ -32,9 +32,9 @@ contrast="p" gives an interval for the single proportion or rate x1/n1.}
 correction (for the SCAS method recommended in Laud 2017) or not (for
 the Miettinen-Nurminen method).}
 
-\item{ORbias}{Logical (default = TRUE) indicating whether to apply
+\item{ORbias}{Logical (default is value of skew) indicating whether to apply
 additional bias correction for OR as per Gart 1985. (Corrigendum to 
-Laud 2017 in progress)}
+Laud 2017 in press). Only applies if contrast is "OR".}
 
 \item{bcf}{Logical (default TRUE) indicating whether to apply bias correction
 in the score denominator. Applicable to distrib = "bin" only. (NB: bcf = 

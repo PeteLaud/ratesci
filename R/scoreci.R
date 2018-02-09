@@ -31,9 +31,9 @@
 #' @param skew Logical (default TRUE) indicating whether to apply skewness 
 #'   correction (for the SCAS method recommended in Laud 2017) or not (for
 #'   the Miettinen-Nurminen method).
-#' @param ORbias Logical (default = TRUE) indicating whether to apply
+#' @param ORbias Logical (default is value of skew) indicating whether to apply
 #'   additional bias correction for OR as per Gart 1985. (Corrigendum to 
-#'   Laud 2017 in progress)
+#'   Laud 2017 in press). Only applies if contrast is "OR".
 #' @param bcf Logical (default TRUE) indicating whether to apply bias correction
 #'   in the score denominator. Applicable to distrib = "bin" only. (NB: bcf = 
 #'   FALSE option is really only included for legacy validation against previous
@@ -156,7 +156,7 @@ scoreci <- function(
 	contrast = "RD",
 	level = 0.95,
 	skew = TRUE,
-	ORbias = TRUE,
+	ORbias = NULL,
 	bcf = TRUE,
 	cc = FALSE,
 	theta0 = NULL,
@@ -197,6 +197,9 @@ scoreci <- function(
   if (distrib == "bin" && (any(x1 > n1 + 0.001) || any(x2 > n2 + 0.001))) {
     print("x1 > n1 or x2 > n2 not possible for distrib = 'bin'")
     stop()
+  }
+  if (is.null(ORbias)) {
+    ORbias <- skew
   }
   if (!is.null(theta0)) {	
 		if (contrast == "RD") {
@@ -795,7 +798,7 @@ bisect <- function(
     } else if (contrast == "p" && distrib == "bin") {
       scor <- ftn((mid + 1)/2) 
     }
-    check <- (scor < 0)  | is.na(scor) #??scor=NA only happens when |p1-p2|=1 and |theta|=1 (in which case hi==lo anyway), or if p1=p2=0
+    check <- (scor <= 0)  | is.na(scor) #??scor=NA only happens when |p1-p2|=1 and |theta|=1 (in which case hi==lo anyway), or if p1=p2=0
     hi[check] <- mid[check]
     lo[!check] <- mid[!check]
     niter <- niter + 1
@@ -931,6 +934,7 @@ scoretheta <- function (
 	  }
 	} else if (contrast == "p") {
 	  Stheta <- p1hat - theta
+	  Stheta[n1 == 0] <- 0
 	  if (distrib == "bin") {
 	    V <- (pmax(0, (theta * (1 - theta)/n1)))  
 	    # set to zero if machine precision error in cos function produces a negative V
@@ -939,6 +943,7 @@ scoretheta <- function (
 	    V <- theta/n1
 	    mu3 <- theta/(n1^2)
 	  }
+	  mu3[n1==0] <- 0 #quick fix
 	  p1d <- theta
 	  p2d <- NA
 	}
@@ -1046,12 +1051,7 @@ scoretheta <- function (
 		  corr <- cc * sum(((wt/sum(wt))^2) * (1/(n1) + theta/(n2))) #Tentative
 #		  corr <- cc * Vdot #more tentative - I think wrong
     }
-#		if(contrast == "OR" && ORbias == TRUE ) { #Already done earlier
-#		  bias <- (p1d - p2d)/(n1 * p1d * (1 - p1d) + n2 * p2d * (1 - p2d)) 
-#		  #Matches the bias correction from Gart 1985
-#		}
-		corr <- corr*sign(Sdot)  #or should it be sign(Sdot-bias) ? 
-#		score1 <- sum( (wt/sum(wt)) * (Stheta - corr - bias))/pmax(0, sqrt(Vdot))
+		corr <- corr*sign(Sdot)
 		score1 <- sum( (wt/sum(wt)) * (Stheta - corr))/pmax(0, sqrt(Vdot))
 		scterm <- sum(((wt/sum(wt))^3) * mu3)/(6 * Vdot^(3/2))
 		A <- scterm
@@ -1059,7 +1059,6 @@ scoretheta <- function (
 		C_ <- -(score1 + scterm)
 		num <- (-B + sqrt(max(0, B^2 - 4 * A * C_)))
 		score <- ifelse((skew == FALSE | scterm == 0), score1, num/(2 * A))
-#		score[abs(sum( (wt/sum(wt)) * (Stheta-bias))) < abs(sum( (wt/sum(wt)) * corr))] <- 0
 		score[abs(Sdot) < abs(sum( (wt/sum(wt)) * corr))] <- 0
 		pval <- pnorm(score)
 		if (tdas == TRUE) {
@@ -1080,21 +1079,19 @@ scoretheta <- function (
 		scterm <- mu3/(6 * V^(3/2))
 		A <- scterm
 		B <- 1
-#		C_ <- -((Stheta - corr - bias)/sqrt(V) + scterm)
 		C_ <- -((Stheta - corr)/sqrt(V) + scterm)
 		num <- (-B + sqrt(pmax(0, B^2 - 4 * A * C_)))
 		
 		score <- ifelse((skew == FALSE | mu3 == 0 | (distrib == "poi" & abs(mu3) <= 10e-16)),
 		                ifelse(Stheta == 0, 0, (Stheta - corr)/sqrt(V)), num/(2 * A)
 		)
-#		score[abs(Stheta-bias)<abs(corr)] <- 0
-#		score[abs(Stheta)<abs(corr)] <- 0
+		score[abs(Stheta)<abs(corr)] <- 0
 		
-		pval <- pnorm(score)
+		pval <- pnorm(score)  
 	}
 
 	outlist <- list(score = score, p1d = p1d, Stheta = Stheta, num=num, V = V,
-	                p2d = p2d, mu3 = mu3, pval = pval, bias = bias, corr = corr/sqrt(V))
+	                p2d = p2d, mu3 = mu3, pval = pval)
 	if (stratified) {
 	  outlist <- append(outlist, list(Sdot = Sdot, Vdot = Vdot, tau2 = tau2,
 	             VS = VS, t2 = t2, Q.j = Q.j, Q = Q, wt = wt, p1ds = p1ds, p2ds = p2ds))
