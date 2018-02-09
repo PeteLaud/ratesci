@@ -50,6 +50,7 @@ for (i in 1:3) {
                     RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,contrast="RR")$estimates[,c(1,3)],3),
                     RRpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,contrast="RR",distrib="poi")$estimates[,c(1,3)],3),
                     OR=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,ORbias=F,contrast="OR")$estimates[,c(1,3)],3)
+#                    OR=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,ORbias=T,contrast="OR")$estimates[,c(1,3)],3) #Corrigendum version
                   ), MN=
                   cbind(
                     RDbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=F,contrast="RD")$estimates[,c(1,3)],3),
@@ -83,10 +84,50 @@ tab2
 #save(tab2check,file="tests/testthat/Table2.Rdata")
 #load(file="tests/testthat/Table2.Rdata")
 load(file="Table2.Rdata")
-tab2==tab2check
+#tab2==tab2check
 test_that("no change to published examples", {
   expect_equal(
     tab2,tab2check
+  )
+})
+
+
+
+###################
+#Table 3: Stratified confidence intervals using cisapride data
+###################
+fround <- function(x,digits=6) paste0(format(round(x[1],digits=digits),nsmall=digits),ifelse(length(x)==1,"",paste0(" (",paste(format(round(x[2:length(x)],digits=digits),nsmall=digits),collapse=", "),")")))
+
+x1hk = c(15,12,29,42,14,44,14,29,10,17,38,19,21)
+x2hk = c(9,1,18,31,6,17,7,23,3,6,12,22,19)
+n1hk = c(16,16,34,56,22,54,17,58,14,26,44,29,38)
+n2hk = c(16,16,34,56,22,55,15,58,15,27,45,30,38)
+
+tab3 <-rbind(
+  SCASmh=c(
+    RDbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",stratified=T,weighting="MH",skew=T,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],3),
+    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="MH",skew=T,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],2),
+    OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",stratified=T,weighting="MH",skew=T,ORbias=F,random=F,hk=F,fixtau=T)$estimates[,c(2,1,3)],2)
+  ),
+  SCASiv=c(
+    RDbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",stratified=T,weighting="IVS",skew=T,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],3),
+    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="IVS",skew=T,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],2),
+    OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",stratified=T,weighting="IVS",skew=T,ORbias=F,random=F,hk=F,fixtau=T)$estimates[,c(2,1,3)],2)
+  ),
+  TDAS=c(
+    RDbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",stratified=T,weighting="IVS",skew=F,tdas=T)$estimates[,c(2,1,3)],3),
+    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="IVS",skew=F,tdas=T)$estimates[,c(2,1,3)],2),
+    OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",stratified=T,weighting="IVS",skew=F,tdas=T)$estimates[,c(2,1,3)],2)
+  )
+)
+tab3
+#tab3check <- tab3
+#save(tab3check,file="tests/testthat/Table3.Rdata")
+load(file="Table3.Rdata")
+#tab2==tab2check
+test_that("no change to published examples", {
+  expect_equal(
+    tab3,tab3check
   )
 })
 
@@ -96,86 +137,6 @@ test_that("no change to published examples", {
 if(FALSE) {  
 
   
- #Gart 1985 
-  if(FALSE) {
-    scoreci(x1=28,n1=99,x2=23,n2=182,contrast='OR',bcf=F,skew=T,ORbias=T,cc=T)
-    scoreci(x1=c(4,2,4,1),n1=c(16,16,18,15),x2=c(5,3,10,3),n2=c(79,87,90,82),contrast='OR',bcf=F,skew=T,ORbias=T,cc=T,stratified=T)
-    scoreci(x1=c(4,2,4,1),n1=c(16,16,18,15),x2=c(5,3,10,3),n2=c(79,87,90,82),contrast='OR',bcf=F,skew=T,ORbias=T,cc=F,stratified=T,plot=T)
-    
-  #Cornfield
-    scoreci(x1=3,n1=14,x2=60,n2=92,contrast='OR',bcf=F,skew=F,ORbias=F,cc=T)
-    
-  #Fagerland
-    scoreci(x1=7,n1=34,x2=1,n2=34,contrast='OR',bcf=F,skew=F,ORbias=F,cc=T)
-    scoreci(x1=7,n1=34,x2=1,n2=34,contrast='OR',bcf=T,skew=T,ORbias=T,cc=F)
-    
-  #Gart & Thomas
-    scoreci(x1=28,n1=51,x2=71,n2=230,contrast='OR',bcf=F,skew=F,ORbias=F,cc=F) #tick
-    
-  #Fagerland Newcombe
-    scoreci(x1=29,n1=55,x2=11,n2=11,contrast='OR',bcf=F,skew=F,ORbias=F,cc=F) #?
-    scoreci(x1=29,n1=55,x2=11,n2=11,contrast='OR',bcf=T,skew=F,ORbias=F,cc=F) #tick
-    scoreci(x1=29,n1=55,x2=11,n2=11,contrast='OR',bcf=T,skew=T,ORbias=T,cc=F) 
-    
-    scoreci(x1=7,n1=18,x2=1,n2=18,contrast='OR',bcf=T,skew=F,ORbias=F,cc=F) #tick
-    scoreci(x1=7,n1=18,x2=1,n2=18,contrast='OR',bcf=T,skew=T,ORbias=T,cc=F) #
-
-    scoreci(x1=24,n1=73,x2=53,n2=65,contrast='OR',bcf=T,skew=F,ORbias=F,cc=F) #tick
-    scoreci(x1=24,n1=73,x2=53,n2=65,contrast='OR',bcf=T,skew=T,ORbias=T,cc=F) #tick
-    
-  }
-  
-  
-  
-###################
-#Table 3: Stratified confidence intervals using cisapride data
-###################
-fround <- function(x,digits=6) paste0(format(round(x[1],digits=digits),nsmall=digits),ifelse(length(x)==1,"",paste0(" (",paste(format(round(x[2:length(x)],digits=digits),nsmall=digits),collapse=", "),")")))
-
-tab3 <-rbind(
-  I2=c(
-    RDbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",stratified=T,weighting="IVS",skew=T,random=F,hk=F,fixtau=T)$Qtest["I2"],0),
-    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="IVS",skew=T,random=F,hk=F,fixtau=T)$Qtest["I2"],0),
-    OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",stratified=T,weighting="IVS",skew=T,random=F,hk=F,fixtau=T)$Qtest["I2"],0)
-  ),
-  ANiv=c(
-    RDbin=fround(diffBinconf.meta(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",weight="Inverse",addincr=T,incr=1/16)$estimates[,c(2,1,3)],3),
-    RRbin=fround((diffBinconf.meta(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",weight="Inverse",addincr=T,incr=0.5)$estimates[,c(2,1,3)]),2),
-    OR=fround((diffBinconf.meta(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",weight="Inverse",addincr=T,incr=0.5)$estimates[,c(2,1,3)]),2)
-  ),
-  ANmh=c(
-    RDbin=fround(diffBinconf.meta(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",weight="MH",addincr=T,incr=1/16)$estimates[,c(2,1,3)],3),
-    RRbin=fround(diffBinconf.meta(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",weight="MH",addincr=T,incr=0.5)$estimates[,c(2,1,3)],2),
-    OR=fround(diffBinconf.meta(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",weight="MH",addincr=T,incr=0.5)$estimates[,c(2,1,3)],2)
-  ),
-  SCASmh=c(
-    RDbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",stratified=T,weighting="MH",skew=T,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],3),
-    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="MH",skew=T,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],2),
-    OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",stratified=T,weighting="MH",skew=T,random=F,hk=F,fixtau=T)$estimates[,c(2,1,3)],2)
-  ),
-  SCASiv=c(
-    RDbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",stratified=T,weighting="IVS",skew=T,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],3),
-    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="IVS",skew=T,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],2),
-    OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",stratified=T,weighting="IVS",skew=T,random=F,hk=F,fixtau=T)$estimates[,c(2,1,3)],2)
-  ),
-  DL=c(
-    RDbin=fround(diffBinconf.meta(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,weight="Inverse",contrast="RD",addincr=T,incr=1/16)$estimates[,c(5,4,6)],3),
-    RRbin=fround(diffBinconf.meta(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,weight="Inverse",contrast="RR",addincr=T,incr=0.5)$estimates[,c(5,4,6)],2),
-    OR=fround(diffBinconf.meta(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,weight="Inverse",contrast="OR",addincr=T,incr=0.5)$estimates[,c(5,4,6)],2)
-  ),
-  HKSJ=c(
-    RDbin=fround(diffBinconf.meta(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",hakn=T,addincr=T,incr=1/16)$estimates[,c(5,4,6)],3),
-    RRbin=fround((diffBinconf.meta(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",hakn=T,addincr=T,incr=0.5)$estimates[,c(5,4,6)]),2),
-    OR=fround((diffBinconf.meta(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",hakn=T,addincr=T,incr=0.5)$estimates[,c(5,4,6)]),2)
-  ),
-  TDAS=c(
-    RDbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",stratified=T,weighting="IVS",tdas=T)$estimates[,c(2,1,3)],3),
-    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="IVS",tdas=T)$estimates[,c(2,1,3)],2),
-    OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",stratified=T,weighting="IVS",tdas=T)$estimates[,c(2,1,3)],2)
-  )
-)
-tab3
-xtable(tab3)
 
 ###################
 #Table S1: Example continuity-corrected & 'compromise' confidence intervals 
