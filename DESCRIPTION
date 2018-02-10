@@ -1,8 +1,8 @@
 Package: ratesci
 Type: Package
 Title: Confidence Intervals for Comparisons of Binomial or Poisson Rates
-Version: 0.2-0.9000
-Date: 2017-04-21
+Version: 0.2-0.900
+Date: 2018-02-09
 Authors@R: person("Pete", "Laud", email = "p.j.laud@sheffield.ac.uk",
                   role = c("aut", "cre"))
 Author: Pete Laud [aut, cre]
@@ -24,7 +24,7 @@ Description: Computes confidence intervals for the rate (or risk)
     Also includes methods for stratified calculations (e.g. meta-analysis),
     either assuming fixed effects or incorporating stratum
     heterogeneity.
-Depends: R (>= 3.2.5)
+Depends: R (>= 3.3.3)
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 6.0.1

@@ -2,9 +2,9 @@
 
 ## New features
 * Added bias correction to SCAS method for OR (derived from Gart 1985).
-* Added score methods (Tango & Tang) for paired binomial RD and RR in pairbinci.
-* Added scasci.nonit function for non-iterative SCAS methods for single binomial or Poisson rate.
+* Added score methods (Tango & Tang) as default for paired binomial RD and RR in pairbinci.
 * Added transformed mid-p method for paired OR for comparison with transformed SCAS.
+* Added scasci.nonit function for non-iterative SCAS methods for single binomial or Poisson rate.
 
 ## Bug fixes
 * Fixed bug in pairbinci for contrast="OR".
