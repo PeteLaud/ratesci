@@ -136,8 +136,8 @@
 #'   9(12):1447-1454.
 #'   
 #'   Gart JJ. Analysis of the common odds ratio: corrections for bias and
-#'   skewness. Bulletin of the International Statistical Institute, 45th
-#'   session, book 1, 175-176.
+#'   skewness. Bulletin of the International Statistical Institute 1985, 
+#'   45th session, book 1, 175-176.
 #'   
 #'   Gart JJ, Nam Jm. Approximate interval estimation of the ratio of binomial 
 #'   parameters: a review and corrections for skewness. Biometrics 1988; 
@@ -704,6 +704,8 @@ scasci.nonit <- function(
 }
 
 
+
+
 #' t-distribution asymptotic score ("TDAS") confidence intervals for
 #' comparisons of independent binomial or Poisson rates.
 #' 
@@ -1098,3 +1100,4 @@ scoretheta <- function (
 	}
 	return(outlist)
 }
+
