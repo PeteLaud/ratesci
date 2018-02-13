@@ -647,63 +647,6 @@ scasci <- function(
   ) 
 }
 
-#' Skewness-corrected asymptotic score ("SCAS") confidence intervals for
-#' single binomial or Poisson rate using closed-form calculations.
-#' This function is vectorised in x, n.
-#' 
-#' @param x Numeric vector of number of events.
-#' @param n Numeric vector of sample sizes (for binomial rates) or exposure
-#'   times (for Poisson rates).
-#' @inheritParams scoreci
-#' @export
-scasci.nonit <- function(
-  x,
-  n,
-  distrib = "bin",
-  level = 0.95,
-  cc = FALSE,
-  ...
-) {
-  if(as.character(cc) == "TRUE") cc <- 0.5
-  z <- qnorm(1 - (1 - level)/2)
-  if (distrib == "poi") {
-    Du <- (z^2 - 1)/(6 * n) - (x + cc)/n
-    Dl <- (z^2 - 1)/(6 * n) - (x - cc)/n
-    A <- 1
-    Bu <- 2 * Du - z^2/n
-    Bl <- 2 * Dl - z^2/n
-    Cu <- Du^2
-    Cl <- Dl^2
-    D0 <- -1/(6 * n) - x/n
-    B0 <- 2 * D0 
-    A0 <- 1
-    C0 <- D0^2
-  } else if (distrib == "bin") {
-    E <- 1 - (z^2 - 1)/(3 * n)
-    Du <- (z^2 - 1)/(6 * n) - (x + cc)/n 
-    Dl <- (z^2 - 1)/(6 * n) - (x - cc)/n 
-    A <- z^2/n + E^2
-    Bu <- 2 * E * Du - z^2/n
-    Bl <- 2 * E * Dl - z^2/n
-    Cu <- Du^2
-    Cl <- Dl^2
-    E0 <- 1 + 1/(3 * n)
-    D0 <- -1/(6 * n) - x/n 
-    A0 <- E0^2
-    B0 <- 2 * E0 * D0
-    C0 <- D0^2
-  }
-  CI <- cbind(
-    Lower = (-Bl - Re(sqrt(as.complex(Bl^2 - 4 * A * Cl))))/(2 * A),
-    MLE = (-B0 - Re(sqrt(as.complex(B0^2 - 4 * A0 * C0))))/(2 * A0),
-    Upper = (-Bu + Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A)
-  )
-  CI[(x == 0), 1] <- 0
-  if (distrib =="bin") CI[(x == n), 3] <- 1
-  return(CI)
-}
-
-
 
 
 #' t-distribution asymptotic score ("TDAS") confidence intervals for

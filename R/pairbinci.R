@@ -121,7 +121,7 @@ pairbinci <- function(
        pval <- OR.ci$pval
        outlist <- list(xi, estimates = estimates, pval = pval)
      } else if (method.OR == "midp") {
-       trans.ci <- midpci(x = b, n = b + c, level = level)
+       trans.ci <- exactci(x = b, n = b + c, midp = TRUE, level = level)
        estimates <- c(trans.ci/(1 - trans.ci))
        outlist <- list(xi, estimates = estimates)
      }
@@ -228,32 +228,6 @@ scorepair <- function (
   return(outlist)
 }
 
-# Internal function for both Clopper-Pearson and mid-p, binomial or Poisson
-midpci <- function(
-  #function to calculate exact 'mid-p' confidence interval for a single 
-  #binomial or Poisson rate x/n
-  x, 
-  n, 
-  level = 0.95, 
-  exact = FALSE, 
-  distrib = 'bin',
-  precis = 8
-  ) {
-
-  alpha <- 1 - level
-  cc <- (exact==FALSE) * 0.5
-  if(distrib =='bin') {
-    lowroot <- function (p) pbinom(x - 1, n, p) + cc * dbinom(x, n, p) - (1 - alpha/2)
-    uproot <- function (p) pbinom(x, n, p) - cc * dbinom(x, n, p) - alpha/2
-  } else if(distrib =='poi') {
-    lowroot <- function (p) ppois(x, p) + cc * dpois(x, p) - (1 - alpha/2)
-    uproot <- function (p) ppois(x, p) - cc * dpois(x, p) - alpha/2
-  }
-  lower <- bisect(ftn = lowroot, precis = precis, uplow = "low", contrast = 'p', distrib = distrib)
-  upper <- bisect(ftn = uproot, precis = precis, uplow = "up", contrast = 'p', distrib = distrib)
-  return(cbind(Lower = lower, Upper = upper)/ifelse(distrib=='poi',n,1))
-}
-
 
 if(FALSE) {
 n
@@ -336,7 +310,8 @@ n
   abline(h=c(-1,1)*1.96)
   abline(v=c(0.065,0.907))
   
-  #pairbinci(x=c(1,1,7,12))
+  #
+  pairbinci(x=c(1,1,7,12),contrast="OR",method.OR="midp")
   #pairbinci(x=c(1,1,7,12),contrast="RR", method.RR="Score")
   #pairbinci(x=c(1,1,7,12),contrast="RR", method.RR="NB")
   #pairbinci(x=c(1,1,7,12),tang=TRUE,contrast="RD",precis=8)

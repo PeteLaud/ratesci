@@ -2,12 +2,13 @@
 #' comparisons of independent binomial and Poisson rates.
 #' 
 #' Computes confidence intervals for the rate difference (RD), rate ratio (RR),
-#' or odds ratio (OR), for independent binomial or Poisson rates. Includes
-#' score-based methods with (or without) skewness correction, developed from the
-#' Miettinen-Nurminen and Gart-Nam methods, and the "Method of Variance 
-#' Estimates Recovery", originating from Newcombe. For the single-stratum case,
-#' the SCAS (skewness-corrected asymptotic score) method is recommended (Laud
-#' 2017), on the basis of superior equal-tailed coverage. 
+#' or odds ratio (OR), or for the single rate (p), for independent binomial or
+#' Poisson rates. Includes score-based methods with (or without) skewness 
+#' correction, developed from the Miettinen-Nurminen and Gart-Nam methods, 
+#' and the "Method of Variance Estimates Recovery", originating from Newcombe. 
+#' For the single-stratum case, the SCAS (skewness-corrected asymptotic score) 
+#' method is recommended (Laud 2017), on the basis of superior equal-tailed 
+#' coverage.
 #' 
 #' @section ratesci functions: 
 #' \itemize{ 
@@ -20,6 +21,8 @@
 #'   \item jeffreysci: wrapper function to compute Jeffreys interval for a
 #'   single rate
 #'   \item pairbinci: for paired binomial data
+#'   \item rateci: wrapper function for SCAS, Jeffreys or 'exact' methods 
+#'   for a single rate
 #' }
 #'   
 #' @docType package
@@ -32,6 +35,10 @@
 #' Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in 
 #' Medicine 1985; 4:213-226.
 #' 
+#' Gart JJ. Analysis of the common odds ratio: corrections for bias and
+#' skewness. Bulletin of the International Statistical Institute 1985, 
+#' 45th session, book 1, 175-176.
+#'
 #' Gart JJ, Nam JM. Approximate interval estimation of the ratio of binomial 
 #' parameters: A review and corrections for skewness. Biometrics 1988; 
 #' 44(2):323-338.
