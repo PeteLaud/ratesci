@@ -218,12 +218,12 @@ scoreci <- function(
     print("Odds ratio not applicable to Poisson rates")
     stop()
   }
-  if (cc != FALSE && stratified ==TRUE && contrast != 'OR') {
+  if (cc != FALSE && stratified ==TRUE && contrast != "OR") {
     print("Warning: Continuity correction is experimental for stratified RD and RR")
   }
   if(as.character(cc) == "TRUE") cc <- 0.5
 
-	nstrat <- length(x1)
+  nstrat <- length(x1)
 	# in case x1,x2 are input as vectors but n1,n2 are not
 	if (length(n1) < nstrat && nstrat > 1) n1 <- rep(n1, length.out = nstrat)
 	if (contrast != "p" && length(n2) < nstrat && nstrat > 1) {
@@ -233,34 +233,38 @@ scoreci <- function(
 	#check for empty strata, and for x1<=n1, x2<=n2
 	if (stratified == TRUE) {
 	  # for stratified calculations, remove any strata with no observations
-	  empty.strat <- ((n1 == 0 | n2 == 0) |
+	  if(contrast == "p") {
+	    empty.strat <- (n1 == 0)
+	  } else empty.strat <- (n1 == 0 | n2 == 0 |
 	                    (contrast %in% c("RR", "OR") & (x1 == 0 & x2 == 0)) |
 	                    (contrast == "OR" & (x1 == n1 & x2 == n2)))
 	  x1 <- x1[!empty.strat]
-	  x2 <- x2[!empty.strat]
 	  n1 <- n1[!empty.strat]
-	  n2 <- n2[!empty.strat]
+	  if(contrast != "p") {
+  	  x2 <- x2[!empty.strat]
+  	  n2 <- n2[!empty.strat]
+	  }
 	  if(warn == TRUE && sum(empty.strat)>0) {
 	    print('Warning: at least one stratum contributed no information and was removed')
 	  }
-	  
+
 	  # for double-zero cells for RD, add 0.5 to avoid 100% weight with IVS weights.
 	  # Same for double-100% cells for RR & RD. NB this should only be necessary
 	  # for weighting='IVS'
 	  if (weighting == "IVS") {
-	    zeroRD <- (contrast %in% c("RD") & (x1 == 0 & x2 == 0))
+	    zeroRD <- ifelse(contrast %in% c("RD"),(x1 == 0 & x2 == 0),0)
 	    x1 <- x1 + (zeroRD * 0.5)
 	    x2 <- x2 + (zeroRD * 0.5)
 	    n1 <- n1 + (zeroRD * 1)
 	    n2 <- n2 + (zeroRD * 1)
-	    fullRD <- (contrast %in% c("RD", "RR") & (x1 == n1 & x2 == n2))
+	    fullRD <- ifelse(contrast %in% c("RD", "RR"),(x1 == n1 & x2 == n2),0)
 	    x1 <- x1 + (fullRD * 0.5)
 	    x2 <- x2 + (fullRD * 0.5)
 	    n1 <- n1 + (fullRD * 1)
 	    n2 <- n2 + (fullRD * 1)
 	  }
 	}	
-	nstrat <- length(x1) # update nstrat after removing empty strata
+  nstrat <- length(x1) # update nstrat after removing empty strata
 
 	#Warnings if removal of empty strata leave 0 or 1 stratum
 	if (stratified == TRUE && nstrat <= 1) {
