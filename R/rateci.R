@@ -1,24 +1,24 @@
 
 # Internal function for both Clopper-Pearson and mid-p, binomial or Poisson
 exactci <- function(
-  #function to calculate exact 'exact' confidence interval for a single 
+  #function to calculate exact 'exact' confidence interval for a single
   #binomial or Poisson rate x/n
-  x, 
-  n, 
-  level = 0.95, 
-  midp = TRUE, 
+  x,
+  n,
+  level = 0.95,
+  midp = TRUE,
   distrib = 'bin',
   precis = 8
 ) {
-  
+
   alpha <- 1 - level
-  if(as.character(midp) == "TRUE") midp <- 0.5
-  if(distrib =='bin') {
-    lowroot <- function (p) pbinom(x - 1, n, p) + midp * dbinom(x, n, p) - (1 - alpha/2)
-    uproot <- function (p) pbinom(x, n, p) - midp * dbinom(x, n, p) - alpha/2
-  } else if(distrib =='poi') {
-    lowroot <- function (p) ppois(x, p) + midp * dpois(x, p) - (1 - alpha/2)
-    uproot <- function (p) ppois(x, p) - midp * dpois(x, p) - alpha/2
+  if (as.character(midp) == "TRUE") midp <- 0.5
+  if (distrib =='bin') {
+    lowroot <- function(p) pbinom(x - 1, n, p) + midp * dbinom(x, n, p) - (1 - alpha/2)
+    uproot <- function(p) pbinom(x, n, p) - midp * dbinom(x, n, p) - alpha/2
+  } else if (distrib =='poi') {
+    lowroot <- function(p) ppois(x, p) + midp * dpois(x, p) - (1 - alpha/2)
+    uproot <- function(p) ppois(x, p) - midp * dpois(x, p) - alpha/2
   }
   lower <- bisect(ftn = lowroot, precis = precis, uplow = "low", contrast = 'p', distrib = distrib)
   upper <- bisect(ftn = uproot, precis = precis, uplow = "up", contrast = 'p', distrib = distrib)
@@ -29,7 +29,7 @@ exactci <- function(
 #' Skewness-corrected asymptotic score ("SCAS") confidence intervals for
 #' single binomial or Poisson rate using closed-form calculations.
 #' This function is vectorised in x, n.
-#' 
+#'
 #' @param x Numeric vector of number of events.
 #' @param n Numeric vector of sample sizes (for binomial rates) or exposure
 #'   times (for Poisson rates).
@@ -43,7 +43,7 @@ scasci.nonit <- function(
   cc = FALSE,
   ...
 ) {
-  if(as.character(cc) == "TRUE") cc <- 0.5
+  if (as.character(cc) == "TRUE") cc <- 0.5
   z <- qnorm(1 - (1 - level)/2)
   if (distrib == "poi") {
     Du <- (z^2 - 1)/(6 * n) - (x + cc)/n
@@ -54,20 +54,20 @@ scasci.nonit <- function(
     Cu <- Du^2
     Cl <- Dl^2
     D0 <- -1/(6 * n) - x/n
-    B0 <- 2 * D0 
+    B0 <- 2 * D0
     A0 <- 1
     C0 <- D0^2
   } else if (distrib == "bin") {
     E <- 1 - (z^2 - 1)/(3 * n)
-    Du <- (z^2 - 1)/(6 * n) - (x + cc)/n 
-    Dl <- (z^2 - 1)/(6 * n) - (x - cc)/n 
+    Du <- (z^2 - 1)/(6 * n) - (x + cc)/n
+    Dl <- (z^2 - 1)/(6 * n) - (x - cc)/n
     A <- z^2/n + E^2
     Bu <- 2 * E * Du - z^2/n
     Bl <- 2 * E * Dl - z^2/n
     Cu <- Du^2
     Cl <- Dl^2
     E0 <- 1 + 1/(3 * n)
-    D0 <- -1/(6 * n) - x/n 
+    D0 <- -1/(6 * n) - x/n
     A0 <- E0^2
     B0 <- 2 * E0 * D0
     C0 <- D0^2
@@ -79,30 +79,42 @@ scasci.nonit <- function(
   )
   CI[(x == 0), 1] <- 0
   if (distrib =="bin") CI[(x == n), 3] <- 1
+#  return(list(CI,-Bl-sqrt(Bl^2-4*A*Cl),-Bl))
   return(CI)
 }
 
+if (FALSE) {
+pseq <- seq(0.98,0.9999,0.0001)
+test <- scasci.nonit(1,100,level=pseq)
+plot(pseq,test[[2]],type='l')
+abline(h=0)
+qnorm(pseq[test[[2]]==min(test[[2]])])
+#lines(pseq,test[[3]],lty=2)
+#abline(h=test[[3]])
+}
+
+
 #' Selected confidence intervals for the single binomial or Poisson rate.
-#' 
-#' Confidence intervals for the single binomial or Poisson rate. Including 
-#' SCAS or Jeffreys intervals, with or without continuity correction, and 
-#' 'exact' Clopper-Pearson or mid-p intervals. 
-#' 
+#'
+#' Confidence intervals for the single binomial or Poisson rate. Including
+#' SCAS or Jeffreys intervals, with or without continuity correction, and
+#' 'exact' Clopper-Pearson or mid-p intervals.
+#'
 #' @param x Numeric vector of number of events.
 #' @param n Numeric vector of sample size (for binomial rate) or exposure
 #'   times (for Poisson rate).
 #' @param distrib Character string indicating distribution assumed for the input
 #'   data: "bin" = binomial (default), "poi" = Poisson.
-#' @param level Number specifying confidence level (between 0 and 1, default 
+#' @param level Number specifying confidence level (between 0 and 1, default
 #'   0.95).
 #' @param cc Number or logical (default FALSE) specifying continuity
-#'   correction. 
+#'   correction.
 #' @param precis Number (default 6) specifying precision (i.e. number of decimal
-#'   places) to be used in optimisation subroutine for the SCAS and exact methods. 
-#' @return A list containing, for each method, a matrix containing lower and upper 
+#'   places) to be used in optimisation subroutine for the SCAS and exact methods.
+#' @return A list containing, for each method, a matrix containing lower and upper
 #'   confidence limits for each value of x and n. Methods shown depend on the cc
-#'   parameter, which specifies whether the continuity correction is applied to 
-#'   the SCAS and Jeffreys methods. The corresponding 'exact' method is 
+#'   parameter, which specifies whether the continuity correction is applied to
+#'   the SCAS and Jeffreys methods. The corresponding 'exact' method is
 #'   Clopper-Pearson if cc == TRUE and mid-p if cc == FALSE.
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @export
@@ -111,13 +123,13 @@ rateci <- function(
   n,
   distrib = "bin",
   level = 0.95,
-  cc = FALSE, 
+  cc = FALSE,
   precis = 6
-) { 
+) {
   # in case x is input as a vector but n is not
   if (length(n) < length(x) && length(x) > 1) n <- rep(n, length.out = length(x))
-  if(as.character(cc) == "TRUE") cc <- 0.5
-  
+  if (as.character(cc) == "TRUE") cc <- 0.5
+
   ci.scas <- scoreci(
     x1 = x,
     n1 = n,
@@ -139,16 +151,16 @@ rateci <- function(
     adj = TRUE
   )[,c(1,2)]
   ci.exact <- exactci(
-    x = x, 
+    x = x,
     n = n,
-    level = level, 
-    midp = 0.5 - cc, 
+    level = level,
+    midp = 0.5 - cc,
     distrib = distrib,
     precis = precis
   )
-  if(cc == 0) {
+  if (cc == 0) {
     return(list(scas=ci.scas, jeff=ci.jeff, cp=ci.exact))
-  } else if(cc == 0.5) {
+  } else if (cc == 0.5) {
     return(list(scas=ci.scas, jeff=ci.jeff, midp=ci.exact))
   } else {
     return(list(scas=ci.scas, jeff=ci.jeff)) #exact method not applicable if using a compromise value of cc
@@ -157,7 +169,7 @@ rateci <- function(
 
 #
 #rateci(2,37,cc=T)
-if(FALSE) {
+if (FALSE) {
   #quick comparison of interval lengths
   #Jeffreys is shorter than SCAS, which is shorter than mid-p
   #SCAScc is longer than C-P
