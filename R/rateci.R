@@ -7,22 +7,22 @@ exactci <- function(
   n,
   level = 0.95,
   midp = TRUE,
-  distrib = 'bin',
+  distrib = "bin",
   precis = 8
 ) {
 
   alpha <- 1 - level
   if (as.character(midp) == "TRUE") midp <- 0.5
-  if (distrib =='bin') {
+  if (distrib == "bin") {
     lowroot <- function(p) pbinom(x - 1, n, p) + midp * dbinom(x, n, p) - (1 - alpha/2)
     uproot <- function(p) pbinom(x, n, p) - midp * dbinom(x, n, p) - alpha/2
-  } else if (distrib =='poi') {
+  } else if (distrib == "poi") {
     lowroot <- function(p) ppois(x, p) + midp * dpois(x, p) - (1 - alpha/2)
     uproot <- function(p) ppois(x, p) - midp * dpois(x, p) - alpha/2
   }
-  lower <- bisect(ftn = lowroot, precis = precis, uplow = "low", contrast = 'p', distrib = distrib)
-  upper <- bisect(ftn = uproot, precis = precis, uplow = "up", contrast = 'p', distrib = distrib)
-  return(cbind(Lower = lower, Upper = upper)/ifelse(distrib=='poi',n,1))
+  lower <- bisect(ftn = lowroot, precis = precis, uplow = "low", contrast = "p", distrib = distrib)
+  upper <- bisect(ftn = uproot, precis = precis, uplow = "up", contrast = "p", distrib = distrib)
+  return(cbind(Lower = lower, Upper = upper)/ifelse(distrib == "poi", n, 1))
 }
 
 
@@ -46,11 +46,11 @@ scasci.nonit <- function(
   if (as.character(cc) == "TRUE") cc <- 0.5
   z <- qnorm(1 - (1 - level)/2)
   if (distrib == "poi") {
-    Du <- (z^2 - 1)/(6 * n) - (x + cc)/n
-    Dl <- (z^2 - 1)/(6 * n) - (x - cc)/n
+    Du <- (x + cc)/n - (z^2 - 1)/(6 * n)
+    Dl <- pmax(0,(x - cc)/n - (z^2 - 1)/(6 * n))
     A <- 1
-    Bu <- 2 * Du - z^2/n
-    Bl <- 2 * Dl - z^2/n
+    Bu <- -2 * Du - z^2/n
+    Bl <- -2 * Dl - z^2/n
     Cu <- Du^2
     Cl <- Dl^2
     D0 <- -1/(6 * n) - x/n
@@ -58,12 +58,15 @@ scasci.nonit <- function(
     A0 <- 1
     C0 <- D0^2
   } else if (distrib == "bin") {
-    E <- 1 - (z^2 - 1)/(3 * n)
-    Du <- (z^2 - 1)/(6 * n) - (x + cc)/n
-    Dl <- (z^2 - 1)/(6 * n) - (x - cc)/n
+    E <- (z^2 - 1)/(3 * n) - 1
+    #Alteration to published formula to deal with non-nested intervals when level>0.99
+    Du <- pmax(0,(n-x + cc)/n - (z^2 - 1)/(6 * n))
+    Dl <- pmax(0,(x - cc)/n - (z^2 - 1)/(6 * n))
+#    Du <- (x + cc)/n - (z^2 - 1)/(6 * n)
+#    Dl <- (z^2 - 1)/(6 * n) - (x - cc)/n
     A <- z^2/n + E^2
-    Bu <- 2 * E * Du - z^2/n
-    Bl <- 2 * E * Dl - z^2/n
+    Bu <- 2 * E * (Du) - z^2/n
+    Bl <- 2 * E * (Dl) - z^2/n
     Cu <- Du^2
     Cl <- Dl^2
     E0 <- 1 + 1/(3 * n)
@@ -75,24 +78,11 @@ scasci.nonit <- function(
   CI <- cbind(
     Lower = (-Bl - Re(sqrt(as.complex(Bl^2 - 4 * A * Cl))))/(2 * A),
     MLE = (-B0 - Re(sqrt(as.complex(B0^2 - 4 * A0 * C0))))/(2 * A0),
-    Upper = (-Bu + Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A)
+    Upper = ifelse(distrib == "bin",1 - (-Bu - Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A),
+            (-Bu + Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A))
   )
-  CI[(x == 0), 1] <- 0
-  if (distrib =="bin") CI[(x == n), 3] <- 1
-#  return(list(CI,-Bl-sqrt(Bl^2-4*A*Cl),-Bl))
   return(CI)
 }
-
-if (FALSE) {
-pseq <- seq(0.98,0.9999,0.0001)
-test <- scasci.nonit(1,100,level=pseq)
-plot(pseq,test[[2]],type='l')
-abline(h=0)
-qnorm(pseq[test[[2]]==min(test[[2]])])
-#lines(pseq,test[[3]],lty=2)
-#abline(h=test[[3]])
-}
-
 
 #' Selected confidence intervals for the single binomial or Poisson rate.
 #'
@@ -134,7 +124,7 @@ rateci <- function(
     x1 = x,
     n1 = n,
     distrib = distrib,
-    contrast = 'p',
+    contrast = "p",
     level = level,
     cc = cc,
     precis = precis,
@@ -165,22 +155,4 @@ rateci <- function(
   } else {
     return(list(scas=ci.scas, jeff=ci.jeff)) #exact method not applicable if using a compromise value of cc
   }
-}
-
-#
-#rateci(2,37,cc=T)
-if (FALSE) {
-  #quick comparison of interval lengths
-  #Jeffreys is shorter than SCAS, which is shorter than mid-p
-  #SCAScc is longer than C-P
-  n <- 30
-  cis <- rateci(0:n,n,cc=0,distrib='bin')
-  lscas <- cis[[1]][,2]-cis[[1]][,1]
-  ljeff <- cis[[2]][,2]-cis[[2]][,1]
-  lmidp <- cis[[3]][,2]-cis[[3]][,1]
-  #lwils <- cis[[4]][,2]-cis[[4]][,1]
-  plot(x=0:n,lscas/lmidp,ylim=c(0.9,1.1),type='l',xlab='x',ylab='length')
-  lines(0:n,ljeff/lmidp,lty=2)
-  #lines(0:n,lwils/lmidp,lty=4)
-  abline(h=1)
 }
