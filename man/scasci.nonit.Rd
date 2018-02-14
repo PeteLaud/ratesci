@@ -17,17 +17,17 @@ times (for Poisson rates).}
 \item{distrib}{Character string indicating distribution assumed for the input
 data: "bin" = binomial (default), "poi" = Poisson.}
 
-\item{level}{Number specifying confidence level (between 0 and 1, default 
+\item{level}{Number specifying confidence level (between 0 and 1, default
 0.95).}
 
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
 correction. Numeric value is taken as the gamma parameter in Laud 2017,
 Appendix S2 (default 0.5 if cc=TRUE).
-IMPORTANT NOTES: 
+IMPORTANT NOTES:
 1) This is a 'continuity correction' aimed at approximating strictly
-conservative coverage, NOT for dealing with zero cell counts. Such 
+conservative coverage, NOT for dealing with zero cell counts. Such
 'sparse data adjustments' are not needed in the score method.
-2) The continuity corrections provided here have not been fully tested for 
+2) The continuity corrections provided here have not been fully tested for
 stratified methods.}
 
 \item{...}{Other arguments.}

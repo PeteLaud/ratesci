@@ -15,7 +15,7 @@ times (for Poisson rate).}
 \item{distrib}{Character string indicating distribution assumed for the input
 data: "bin" = binomial (default), "poi" = Poisson.}
 
-\item{level}{Number specifying confidence level (between 0 and 1, default 
+\item{level}{Number specifying confidence level (between 0 and 1, default
 0.95).}
 
 \item{cc}{Number or logical (default FALSE) specifying continuity
@@ -25,15 +25,15 @@ correction.}
 places) to be used in optimisation subroutine for the SCAS and exact methods.}
 }
 \value{
-A list containing, for each method, a matrix containing lower and upper 
+A list containing, for each method, a matrix containing lower and upper
   confidence limits for each value of x and n. Methods shown depend on the cc
-  parameter, which specifies whether the continuity correction is applied to 
-  the SCAS and Jeffreys methods. The corresponding 'exact' method is 
+  parameter, which specifies whether the continuity correction is applied to
+  the SCAS and Jeffreys methods. The corresponding 'exact' method is
   Clopper-Pearson if cc == TRUE and mid-p if cc == FALSE.
 }
 \description{
-Confidence intervals for the single binomial or Poisson rate. Including 
-SCAS or Jeffreys intervals, with or without continuity correction, and 
+Confidence intervals for the single binomial or Poisson rate. Including
+SCAS or Jeffreys intervals, with or without continuity correction, and
 'exact' Clopper-Pearson or mid-p intervals.
 }
 \author{

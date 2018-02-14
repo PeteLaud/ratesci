@@ -2,7 +2,7 @@
 % Please edit documentation in R/moverci.R
 \name{moverci}
 \alias{moverci}
-\title{MOVER confidence intervals for comparisons of independent binomial or Poisson 
+\title{MOVER confidence intervals for comparisons of independent binomial or Poisson
 rates.}
 \usage{
 moverci(x1, n1, x2 = NULL, n2 = NULL, a1 = 0.5, b1 = 0.5, a2 = 0.5,
@@ -10,7 +10,7 @@ moverci(x1, n1, x2 = NULL, n2 = NULL, a1 = 0.5, b1 = 0.5, a2 = 0.5,
   contrast = "RD", type = "jeff", adj = FALSE, ...)
 }
 \arguments{
-\item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
+\item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2
 respectively.}
 
 \item{n1, n2}{Numeric vectors of sample sizes (for binomial rates) or exposure
@@ -31,26 +31,26 @@ NB: cc currently not implemented for type="wilson".}
 \item{distrib}{Character string indicating distribution assumed for the input
 data: "bin" = binomial (default), "poi" = Poisson.}
 
-\item{contrast}{Character string indicating the contrast of interest: "RD" = 
-rate difference (default), "RR" = rate ratio, "OR" = odds ratio. 
+\item{contrast}{Character string indicating the contrast of interest: "RD" =
+rate difference (default), "RR" = rate ratio, "OR" = odds ratio.
 contrast="p" gives an interval for the single proportion x1/n1.}
 
 \item{type}{Character string indicating the method used for the intervals for
-the individual group rates. 
+the individual group rates.
 "jeff" = Jeffreys equal-tailed intervals (default);
 "exact" = Clopper-Pearson exact intervals (note this does NOT result in a
 strictly conservative interval for the contrast, except for contrast='p'.
-The scoreci function with cc=TRUE is recommended as a superior approximation 
+The scoreci function with cc=TRUE is recommended as a superior approximation
 of 'exact' methods);
-"midp" = mid-p intervals (to be added); 
-"SCAS" = SCAS non-iterative intervals (to be added); 
+"midp" = mid-p intervals (to be added);
+"SCAS" = SCAS non-iterative intervals (to be added);
 "wilson" = Wilson score intervals (as per Newcombe 1998).
 NB: "wilson" option is included only for legacy validation against previous
 published method by Newcombe. It is not recommended, as type="jeff"
 achieves much better coverage properties.}
 
-\item{adj}{Logical (default FALSE) indicating whether to apply the boundary 
-adjustment for Jeffreys intervals recommended on p108 of Brown et al. 
+\item{adj}{Logical (default FALSE) indicating whether to apply the boundary
+adjustment for Jeffreys intervals recommended on p108 of Brown et al.
 (type = "jeff" only: set to FALSE if using informative priors)}
 
 \item{...}{Additional arguments.}
@@ -60,37 +60,36 @@ A matrix containing the confidence interval for the requested contrast
 }
 \description{
 Confidence intervals applying the MOVER method ("Method of Variance Estimates
-Recovery", developed from the Newcombe method for binomial RD) across 
-different contrasts (RD, RR, OR) and distributions (binomial, Poisson) using 
+Recovery", developed from the Newcombe method for binomial RD) across
+different contrasts (RD, RR, OR) and distributions (binomial, Poisson) using
 equal-tailed Jeffreys intervals instead of the Wilson score method for the
 event rates.  Also allows more general Beta and Gamma priors for an
 approximate Bayesian confidence interval incorporating prior beliefs about
 the group event rates.
 }
 \examples{
- 
   #Binomial RD, MOVER-J method:
   moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
-  
+
   #Binomial RD, Newcombe method:
   moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, type = "wilson")
 }
 \references{
-Laud PJ. Equal-tailed confidence intervals for comparison of 
+Laud PJ. Equal-tailed confidence intervals for comparison of
   rates. Pharmaceutical Statistics 2017; 16:334-348.
-  
-  Newcombe RG. Interval estimation for the difference between independent 
+
+  Newcombe RG. Interval estimation for the difference between independent
   proportions: comparison of eleven methods. Statistics in Medicine 1998;
-  
+
   Donner A, Zou G. Closed-form confidence intervals for functions of the
   normal mean and standard deviation. Statistical Methods in Medical Research
-  
+
   Fagerland MW, Newcombe RG. Confidence intervals for odds ratio and relative
-  risk based on the inverse hyperbolic sine transformation. Statistics in  
+  risk based on the inverse hyperbolic sine transformation. Statistics in
   Medicine 2013; 32(16):2823-2836.
-  
+
   Li HQ, Tang ML, Wong WK. Confidence intervals for ratio of two poisson
-  rates using the method of variance estimates recovery. Computational 
+  rates using the method of variance estimates recovery. Computational
   Statistics 2014; 29(3-4):869-889.
 }
 \author{

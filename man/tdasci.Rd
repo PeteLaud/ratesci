@@ -10,7 +10,7 @@ tdasci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
   plotmax = 100, weighting = "IVS", wt = NULL, ...)
 }
 \arguments{
-\item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
+\item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2
 respectively.}
 
 \item{n1, n2}{Numeric vectors of sample sizes (for binomial rates) or exposure
@@ -19,26 +19,26 @@ times (for Poisson rates) in each group.}
 \item{distrib}{Character string indicating distribution assumed for the input
 data: "bin" = binomial (default), "poi" = Poisson.}
 
-\item{contrast}{Character string indicating the contrast of interest: "RD" = 
+\item{contrast}{Character string indicating the contrast of interest: "RD" =
 rate difference (default), "RR" = rate ratio, "OR" = odds ratio.
 contrast="p" gives an interval for the single proportion or rate x1/n1.}
 
-\item{level}{Number specifying confidence level (between 0 and 1, default 
+\item{level}{Number specifying confidence level (between 0 and 1, default
 0.95).}
 
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
 correction. Numeric value is taken as the gamma parameter in Laud 2017,
 Appendix S2 (default 0.5 if cc=TRUE).
-IMPORTANT NOTES: 
+IMPORTANT NOTES:
 1) This is a 'continuity correction' aimed at approximating strictly
-conservative coverage, NOT for dealing with zero cell counts. Such 
+conservative coverage, NOT for dealing with zero cell counts. Such
 'sparse data adjustments' are not needed in the score method.
-2) The continuity corrections provided here have not been fully tested for 
+2) The continuity corrections provided here have not been fully tested for
 stratified methods.}
 
-\item{theta0}{Number to be used in a one-sided significance test (e.g. 
+\item{theta0}{Number to be used in a one-sided significance test (e.g.
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
-excludes theta0. NB: can also be used for a superiority test by setting 
+excludes theta0. NB: can also be used for a superiority test by setting
 theta0 = 0 (RD) or 1 (RR/OR). By default, a two-sided test against theta0 =
 0 (or 1 as appropriate) is also output: if bcf=F and skew=F this is the
 same as Pearson's Chi-squared test.}
@@ -46,13 +46,13 @@ same as Pearson's Chi-squared test.}
 \item{precis}{Number (default 6) specifying precision (i.e. number of decimal
 places) to be used in optimisation subroutine for the confidence interval.}
 
-\item{plot}{Logical (default FALSE) indicating whether to output plot of the 
+\item{plot}{Logical (default FALSE) indicating whether to output plot of the
 score function}
 
-\item{plotmax}{Numeric value indicating maximum value to be displayed on 
+\item{plotmax}{Numeric value indicating maximum value to be displayed on
 x-axis of plots (useful for ratio contrasts which can be infinite).}
 
-\item{weighting}{String indicating which weighting method to use if 
+\item{weighting}{String indicating which weighting method to use if
 stratified = "TRUE":  "IVS" = Inverse Variance of Score (default, see Laud
 2017 for details), "MH" = Mantel-Haenszel, "MN" = Miettinen-Nurminen
 iterative weights.}

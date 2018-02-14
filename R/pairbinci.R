@@ -106,12 +106,13 @@ pairbinci <- function(
   x2i <- rep(c(1, 0, 1, 0), x)
   xi <- table(x1i, x2i)
 
-   if (contrast =="OR") {
+   if (contrast == "OR") {
     #special case for OR, use conditional method based on transforming the
     #SCAS interval for a single proportion
      b <- x[2]
      c <- x[3]
-     if (method.OR == "SCAS") { #could add transformed Wilson version for reference
+     if (method.OR == "SCAS") {
+       #could add transformed Wilson version for reference
        trans.th0 <- NULL
        if (!is.null(theta0)) trans.th0 <- theta0/(1 + theta0)
        OR.ci <- scasci(x1 = b, n1 = b + c, contrast = "p", distrib = "bin",
@@ -197,10 +198,11 @@ scorepair <- function(
 ) {
 
   N <- sum(x)
-  p1hat <- (x[1] + x[2])/N
-  p2hat <- (x[1] + x[3])/N
+#  p1hat <- (x[1] + x[2])/N
+#  p2hat <- (x[1] + x[3])/N
 
-  if (contrast == "RD") { #notation per Tango 1999 letter
+  if (contrast == "RD") {
+    #notation per Tango 1999 letter
     Stheta <- ((x[2] - x[3]) - N * theta)
     A <- 2 * N
     B <- -x[2] - x[3] + (2*N - x[2] + x[3]) * theta
@@ -209,17 +211,18 @@ scorepair <- function(
     p2d <- ifelse(num == 0, 0, num/(2 * A))
     V <- pmax(0, N*(2 * p2d + theta * (1 - theta)))
   }
-  if (contrast == "RR") { #per Tang 2003
+  if (contrast == "RR") {
+    #per Tang 2003
     Stheta <- ((x[2] + x[1]) - (x[3] + x[1]) * theta)
     A <- N * (1 + theta)
-    B <- (x[1] + x[3]) * theta^2 - (x[1] + x[2] + 2*x[3])
+    B <- (x[1] + x[3]) * theta^2 - (x[1] + x[2] + 2 * x[3])
     C_ <- x[3] * (1 - theta) * (x[1] + x[2] + x[3])/N
     num <- (-B + Re(sqrt(as.complex(B^2 - 4 * A * C_))))
     q21 <- ifelse(num == 0, 0, num/(2 * A))
     q11 <- ((x[1] + x[2] + x[3])/N - (1 + theta) * q21)/theta
     q12 <- (q21 + (theta - 1) * (x[1] + x[2] + x[3])/N)/theta
     q1 <- q11 + q12
-    q2 <- q1/theta
+#    q2 <- q1/theta
     V <- pmax(0, N * (1 + theta) * q21 + (x[1] + x[2] + x[3]) * (theta - 1))
   }
   score <- ifelse(Stheta == 0, 0, Stheta/sqrt(V))
@@ -232,9 +235,9 @@ scorepair <- function(
 if (FALSE) {
 n
   alpha <- 0.0000
-  ps <- seq(0,0.1,0.001)
+  ps <- seq(0, 0.1, 0.001)
   root <- lowroot(ps)
-  plot(ps,root,type='l')
+  plot(ps,root, type="l")
   max(root)
 
     #
@@ -281,7 +284,7 @@ n
 
   x <- c(1,1,7,12)
   level <- 0.95
-  contrast="RD"
+  contrast <- "RD"
   myfun <- function(theta) {
     scorepair(theta = theta, x = x, contrast = contrast)$score
   }

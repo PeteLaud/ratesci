@@ -9,21 +9,21 @@ moverbci(x1, n1, x2, n2, a1 = 0.5, b1 = 0.5, a2 = 0.5, b2 = 0.5,
   distrib = "bin", contrast = "RD", level = 0.95, cc = 0, ...)
 }
 \arguments{
-\item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2 
+\item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2
 respectively.}
 
 \item{n1, n2}{Numeric vectors of sample sizes (for binomial rates) or exposure
 times (for Poisson rates) in each group.}
 
 \item{a1, b1, a2, b2}{Numbers defining the Beta(ai,bi) prior distributions for
-each group (default ai = bi = 0.5 for Jeffreys uninformative priors). Gamma 
+each group (default ai = bi = 0.5 for Jeffreys uninformative priors). Gamma
 priors for Poisson rates require only a1, a2.}
 
 \item{distrib}{Character string indicating distribution assumed for the input
 data: "bin" = binomial (default), "poi" = Poisson.}
 
-\item{contrast}{Character string indicating the contrast of interest: "RD" = 
-rate difference (default), "RR" = rate ratio, "OR" = odds ratio. 
+\item{contrast}{Character string indicating the contrast of interest: "RD" =
+rate difference (default), "RR" = rate ratio, "OR" = odds ratio.
 contrast="p" gives an interval for the single proportion x1/n1.}
 
 \item{level}{Number specifying confidence level (between 0 and 1, default
