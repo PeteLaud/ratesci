@@ -75,11 +75,12 @@ scasci.nonit <- function(
     B0 <- 2 * E0 * D0
     C0 <- D0^2
   }
+
   CI <- cbind(
     Lower = (-Bl - Re(sqrt(as.complex(Bl^2 - 4 * A * Cl))))/(2 * A),
     MLE = (-B0 - Re(sqrt(as.complex(B0^2 - 4 * A0 * C0))))/(2 * A0),
-    Upper = ifelse(distrib == "bin",1 - (-Bu - Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A),
-            (-Bu + Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A))
+    Upper = if (distrib == "bin") 1 - (-Bu - Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A)
+            else (-Bu + Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A)
   )
   return(CI)
 }
