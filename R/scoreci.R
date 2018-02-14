@@ -201,7 +201,7 @@ scoreci <- function(
     print("x1 > n1 or x2 > n2 not possible for distrib = 'bin'")
     stop()
   }
-  if (is.null(ORbias)) {
+  if (is.null(ORbias) && contrast == "OR") {
     ORbias <- skew
   }
   if (!is.null(theta0)) {
@@ -1040,7 +1040,7 @@ scoretheta <- function(
 		A <- scterm
 		B <- 1
 		C_ <- -((Stheta - corr)/sqrt(V) + scterm)
-		num <- (-B + sqrt(pmax(0, B^2 - 4 * A * C_)))
+		num <- (-B + Re(sqrt(as.complex(B^2 - 4 * A * C_))))
 
 		score <- ifelse((skew == FALSE | mu3 == 0 | (distrib == "poi" & abs(mu3) <= 10e-16)),
 		                ifelse(Stheta == 0, 0, (Stheta - corr)/sqrt(V)), num/(2 * A)
