@@ -8,7 +8,7 @@
 #' as well as an experimental method using the stratified TDAS method with
 #' pairs as strata.
 #' For OR, intervals are produced based on transforming various intervals for
-#' the single proportion, inclusing SCAS, mid-p and Jeffreys.
+#' the single proportion, including SCAS, mid-p and Jeffreys.
 #'
 #' @param x A numeric vector object specified as c(a,b,c,d)
 #'   where:

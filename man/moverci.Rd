@@ -88,7 +88,7 @@ Laud PJ. Equal-tailed confidence intervals for comparison of
   risk based on the inverse hyperbolic sine transformation. Statistics in
   Medicine 2013; 32(16):2823-2836.
 
-  Li HQ, Tang ML, Wong WK. Confidence intervals for ratio of two poisson
+  Li HQ, Tang ML, Wong WK. Confidence intervals for ratio of two Poisson
   rates using the method of variance estimates recovery. Computational
   Statistics 2014; 29(3-4):869-889.
 }

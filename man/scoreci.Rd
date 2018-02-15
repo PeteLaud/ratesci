@@ -94,7 +94,7 @@ A list containing the following components: \describe{
   and of the requested contrast, with its confidence interval} \item{pval}{a
   matrix containing details of the corresponding 2-sided significance test
   against the null hypothesis that p_1 = p_2, and one-sided significance
-  tests agains the null hypothesis that theta >= or <= theta0}
+  tests against the null hypothesis that theta >= or <= theta0}
   \item{call}{details of the function call} } If stratified = TRUE, the
   following outputs are added: \describe{ \item{Qtest}{a vector of values
   describing and testing heterogeneity} \item{weighting}{a string indicating
