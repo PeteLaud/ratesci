@@ -13,12 +13,12 @@ for (level in c(0.9, 0.95, 0.99, 0.999, 0.999)) {
 
   test_that("noniterative scas matches iterative version", {
     expect_equal(
-      round(scoreci(x1=xs, n1=n, contrast="p", level=level, precis=11)$estimates[ ,c(1:3)], 8),
-      round(scasci.nonit(x=xs, n=n, level=level)[ ,c(1:3)], 8)
+      round(scoreci(x1=xs, n1=n, contrast="p", level=level, precis=11)$estimates[, c(1:3)], 8),
+      round(scaspci(x=xs, n=n, level=level)[, c(1:3)], 8)
     )
     expect_equal(
-      round(scoreci(x1=xs, n1=n, contrast="p", level=level, distrib="poi", precis=11)$estimates[ ,c(1:3)], 8),
-      round(scasci.nonit(x=xs, n=n, level=level, distrib="poi")[ ,c(1:3)], 8)
+      round(scoreci(x1=xs, n1=n, contrast="p", level=level, distrib="poi", precis=11)$estimates[, c(1:3)], 8),
+      round(scaspci(x=xs, n=n, level=level, distrib="poi")[, c(1:3)], 8)
     )
   })
 }

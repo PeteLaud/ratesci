@@ -14,14 +14,17 @@ exactci <- function(
   alpha <- 1 - level
   if (as.character(midp) == "TRUE") midp <- 0.5
   if (distrib == "bin") {
-    lowroot <- function(p) pbinom(x - 1, n, p) + midp * dbinom(x, n, p) - (1 - alpha/2)
+    lowroot <- function(p) pbinom(x - 1, n, p) + midp * dbinom(x, n, p) -
+      (1 - alpha/2)
     uproot <- function(p) pbinom(x, n, p) - midp * dbinom(x, n, p) - alpha/2
   } else if (distrib == "poi") {
     lowroot <- function(p) ppois(x, p) + midp * dpois(x, p) - (1 - alpha/2)
     uproot <- function(p) ppois(x, p) - midp * dpois(x, p) - alpha/2
   }
-  lower <- bisect(ftn = lowroot, precis = precis, uplow = "low", contrast = "p", distrib = distrib)
-  upper <- bisect(ftn = uproot, precis = precis, uplow = "up", contrast = "p", distrib = distrib)
+  lower <- bisect(ftn = lowroot, precis = precis, uplow = "low",
+                  contrast = "p", distrib = distrib)
+  upper <- bisect(ftn = uproot, precis = precis, uplow = "up", contrast = "p",
+                  distrib = distrib)
   return(cbind(Lower = lower, Upper = upper)/ifelse(distrib == "poi", n, 1))
 }
 
@@ -35,7 +38,7 @@ exactci <- function(
 #'   times (for Poisson rates).
 #' @inheritParams scoreci
 #' @export
-scasci.nonit <- function(
+scaspci <- function(
   x,
   n,
   distrib = "bin",
@@ -47,7 +50,7 @@ scasci.nonit <- function(
   z <- qnorm(1 - (1 - level)/2)
   if (distrib == "poi") {
     Du <- (x + cc)/n - (z^2 - 1)/(6 * n)
-    Dl <- pmax(0,(x - cc)/n - (z^2 - 1)/(6 * n))
+    Dl <- pmax(0, (x - cc)/n - (z^2 - 1)/(6 * n))
     A <- 1
     Bu <- -2 * Du - z^2/n
     Bl <- -2 * Dl - z^2/n
@@ -59,11 +62,10 @@ scasci.nonit <- function(
     C0 <- D0^2
   } else if (distrib == "bin") {
     E <- (z^2 - 1)/(3 * n) - 1
-    #Alteration to published formula to deal with non-nested intervals when level>0.99
-    Du <- pmax(0,(n-x + cc)/n - (z^2 - 1)/(6 * n))
-    Dl <- pmax(0,(x - cc)/n - (z^2 - 1)/(6 * n))
-#    Du <- (x + cc)/n - (z^2 - 1)/(6 * n)
-#    Dl <- (z^2 - 1)/(6 * n) - (x - cc)/n
+    #Alteration to published formula,
+    #to deal with non-nested intervals when level>0.99
+    Du <- pmax(0, (n-x + cc)/n - (z^2 - 1)/(6 * n))
+    Dl <- pmax(0, (x - cc)/n - (z^2 - 1)/(6 * n))
     A <- z^2/n + E^2
     Bu <- 2 * E * (Du) - z^2/n
     Bl <- 2 * E * (Dl) - z^2/n
@@ -79,8 +81,9 @@ scasci.nonit <- function(
   CI <- cbind(
     Lower = (-Bl - Re(sqrt(as.complex(Bl^2 - 4 * A * Cl))))/(2 * A),
     MLE = (-B0 - Re(sqrt(as.complex(B0^2 - 4 * A0 * C0))))/(2 * A0),
-    Upper = if (distrib == "bin") 1 - (-Bu - Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A)
-            else (-Bu + Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A)
+    Upper = if (distrib == "bin") {
+      1 - (-Bu - Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A)
+      } else (-Bu + Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A)
   )
   return(CI)
 }
@@ -118,20 +121,19 @@ rateci <- function(
   precis = 6
 ) {
   # in case x is input as a vector but n is not
-  if (length(n) < length(x) && length(x) > 1) n <- rep(n, length.out = length(x))
+  if (length(n) < length(x) && length(x) > 1) {
+    n <- rep(n, length.out = length(x))
+  }
   if (as.character(cc) == "TRUE") cc <- 0.5
 
-  ci.scas <- scoreci(
-    x1 = x,
-    n1 = n,
+  ci_scas <- scaspci(
+    x = x,
+    n = n,
     distrib = distrib,
-    contrast = "p",
     level = level,
-    cc = cc,
-    precis = precis,
-    skew = TRUE
-  )$estimates[,c(1,3)]
-  ci.jeff <- jeffreysci(
+    cc = cc
+  )[, c(1, 3)]
+  ci_jeff <- jeffreysci(
     x = x,
     n = n,
     ai = 0.5,
@@ -140,8 +142,8 @@ rateci <- function(
     level = level,
     distrib = distrib,
     adj = TRUE
-  )[,c(1,2)]
-  ci.exact <- exactci(
+  )[, c(1, 2)]
+  ci_exact <- exactci(
     x = x,
     n = n,
     level = level,
@@ -150,10 +152,11 @@ rateci <- function(
     precis = precis
   )
   if (cc == 0) {
-    return(list(scas=ci.scas, jeff=ci.jeff, cp=ci.exact))
+    return(list(scas = ci_scas, jeff = ci_jeff, midp = ci_exact))
   } else if (cc == 0.5) {
-    return(list(scas=ci.scas, jeff=ci.jeff, midp=ci.exact))
+    return(list(scas_cc = ci_scas, jeff_cc = ci_jeff, cp = ci_exact))
   } else {
-    return(list(scas=ci.scas, jeff=ci.jeff)) #exact method not applicable if using a compromise value of cc
+    return(list(scas_cc = ci_scas, jeff_cc = ci_jeff))
+    #exact method not applicable if using a compromise value of cc
   }
 }

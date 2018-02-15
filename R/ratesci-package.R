@@ -21,6 +21,7 @@
 #'   \item jeffreysci: wrapper function to compute Jeffreys interval for a
 #'   single rate
 #'   \item pairbinci: for paired binomial data
+#'   \item scaspci: non-iterative SCAS method for a single rate
 #'   \item rateci: wrapper function for SCAS, Jeffreys or 'exact' methods
 #'   for a single rate
 #' }
