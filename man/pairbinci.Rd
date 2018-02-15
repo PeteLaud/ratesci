@@ -4,8 +4,8 @@
 \alias{pairbinci}
 \title{Confidence intervals for comparisons of paired binomial rates.}
 \usage{
-pairbinci(x, contrast = "RD", level = 0.95, method.RD = "Score",
-  method.RR = "Score", method.OR = "SCAS", theta0 = NULL, precis = 6)
+pairbinci(x, contrast = "RD", level = 0.95, method_RD = "Score",
+  method_RR = "Score", method_OR = "SCAS", theta0 = NULL, precis = 6)
 }
 \arguments{
 \item{x}{A numeric vector object specified as c(a,b,c,d)
@@ -23,17 +23,17 @@ d is the number of pairs with no event under both conditions
 \item{level}{Number specifying confidence level (between 0 and 1, default
 0.95).}
 
-\item{method.RD}{Character string indicating the confidence interval method
+\item{method_RD}{Character string indicating the confidence interval method
 to be used for contrast="RD". "Score" = Tango asymptotic score (default),
 "TDAS" = t-distribution asymptotic score (experimental method, seems to
 struggle with low numbers).}
 
-\item{method.RR}{Character string indicating the confidence interval method
+\item{method_RR}{Character string indicating the confidence interval method
 to be used for contrast="RR". "Score" = Tang asymptotic score (default),
 "TDAS" t-distribution asymptotic score (experimental method, seems to
 struggle with low numbers).}
 
-\item{method.OR}{Character string indicating the confidence interval method
+\item{method_OR}{Character string indicating the confidence interval method
 to be used for contrast="OR", all of which are based on transformation of
 an interval for a single proportion b/(b+c):
 "SCAS" = transformed skewness-corrected score (default),
@@ -63,11 +63,11 @@ the single proportion, inclusing SCAS, mid-p and Jeffreys.
 }
 \examples{
   #Data example from Agresti-Min 2005
-  pairbinci(x = c(53,16,8,9), contrast="RD", method.RD="Score")
-  pairbinci(x = c(53,16,8,9), contrast="RD", method.RD="TDAS")
-  pairbinci(x = c(53,16,8,9), contrast="RR", method.RR="Score")
-  pairbinci(x = c(53,16,8,9), contrast="RR", method.RR="TDAS")
-  pairbinci(x = c(53,16,8,9), contrast="OR", method.OR="SCAS")
+  pairbinci(x = c(53,16,8,9), contrast="RD", method_RD="Score")
+  pairbinci(x = c(53,16,8,9), contrast="RD", method_RD="TDAS")
+  pairbinci(x = c(53,16,8,9), contrast="RR", method_RR="Score")
+  pairbinci(x = c(53,16,8,9), contrast="RR", method_RR="TDAS")
+  pairbinci(x = c(53,16,8,9), contrast="OR", method_OR="SCAS")
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of

@@ -11,19 +11,19 @@ x1g<-5; x2g <- 0; n1g <- 56; n2g <- 29
 
 if(FALSE){
 diffBinconf.meta<-function(x1,n1,x2,n2,level=0.95,weight="MH",incr=0.5,addincr=F,MH.exact=T,hakn=F,contrast="RD",distrib="bin") {
-  if(hakn==T) {random<-T; weight="Inverse"}
+  if(hakn==T) {random <- T; weight <- "Inverse"}
   if(distrib=="bin") {
-    meta <- metabin(event.e=x1,n.e=n1,event.c=x2,n.c=n2,sm=contrast,backtransf=T,level=level,level.comb=level,method=weight,warn=T,addincr=addincr,incr=incr,MH.exact=MH.exact,hakn=hakn,allstudies=F)	
+    meta <- metabin(event.e=x1,n.e=n1,event.c=x2,n.c=n2,sm=contrast,backtransf=T,level=level,level.comb=level,method=weight,warn=T,addincr=addincr,incr=incr,MH.exact=MH.exact,hakn=hakn,allstudies=F)
   } else if(distrib=="poi") {
-    meta <- metainc(event.e=x1,time.e=n1,event.c=x2,time.c=n2,sm=paste("I",contrast,sep=""),level=level,level.comb=level,method=weight,warn=T,addincr=addincr,incr=incr,hakn=hakn)	
+    meta <- metainc(event.e=x1,time.e=n1,event.c=x2,time.c=n2,sm=paste("I",contrast,sep=""),level=level,level.comb=level,method=weight,warn=T,addincr=addincr,incr=incr,hakn=hakn)
   }
   Z<-qnorm(1-(1-level)/2)
   theta<-meta$TE.fixed
-  lcl<-meta$lower.fixed   #meta$TE.fixed-Z*meta$seTE.fixed	
-  ucl<-meta$upper.fixed   #meta$TE.fixed+Z*meta$seTE.fixed		
-  if (!is.na(meta$lower.random)) lcl.rand<-meta$lower.random else lcl.rand <- lcl  #meta$TE.random-Z*meta$seTE.random	
-  if (!is.na(meta$TE.random)) theta.rand<-meta$TE.random else theta.rand <- theta  #meta$TE.random-Z*meta$seTE.random	
-  if (!is.na(meta$upper.random)) ucl.rand<-meta$upper.random else ucl.rand <- ucl  #meta$TE.random+Z*meta$seTE.random			
+  lcl<-meta$lower.fixed   #meta$TE.fixed-Z*meta$seTE.fixed
+  ucl<-meta$upper.fixed   #meta$TE.fixed+Z*meta$seTE.fixed
+  if (!is.na(meta$lower.random)) lcl.rand<-meta$lower.random else lcl.rand <- lcl  #meta$TE.random-Z*meta$seTE.random
+  if (!is.na(meta$TE.random)) theta.rand<-meta$TE.random else theta.rand <- theta  #meta$TE.random-Z*meta$seTE.random
+  if (!is.na(meta$upper.random)) ucl.rand<-meta$upper.random else ucl.rand <- ucl  #meta$TE.random+Z*meta$seTE.random
   estimates <- cbind(lcl,theta,ucl,lcl.rand,theta.rand,ucl.rand)
   if(contrast %in% c("RR","OR")) estimates <- exp(estimates)
   return(list(estimates=estimates,homog=cbind(Q=meta$Q,tau2=meta$tau^2,I2=100*meta$I2,pvalQ=1-pchisq(meta$Q,meta$df.Q))))
@@ -68,7 +68,7 @@ for (i in 1:3) {
                   )
 #                , AN=
 #                  c(
-#                    RDbin=fround(diffBinconf.meta(x1=x1,x2=x2,n1=n1,n2=n2,level=1-alpha,contrast="RD",incr=0)$estimates[,c(1,3)],3), 
+#                    RDbin=fround(diffBinconf.meta(x1=x1,x2=x2,n1=n1,n2=n2,level=1-alpha,contrast="RD",incr=0)$estimates[,c(1,3)],3),
 #                    RDpoi=fround(diffBinconf.meta(x1=x1,x2=x2,n1=n1,n2=n2,level=1-alpha,contrast="RD",distrib="poi")$estimates[,c(1,3)],3) ,
 #                    RRbin=fround(diffBinconf.meta(x1=x1,x2=x2,n1=n1,n2=n2,level=1-alpha,contrast="RR",incr=0)$estimates[,c(1,3)],3),
 #                    RRpoi=fround(diffBinconf.meta(x1=x1,x2=x2,n1=n1,n2=n2,level=1-alpha,contrast="RR",distrib="poi")$estimates[,c(1,3)],3),
@@ -98,10 +98,10 @@ test_that("no change to published examples", {
 ###################
 fround <- function(x,digits=6) paste0(format(round(x[1],digits=digits),nsmall=digits),ifelse(length(x)==1,"",paste0(" (",paste(format(round(x[2:length(x)],digits=digits),nsmall=digits),collapse=", "),")")))
 
-x1hk = c(15,12,29,42,14,44,14,29,10,17,38,19,21)
-x2hk = c(9,1,18,31,6,17,7,23,3,6,12,22,19)
-n1hk = c(16,16,34,56,22,54,17,58,14,26,44,29,38)
-n2hk = c(16,16,34,56,22,55,15,58,15,27,45,30,38)
+x1hk <- c(15,12,29,42,14,44,14,29,10,17,38,19,21)
+x2hk <- c(9,1,18,31,6,17,7,23,3,6,12,22,19)
+n1hk <- c(16,16,34,56,22,54,17,58,14,26,44,29,38)
+n2hk <- c(16,16,34,56,22,55,15,58,15,27,45,30,38)
 
 tab3 <-rbind(
   SCASmh=c(
@@ -134,12 +134,12 @@ test_that("no change to published examples", {
 
 #Examples below need converting into test_that calls
 
-if(FALSE) {  
+if(FALSE) {
 
-  
+
 
 ###################
-#Table S1: Example continuity-corrected & 'compromise' confidence intervals 
+#Table S1: Example continuity-corrected & 'compromise' confidence intervals
 #using cisapride data plus one from Newcombe
 ###################
 fround <- function(x,digits=6) paste("(",paste(format(round(x,digits=digits),nsmall=digits),collapse=", "),")",sep="")
@@ -150,7 +150,7 @@ for (i in 1:3) {
   x2 <- x2hkp[i]
   n1 <- n1hkp[i]
   n2 <- n2hkp[i]
-  
+
   alpha <- 0.05
   mytab <-rbind(SCAScc0.5=
     c(
@@ -194,7 +194,7 @@ fround <- function(x,digits=6) paste("(",paste(format(round(x,digits=digits),nsm
 waldci <- function(x,n,distrib="bin",level=0.95) {
   phat <- x/n
   z <- qnorm(1 - (1-level)/2)
-  if(distrib == "bin") waldci <- cbind(x/n + z * t(c(-1,1)) * sqrt(phat * (1 - phat)/n)) 
+  if(distrib == "bin") waldci <- cbind(x/n + z * t(c(-1,1)) * sqrt(phat * (1 - phat)/n))
   if(distrib == "poi") waldci <- cbind(x/n + z * t(c(-1,1)) * sqrt(phat/n))
   return(waldci)
 }
@@ -205,7 +205,7 @@ tabS2 <-rbind(SCAS=
                   ppoi1=fround(scoreci(x1=x1g,n1=n1g,contrast="p",distrib="poi")$estimates[,c(1,3)],3),
                   pbin2=fround(scoreci(x1=x2g,n1=n2g,contrast="p")$estimates[,c(1,3)],3),
                   ppoi2=fround(scoreci(x1=x2g,n1=n2g,contrast="p",distrib="poi")$estimates[,c(1,3)],3)
-                ), 
+                ),
               Jeffreys=
                 c(
                   pbin1=fround(jeffreysci(x=x1g,n=n1g,adj=F)[,c(1,2)],3),
@@ -219,14 +219,14 @@ tabS2 <-rbind(SCAS=
                   ppoi1=fround(scoreci(x1=x1g,n1=n1g,contrast="p",skew=F,distrib="poi")$estimates[,c(1,3)],3),
                   pbin2=fround(scoreci(x1=x2g,n1=n2g,contrast="p",skew=F)$estimates[,c(1,3)],3),
                   ppoi2=fround(scoreci(x1=x2g,n1=n2g,contrast="p",skew=F,distrib="poi")$estimates[,c(1,3)],3)
-                ), 
+                ),
               Wald=
                 c(
                   pbin1=fround(waldci(x=x1g,n=n1g)[,c(1,2)],3),
                   ppoi1=fround(waldci(x=x1g,n=n1g,distrib="poi")[,c(1,2)],3),
                   pbin2=fround(waldci(x=x2g,n=n2g)[,c(1,2)],3),
                   ppoi2=fround(waldci(x=x2g,n=n2g,distrib="poi")[,c(1,2)],3)
-                ) 
+                )
 )
 tabS2
 xtable(tabS2)

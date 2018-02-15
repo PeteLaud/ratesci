@@ -26,15 +26,15 @@
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 #'   excludes theta0. NB: can also be used for a superiority test by setting
 #'   theta0=0.
-#' @param method.RD Character string indicating the confidence interval method
+#' @param method_RD Character string indicating the confidence interval method
 #'   to be used for contrast="RD". "Score" = Tango asymptotic score (default),
 #'   "TDAS" = t-distribution asymptotic score (experimental method, seems to
 #'   struggle with low numbers).
-#' @param method.RR Character string indicating the confidence interval method
+#' @param method_RR Character string indicating the confidence interval method
 #'   to be used for contrast="RR". "Score" = Tang asymptotic score (default),
 #'   "TDAS" t-distribution asymptotic score (experimental method, seems to
 #'   struggle with low numbers).
-#' @param method.OR Character string indicating the confidence interval method
+#' @param method_OR Character string indicating the confidence interval method
 #'   to be used for contrast="OR", all of which are based on transformation of
 #'   an interval for a single proportion b/(b+c):
 #'   "SCAS" = transformed skewness-corrected score (default),
@@ -48,11 +48,11 @@
 #' @importFrom stats uniroot pbinom ppois dpois
 #' @examples
 #'   #Data example from Agresti-Min 2005
-#'   pairbinci(x = c(53,16,8,9), contrast="RD", method.RD="Score")
-#'   pairbinci(x = c(53,16,8,9), contrast="RD", method.RD="TDAS")
-#'   pairbinci(x = c(53,16,8,9), contrast="RR", method.RR="Score")
-#'   pairbinci(x = c(53,16,8,9), contrast="RR", method.RR="TDAS")
-#'   pairbinci(x = c(53,16,8,9), contrast="OR", method.OR="SCAS")
+#'   pairbinci(x = c(53,16,8,9), contrast="RD", method_RD="Score")
+#'   pairbinci(x = c(53,16,8,9), contrast="RD", method_RD="TDAS")
+#'   pairbinci(x = c(53,16,8,9), contrast="RR", method_RR="Score")
+#'   pairbinci(x = c(53,16,8,9), contrast="RR", method_RR="TDAS")
+#'   pairbinci(x = c(53,16,8,9), contrast="OR", method_OR="SCAS")
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of
@@ -85,9 +85,9 @@ pairbinci <- function(
   x,
   contrast = "RD",
   level = 0.95,
-  method.RD = "Score",
-  method.RR = "Score",
-  method.OR = "SCAS",
+  method_RD = "Score",
+  method_RR = "Score",
+  method_OR = "SCAS",
   theta0 = NULL,
   precis = 6
 ) {
@@ -111,24 +111,25 @@ pairbinci <- function(
     #SCAS interval for a single proportion
      b <- x[2]
      c <- x[3]
-     if (method.OR == "SCAS") {
+     if (method_OR == "SCAS") {
        #could add transformed Wilson version for reference
-       trans.th0 <- NULL
-       if (!is.null(theta0)) trans.th0 <- theta0/(1 + theta0)
-       OR.ci <- scasci(x1 = b, n1 = b + c, contrast = "p", distrib = "bin",
-                      level = level, theta0 = trans.th0)
-       estimates <- rbind(c(OR.ci$estimates[, c(1:3)]/(1 - OR.ci$estimates[, c(1:3)]),
-                     OR.ci$estimates[, 4]))
-       pval <- OR.ci$pval
+       trans_th0 <- NULL
+       if (!is.null(theta0)) trans_th0 <- theta0/(1 + theta0)
+       OR_ci <- scasci(x1 = b, n1 = b + c, contrast = "p", distrib = "bin",
+                      level = level, theta0 = trans_th0)
+       estimates <- rbind(
+         c(OR_ci$estimates[, c(1:3)]/(1 - OR_ci$estimates[, c(1:3)]),
+          OR_ci$estimates[, 4]))
+       pval <- OR_ci$pval
        outlist <- list(xi, estimates = estimates, pval = pval)
-     } else if (method.OR == "midp") {
-       trans.ci <- exactci(x = b, n = b + c, midp = TRUE, level = level)
-       estimates <- c(trans.ci/(1 - trans.ci))
+     } else if (method_OR == "midp") {
+       trans_ci <- exactci(x = b, n = b + c, midp = TRUE, level = level)
+       estimates <- c(trans_ci/(1 - trans_ci))
        outlist <- list(xi, estimates = estimates)
      }
   } else {
-    if ((contrast =="RD" && method.RD == "TDAS") ||
-       (contrast =="RR" && method.RR == "TDAS")) {
+    if ((contrast =="RD" && method_RD == "TDAS") ||
+       (contrast =="RR" && method_RR == "TDAS")) {
       #stratified TDAS method for paired data as suggested in Laud 2017
       n1i <- n2i <- rep(1, sum(x))
       out <- tdasci(x1 = x1i, n1 = n1i, x2 = x2i, n2 = n2i, weighting = "MH",
@@ -137,8 +138,8 @@ pairbinci <- function(
       outlist <- list(xi, estimates = out$estimates, pval = out$pval)
     }
     #Score methods by Tango (for RD) & Tang (for RR):
-    if ((contrast =="RD" && method.RD == "Score") ||
-       (contrast =="RR" && method.RR == "Score")) {
+    if ((contrast =="RD" && method_RD == "Score") ||
+       (contrast =="RR" && method_RR == "Score")) {
       myfun <- function(theta) {
         scorepair(theta = theta, x = x, contrast = contrast)$score
       }
@@ -146,11 +147,14 @@ pairbinci <- function(
       qtnorm <- qnorm(1 - (1 - level)/2)
       MLE <- bisect(ftn = function(theta) myfun(theta) - 0, distrib = "bin",
                     contrast = contrast, precis = precis + 1, uplow = "low")
-      lower <- bisect(ftn = function(theta) myfun(theta) - qtnorm, distrib = "bin",
-                      precis = precis + 1, contrast = contrast, uplow = "low")
-      upper <- bisect(ftn = function(theta) myfun(theta) + qtnorm, distrib = "bin",
-                      precis = precis + 1, contrast=contrast, uplow = "up")
-      estimates <- cbind(Lower = lower, MLE = MLE, Upper = upper, level = level)
+      lower <- bisect(ftn = function(theta) myfun(theta) - qtnorm,
+                    distrib = "bin", precis = precis + 1, contrast = contrast,
+                    uplow = "low")
+      upper <- bisect(ftn = function(theta) myfun(theta) + qtnorm,
+                    distrib = "bin", precis = precis + 1, contrast=contrast,
+                    uplow = "up")
+      estimates <- cbind(Lower = lower, MLE = MLE, Upper = upper,
+                         level = level)
 
       # optionally add p-value for a test of null hypothesis: theta<=theta0
       # default value of theta0 depends on contrast
@@ -162,12 +166,12 @@ pairbinci <- function(
       }
       scorezero <- scorepair(theta = theta00, x = x, contrast = contrast)
       scorenull <- scorepair(theta = theta0, x = x, contrast = contrast)
-      pval.left <- scorenull$pval
-      pval.right <- 1 - pval.left
-      chisq.zero <- scorezero$score^2
-      pval2sided <- pchisq(chisq.zero, 1, lower.tail = FALSE)
-      pval <- cbind(chisq = chisq.zero, pval2sided, theta0 = theta0,
-                    scorenull = scorenull$score, pval.left, pval.right)
+      pval_left <- scorenull$pval
+      pval_right <- 1 - pval_left
+      chisq_zero <- scorezero$score^2
+      pval2sided <- pchisq(chisq_zero, 1, lower.tail = FALSE)
+      pval <- cbind(chisq = chisq_zero, pval2sided, theta0 = theta0,
+                    scorenull = scorenull$score, pval_left, pval_right)
 
       outlist <- list(xi, estimates = estimates, pval = pval)
     }
@@ -175,8 +179,8 @@ pairbinci <- function(
     #Placeholder:
     #Add code for MOVER Jeffreys methods from Tang2010 (and add SCAS version)?
     #For both RD & RR this appears to be inferior to the Score methods
-#    if ((contrast =="RD" && method.RD == "MOVER") ||
-#       (contrast =="RR" && method.RR == "MOVER")) {
+#    if ((contrast =="RD" && method_RD == "MOVER") ||
+#       (contrast =="RR" && method_RR == "MOVER")) {
 #    }
 
   }
@@ -196,11 +200,7 @@ scorepair <- function(
   contrast = "RD",
   ...
 ) {
-
   N <- sum(x)
-#  p1hat <- (x[1] + x[2])/N
-#  p2hat <- (x[1] + x[3])/N
-
   if (contrast == "RD") {
     #notation per Tango 1999 letter
     Stheta <- ((x[2] - x[3]) - N * theta)
@@ -219,10 +219,6 @@ scorepair <- function(
     C_ <- x[3] * (1 - theta) * (x[1] + x[2] + x[3])/N
     num <- (-B + Re(sqrt(as.complex(B^2 - 4 * A * C_))))
     q21 <- ifelse(num == 0, 0, num/(2 * A))
-    q11 <- ((x[1] + x[2] + x[3])/N - (1 + theta) * q21)/theta
-    q12 <- (q21 + (theta - 1) * (x[1] + x[2] + x[3])/N)/theta
-    q1 <- q11 + q12
-#    q2 <- q1/theta
     V <- pmax(0, N * (1 + theta) * q21 + (x[1] + x[2] + x[3]) * (theta - 1))
   }
   score <- ifelse(Stheta == 0, 0, Stheta/sqrt(V))
@@ -230,5 +226,3 @@ scorepair <- function(
   outlist <- list(score = score, pval = pval)
   return(outlist)
 }
-
-

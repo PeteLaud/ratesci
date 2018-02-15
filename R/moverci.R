@@ -229,7 +229,6 @@ moverci <- function(
       #This is optional for informative priors
       upper[x2 == 0] <- Inf
       lower[(x1 == 0)] <- 0
-#      upper[(x1 == n1 & x2 == 0)] <- Inf
     }
   }
   CI <- cbind(Lower = lower, Estimate = est, Upper = upper)
@@ -302,28 +301,28 @@ jeffreysci <- function(
 
   alpha <- 1 - level
   if (distrib == "bin") {
-    CI.lower <- qbeta( alpha/2, x + (ai - cc), n - x + (bi + cc))
+    CI_lower <- qbeta( alpha/2, x + (ai - cc), n - x + (bi + cc))
     est <- qbeta( 0.5, x + (ai), n - x + (bi)) #Obtain phat as the median
-    CI.upper <- qbeta(1 - alpha/2, x + (ai + cc), n - x + (bi - cc))
+    CI_upper <- qbeta(1 - alpha/2, x + (ai + cc), n - x + (bi - cc))
     if (adj == TRUE) {
       # adjustment at boundary values
-      CI.lower[x == 0] <- 0
-      CI.upper[x == n] <- 1
+      CI_lower[x == 0] <- 0
+      CI_upper[x == n] <- 1
       est[x == 0] <- 0
       est[x == n] <- 1
     }
   } else if (distrib == "poi") {
     # Jeffreys prior for Poisson rate uses gamma distribution,
     # as defined in Li et al. with "continuity correction" from Laud 2017.
-    CI.lower <- qgamma(alpha/2, x + (ai - cc), scale = 1/n)
+    CI_lower <- qgamma(alpha/2, x + (ai - cc), scale = 1/n)
     est <- qgamma( 0.5, x + (ai), scale = 1/n)
     if (adj == TRUE) {
-      CI.lower[x == 0] <-  0
+      CI_lower[x == 0] <-  0
       est[x == 0] <-  0
     }
-    CI.upper <- qgamma(1 - alpha/2, (x + (ai + cc)), scale = 1/n)
+    CI_upper <- qgamma(1 - alpha/2, (x + (ai + cc)), scale = 1/n)
   }
-  CI <- cbind(Lower = CI.lower, Upper = CI.upper, est = est)
+  CI <- cbind(Lower = CI_lower, Upper = CI_upper, est = est)
   CI
 }
 
@@ -383,10 +382,10 @@ moverbci <- function(
 
 # Internal function
 quadroot <- function(a, b, c_) {
-	# GET ROOTS OF A QUADRATIC EQUATION
-	r1x <- ( - b + sqrt(b^2 - 4 * a * c_) )/(2 * a)
-	r2x <- ( - b - sqrt(b^2 - 4 * a * c_) )/(2 * a)
-	r1 <- pmin(r1x, r2x)
-	r2 <- pmax(r1x, r2x)
-	cbind(r1, r2)
+  # GET ROOTS OF A QUADRATIC EQUATION
+  r1x <- ( - b + sqrt(b^2 - 4 * a * c_) )/(2 * a)
+  r2x <- ( - b - sqrt(b^2 - 4 * a * c_) )/(2 * a)
+  r1 <- pmin(r1x, r2x)
+  r2 <- pmax(r1x, r2x)
+  cbind(r1, r2)
 }
