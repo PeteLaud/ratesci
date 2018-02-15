@@ -31,9 +31,10 @@
 #' @param skew Logical (default TRUE) indicating whether to apply skewness
 #'   correction (for the SCAS method recommended in Laud 2017) or not (for
 #'   the Miettinen-Nurminen method).
-#' @param ORbias Logical (default is value of skew) indicating whether to apply
-#'   additional bias correction for OR as per Gart 1985. (Corrigendum to
-#'   Laud 2017 in press). Only applies if contrast is "OR".
+#' @param ORbias Logical (default is value of skew for contrast="OR", otherwise
+#'   NULL) indicating whether to apply additional bias correction for OR derived
+#'   from Gart 1985. (Corrigendum to Laud 2017 in press). Only applies if
+#'   contrast is "OR".
 #' @param bcf Logical (default TRUE) indicating whether to apply bias correction
 #'   in the score denominator. Applicable to distrib = "bin" only. (NB: bcf =
 #'   FALSE option is really only included for legacy validation against previous

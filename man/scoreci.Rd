@@ -32,9 +32,10 @@ contrast="p" gives an interval for the single proportion or rate x1/n1.}
 correction (for the SCAS method recommended in Laud 2017) or not (for
 the Miettinen-Nurminen method).}
 
-\item{ORbias}{Logical (default is value of skew) indicating whether to apply
-additional bias correction for OR as per Gart 1985. (Corrigendum to
-Laud 2017 in press). Only applies if contrast is "OR".}
+\item{ORbias}{Logical (default is value of skew for contrast="OR", otherwise
+NULL) indicating whether to apply additional bias correction for OR derived
+from Gart 1985. (Corrigendum to Laud 2017 in press). Only applies if
+contrast is "OR".}
 
 \item{bcf}{Logical (default TRUE) indicating whether to apply bias correction
 in the score denominator. Applicable to distrib = "bin" only. (NB: bcf =
