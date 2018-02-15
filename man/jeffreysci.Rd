@@ -19,8 +19,8 @@ times (for Poisson rates).}
 
 \item{cc}{Number or logical specifying (amount of) "continuity correction".
 cc = 0 (default) gives Jeffreys interval, cc = 0.5 gives the
-Clopper-Pearson interval. A value between 0 and 0.5 allows a compromise
-between proximate and conservative coverage.}
+Clopper-Pearson interval (or Garwood for Poisson). A value between 0 and
+0.5 allows a compromise between proximate and conservative coverage.}
 
 \item{level}{Number specifying confidence level (between 0 and 1, default
 0.95).}

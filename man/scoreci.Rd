@@ -71,8 +71,8 @@ x-axis of plots (useful for ratio contrasts which can be infinite).}
 \item{stratified}{Logical (default FALSE) indicating whether to combine
 vector inputs into a single stratified analysis.
 IMPORTANT NOTE: The mechanism for stratified calculations is enabled for
-contrast='p', but the performance of the resulting intervals has not been
-evaluated.}
+contrast = "p", but the performance of the resulting intervals has not
+been fully evaluated.}
 
 \item{weighting}{String indicating which weighting method to use if
 stratified = "TRUE":  "IVS" = Inverse Variance of Score (default, see Laud

@@ -38,10 +38,10 @@ contrast="p" gives an interval for the single proportion x1/n1.}
 \item{type}{Character string indicating the method used for the intervals for
 the individual group rates.
 "jeff" = Jeffreys equal-tailed intervals (default);
-"exact" = Clopper-Pearson exact intervals (note this does NOT result in a
-strictly conservative interval for the contrast, except for contrast='p'.
-The scoreci function with cc=TRUE is recommended as a superior approximation
-of 'exact' methods);
+"exact" = Clopper-Pearson/Garwood exact intervals (note this does NOT
+result in a strictly conservative interval for the contrast, except for
+contrast='p'. The scoreci function with cc=TRUE is recommended as a
+superior approximation of 'exact' methods);
 "midp" = mid-p intervals (to be added);
 "SCAS" = SCAS non-iterative intervals (to be added);
 "wilson" = Wilson score intervals (as per Newcombe 1998).

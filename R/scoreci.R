@@ -63,8 +63,8 @@
 #' @param stratified Logical (default FALSE) indicating whether to combine
 #'   vector inputs into a single stratified analysis.
 #'   IMPORTANT NOTE: The mechanism for stratified calculations is enabled for
-#'   contrast='p', but the performance of the resulting intervals has not been
-#'   evaluated.
+#'   contrast = "p", but the performance of the resulting intervals has not
+#'   been fully evaluated.
 #' @param weighting String indicating which weighting method to use if
 #'   stratified = "TRUE":  "IVS" = Inverse Variance of Score (default, see Laud
 #'   2017 for details), "MH" = Mantel-Haenszel, "MN" = Miettinen-Nurminen
@@ -229,10 +229,6 @@ scoreci <- function(
   if (cc != FALSE && stratified ==TRUE && contrast != "OR") {
     print("Warning: Continuity correction is experimental for
           stratified RD and RR")
-  }
-  if (stratified ==TRUE && contrast == "p") {
-    print("Warning: Stratified method for the single rate has not been
-          fully tested")
   }
   if (as.character(cc) == "TRUE") cc <- 0.5
 

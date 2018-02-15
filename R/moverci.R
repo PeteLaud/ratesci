@@ -26,10 +26,10 @@
 #' @param type Character string indicating the method used for the intervals for
 #'   the individual group rates.
 #'   "jeff" = Jeffreys equal-tailed intervals (default);
-#'   "exact" = Clopper-Pearson exact intervals (note this does NOT result in a
-#'   strictly conservative interval for the contrast, except for contrast='p'.
-#'   The scoreci function with cc=TRUE is recommended as a superior approximation
-#'   of 'exact' methods);
+#'   "exact" = Clopper-Pearson/Garwood exact intervals (note this does NOT
+#'   result in a strictly conservative interval for the contrast, except for
+#'   contrast='p'. The scoreci function with cc=TRUE is recommended as a
+#'   superior approximation of 'exact' methods);
 #'   "midp" = mid-p intervals (to be added);
 #'   "SCAS" = SCAS non-iterative intervals (to be added);
 #'   "wilson" = Wilson score intervals (as per Newcombe 1998).
@@ -252,8 +252,8 @@ moverci <- function(
 #'   0.5 for Jeffreys interval). Gamma prior for Poisson rates requires only ai.
 #' @param cc Number or logical specifying (amount of) "continuity correction".
 #'   cc = 0 (default) gives Jeffreys interval, cc = 0.5 gives the
-#'   Clopper-Pearson interval. A value between 0 and 0.5 allows a compromise
-#'   between proximate and conservative coverage.
+#'   Clopper-Pearson interval (or Garwood for Poisson). A value between 0 and
+#'   0.5 allows a compromise between proximate and conservative coverage.
 #' @param level Number specifying confidence level (between 0 and 1, default
 #'   0.95).
 #' @param distrib Character string indicating distribution assumed for the input

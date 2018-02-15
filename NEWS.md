@@ -13,6 +13,7 @@
 * Corrected error in cc for stratified SCAS method for OR.
 * Clarified documentation regarding continuity corrections.
 * Set Stheta to 0 if |Stheta|<cc in `scoreci()`
+* Fixed stratified calulations for contrast = "p" in `scoreci()`.
 
 # ratesci 0.2-0
 

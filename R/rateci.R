@@ -1,5 +1,5 @@
 
-# Internal function for both Clopper-Pearson and mid-p, binomial or Poisson
+# Internal function for Clopper-Pearson/Garwood and mid-p, binomial or Poisson
 exactci <- function(
   #function to calculate exact 'exact' confidence interval for a single
   #binomial or Poisson rate x/n
@@ -92,7 +92,7 @@ scaspci <- function(
 #'
 #' Confidence intervals for the single binomial or Poisson rate. Including
 #' SCAS or Jeffreys intervals, with or without continuity correction, and
-#' 'exact' Clopper-Pearson or mid-p intervals.
+#' 'exact' Clopper-Pearson/Garwood or mid-p intervals.
 #'
 #' @param x Numeric vector of number of events.
 #' @param n Numeric vector of sample size (for binomial rate) or exposure
@@ -109,7 +109,7 @@ scaspci <- function(
 #'   confidence limits for each value of x and n. Methods shown depend on the cc
 #'   parameter, which specifies whether the continuity correction is applied to
 #'   the SCAS and Jeffreys methods. The corresponding 'exact' method is
-#'   Clopper-Pearson if cc == TRUE and mid-p if cc == FALSE.
+#'   Clopper-Pearson/Garwood if cc == TRUE and mid-p if cc == FALSE.
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @export
 rateci <- function(
@@ -154,7 +154,9 @@ rateci <- function(
   if (cc == 0) {
     return(list(scas = ci_scas, jeff = ci_jeff, midp = ci_exact))
   } else if (cc == 0.5) {
-    return(list(scas_cc = ci_scas, jeff_cc = ci_jeff, cp = ci_exact))
+    if(distrib == "bin") {
+      return(list(scas_cc = ci_scas, jeff_cc = ci_jeff, cp = ci_exact))
+    } else return(list(scas_cc = ci_scas, jeff_cc = ci_jeff, garwood = ci_exact))
   } else {
     return(list(scas_cc = ci_scas, jeff_cc = ci_jeff))
     #exact method not applicable if using a compromise value of cc

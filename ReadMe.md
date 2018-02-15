@@ -52,6 +52,6 @@ For comparisons of rates (contrasts RD, RR and OR):
 - `pairbinci()`: for paired binomial data.
 
 For single binomial or Poisson rates:
-- `scaspci()`: non-iterative SCAS method for a single rate. (For stratified calculations use `scoreci()`.)
+- `scaspci()`: non-iterative SCAS method for a single rate. For stratified calculations use `scoreci()` with contrast = "p".
 - `jeffreysci()`: wrapper function to compute Jeffreys interval for a single rate (with option to incorporate prior information).
-- `rateci()`: wrapper function for selected methods for a single rate, including SCAS, Jeffreys, midp and Clopper-Pearson.
+- `rateci()`: wrapper function for selected methods for a single rate, including SCAS, Jeffreys, midp and Clopper-Pearson/Garwood.
