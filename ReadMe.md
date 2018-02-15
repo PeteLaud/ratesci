@@ -39,4 +39,19 @@ library(ratesci)
 scoreci(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
 ```
 
+#### Overview
 
+ratesci contains the following functions:
+
+For comparisons of rates (contrasts RD, RR and OR):
+- `scoreci()`: for score-based confidence intervals including Miettinen-Nurminen and SCAS, with or without stratification.
+- `scasci()`: wrapper function to compute SCAS intervals.
+- `tdasci()`: wrapper function to compute TDAS stratified intervals.
+- `moverci()`: for the MOVER methods, including Newcombe and MOVER-J.
+- `moverbci()`: wrapper function to compute MOVER-B intervals.
+- `pairbinci()`: for paired binomial data.
+
+For single binomial or Poisson rates:
+- `scaspci()`: non-iterative SCAS method for a single rate. (For stratified calculations use `scoreci()`.)
+- `jeffreysci()`: wrapper function to compute Jeffreys interval for a single rate (with option to incorporate prior information).
+- `rateci()`: wrapper function for selected methods for a single rate, including SCAS, Jeffreys, midp and Clopper-Pearson.

@@ -1,16 +1,18 @@
-# ratesci 0.2-0.9000
+# ratesci 0.3-0
 
 ## New features
 * Added bias correction to SCAS method for OR (derived from Gart 1985).
 * Added score methods (Tango & Tang) as default for paired binomial RD and RR in pairbinci.
 * Added transformed mid-p method for paired OR for comparison with transformed SCAS.
-* Added scasci.nonit function for non-iterative SCAS methods for single binomial or Poisson rate.
+* Added scaspci function for non-iterative SCAS methods for single binomial or Poisson rate.
+* Added rateci function for selected methods for single binomial or Poisson rate.
 
 ## Bug fixes
 * Fixed bug in pairbinci for contrast="OR".
 * Fixed bug in moverci for contrast="p" and type="wilson".
 * Corrected error in cc for stratified SCAS method for OR.
 * Clarified documentation regarding continuity corrections.
+* Set Stheta to 0 if |Stheta|<cc
 
 # ratesci 0.2-0
 

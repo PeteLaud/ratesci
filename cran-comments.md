@@ -4,7 +4,10 @@
 * win-builder (devel and release)
 
 ## R CMD check results
-There were no ERRORs, WARNINGs or NOTEs.
+There were no ERRORs or WARNINGs.
+
+Win-builder generated 1 NOTE:
+* possibly misspelled words in DESCRIPTION, but the spelling is correct
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this package
