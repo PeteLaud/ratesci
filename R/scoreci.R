@@ -599,7 +599,7 @@ scoreci <- function(
     wtpct <- 100 * wt_MLE/sum(wt_MLE)
     wt1pct <- 100 * wt_FE/sum(wt_FE)
     outlist <- append(outlist,
-      list(Qtest = Qtest, weighting = weighting, MNtol = MNtol,
+      list(Qtest = Qtest, weighting = weighting,
       stratdata = cbind(x1j = x1, n1j = n1, x2j = x2, n2j = n2,
                         p1hatj = p1hat, p2hatj = p2hat, wt_fixed = wt_FE,
                         wtpct_fixed = wt1pct, wtpct_rand = wtpct,
@@ -978,7 +978,6 @@ scoretheta <- function(
           # M&Ns iterative weights - quite similar to MH wtx <- n1*n2/(n1+n2)
           wt <- wtx <- (1/n1 + 1/n2)^(-1)
           wtdiff <- 1
-          MNiter <- 0
           while (wtdiff > MNtol) {
             p2ds <- sum(wtx * p2d)/sum(wtx)
             p1ds <- sum(wtx * p1d)/sum(wtx)
@@ -989,7 +988,7 @@ scoretheta <- function(
             }
             wt[p2ds == 0 || p2ds == 1] <- 0
             if (sum(wt) == 0) wt <- wt + 1 #Fix for when all weights are zero
-            wtdiff <- sum(abs(wtx - wt))
+            wtdiff <- max(abs(wtx - wt))
             wtx <- wt
          }
         } else if (contrast == "OR") {
