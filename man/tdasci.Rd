@@ -7,7 +7,7 @@ comparisons of independent binomial or Poisson rates.}
 \usage{
 tdasci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
   level = 0.95, cc = 0, theta0 = NULL, precis = 6, plot = FALSE,
-  plotmax = 100, weighting = "IVS", wt = NULL, ...)
+  plotmax = 100, weighting = "IVS", MNtol = 1e-08, wt = NULL, ...)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2
@@ -56,6 +56,9 @@ x-axis of plots (useful for ratio contrasts which can be infinite).}
 stratified = "TRUE":  "IVS" = Inverse Variance of Score (default, see Laud
 2017 for details), "MH" = Mantel-Haenszel, "MN" = Miettinen-Nurminen
 iterative weights.}
+
+\item{MNtol}{Numeric value indicating convergence tolerance to be used in
+iteration with weighting = "MN".}
 
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
 

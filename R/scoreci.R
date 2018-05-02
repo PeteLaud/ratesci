@@ -69,6 +69,8 @@
 #'   stratified = "TRUE":  "IVS" = Inverse Variance of Score (default, see Laud
 #'   2017 for details), "MH" = Mantel-Haenszel, "MN" = Miettinen-Nurminen
 #'   iterative weights.
+#' @param MNtol Numeric value indicating convergence tolerance to be used in
+#'   iteration with weighting = "MN".
 #' @param wt Numeric vector containing (optional) user-specified weights.
 #' @param tdas Logical (default FALSE) indicating whether to use t-distribution
 #'   method for stratified data (defined in Laud 2017).
@@ -169,6 +171,7 @@ scoreci <- function(
   plotmax = 100,
   stratified = FALSE,
   weighting = "IVS",
+  MNtol = 1E-8,
   wt = NULL,
   tdas = FALSE,
   warn = TRUE,
@@ -298,8 +301,8 @@ scoreci <- function(
                     stratswitch = stratified) {
     scoretheta(theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
                contrast = contrast, distrib = distrib, stratified = stratswitch,
-               wt = wt, weighting = weighting, tdas = randswitch, skew = skew,
-               ORbias = ORbias, cc = ccswitch)$score
+               wt = wt, weighting = weighting, MNtol = MNtol, tdas = randswitch,
+               skew = skew, ORbias = ORbias, cc = ccswitch)$score
   }
 
   #find point estimate for theta as the value where scoretheta = 0
@@ -343,8 +346,8 @@ scoreci <- function(
   at_MLE <- scoretheta(theta = point, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
                        bcf = bcf, contrast = contrast,
                        distrib = distrib, stratified = stratified,
-                       weighting = weighting, wt = wt, tdas = tdas,
-                       skew = skew, ORbias = ORbias, cc = cc)
+                       weighting = weighting, MNtol = MNtol, wt = wt,
+                       tdas = tdas, skew = skew, ORbias = ORbias, cc = cc)
 ##  Stheta_MLE <- at_MLE$Stheta
   p1d_MLE <- at_MLE$p1d
   p2d_MLE <- at_MLE$p2d
@@ -360,8 +363,8 @@ scoreci <- function(
     at_FE <- scoretheta(theta = point_FE, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
                         bcf = bcf, contrast = contrast,
                         distrib = distrib, stratified = stratified,
-                        weighting = weighting, wt = wt, tdas = FALSE,
-                        skew = skew, ORbias = ORbias, cc = cc)
+                        weighting = weighting, MNtol = MNtol, wt = wt,
+                        tdas = FALSE, skew = skew, ORbias = ORbias, cc = cc)
     Stheta_FE <- at_FE$Stheta
     wt_FE <- at_FE$wt
     V_FE <- at_FE$V
@@ -413,8 +416,9 @@ scoreci <- function(
     at_MLE_unstrat <- scoretheta(theta = point, x1 = x1, x2 = x2, n1 = n1,
                                  n2 = n2, bcf = bcf, contrast = contrast,
                                  distrib = distrib, stratified = FALSE,
-                                 weighting = weighting, wt = wt, tdas = tdas,
-                                 skew = skew, ORbias = ORbias, cc = cc)
+                                 weighting = weighting, MNtol = MNtol, wt = wt,
+                                 tdas = tdas, skew = skew, ORbias = ORbias,
+                                 cc = cc)
     point_FE_unstrat <- bisect(ftn = function(theta)
       myfun(theta, randswitch = FALSE, ccswitch = 0, stratswitch = FALSE) - 0,
       contrast = contrast, distrib = distrib, precis = precis + 1,
@@ -473,12 +477,13 @@ scoreci <- function(
   }
   scorezero <- scoretheta(theta = theta00, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
                           stratified = stratified,
-                          wt = wt, weighting = weighting, tdas = tdas,
-                          bcf = bcf, contrast = contrast, distrib = distrib,
-                          skew = skew, ORbias = ORbias, cc = cc)
+                          wt = wt, weighting = weighting, MNtol = MNtol,
+                          tdas = tdas, bcf = bcf, contrast = contrast,
+                          distrib = distrib, skew = skew, ORbias = ORbias,
+                          cc = cc)
   scorenull <- scoretheta(theta = theta0, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
-                           stratified = stratified,
-                           wt = wt, weighting = weighting, tdas = tdas,
+                           stratified = stratified, wt = wt,
+                           weighting = weighting, MNtol = MNtol, tdas = tdas,
                            bcf = bcf, contrast = contrast, distrib = distrib,
                            skew = skew, ORbias = ORbias, cc = cc)
   pval_left <- scorenull$pval
@@ -594,9 +599,9 @@ scoreci <- function(
     wtpct <- 100 * wt_MLE/sum(wt_MLE)
     wt1pct <- 100 * wt_FE/sum(wt_FE)
     outlist <- append(outlist,
-      list(Qtest = Qtest, weighting = weighting,
+      list(Qtest = Qtest, weighting = weighting, MNtol = MNtol,
       stratdata = cbind(x1j = x1, n1j = n1, x2j = x2, n2j = n2,
-                        p1hatj = p1hat, p2hatj = p2hat,
+                        p1hatj = p1hat, p2hatj = p2hat, wt_fixed = wt_FE,
                         wtpct_fixed = wt1pct, wtpct_rand = wtpct,
                         theta_j = point_FE_unstrat, lower_j = lower_unstrat,
                         upper_j = upper_unstrat)))
@@ -642,6 +647,7 @@ scasci <- function(
   plotmax = 100,
   stratified = FALSE,
   weighting = "IVS",
+  MNtol = 1E-8,
   wt = NULL,
   ...
 ) {
@@ -660,6 +666,7 @@ scasci <- function(
     plotmax = plotmax,
     stratified = stratified,
     weighting = weighting,
+    MNtol = MNtol,
     wt = wt,
     skew = TRUE,
     bcf = TRUE,
@@ -699,6 +706,7 @@ tdasci <- function(
   plot = FALSE,
   plotmax = 100,
   weighting = "IVS",
+  MNtol = 1E-8,
   wt = NULL,
   ...
 ) {
@@ -717,6 +725,7 @@ tdasci <- function(
     plotmax = plotmax,
     stratified = TRUE,
     weighting = weighting,
+    MNtol = MNtol,
     wt = wt,
     tdas = TRUE,
     skew = FALSE,
@@ -803,6 +812,7 @@ scoretheta <- function(
   stratified = FALSE,
   wt = NULL,
   weighting = "IVS",
+  MNtol = 1E-8,
   tdas = FALSE,
   ...
   ) {
@@ -950,33 +960,38 @@ scoretheta <- function(
           wt <- rep(1, nstrat)
         } else wt <- 1/V
       } else if (weighting == "MN") {
-        if (contrast == "RR") {
-          # M&Ns iterative weights - quite similar to MH
+        if (contrast == "RR" && distrib == "poi") {
+          wt <- (1/n1 + theta/n2)^(-1)
+        } else if (contrast == "RR" && distrib == "bin") {
+            # M&Ns iterative weights - quite similar to MH
+          wtdiff <- 1
           wtx <- (1/n1 + theta/n2)^(-1)
-          p2ds <- sum(wtx * p2d)/sum(wtx)
-          p1ds <- sum(wtx * p1d)/sum(wtx)
-          wty <- ((1 - p1ds)/(n1 * (1 - p2ds)) + theta/n2)^(-1)
-          wty[p2ds == 1] <- 0
-          p2ds <- sum(wty * p2d)/sum(wty)
-          p1ds <- sum(wty * p1d)/sum(wty)
-          wty <- ((1 - p1ds)/(n1 * (1 - p2ds)) + theta/n2)^(-1)
-          wty[p2ds == 1] <- 0
-          p2ds <- sum(wty * p2d)/sum(wty)
-          p1ds <- sum(wty * p1d)/sum(wty)
-          wt <- ((1 - p1ds)/(n1 * (1 - p2ds)) + theta/n2)^(-1)
-          wt[p2ds == 1] <- 0
+          while (wtdiff > MNtol) {
+            p2ds <- sum(wtx * p2d)/sum(wtx)
+            p1ds <- sum(wtx * p1d)/sum(wtx)
+            wt <- ((1 - p1ds)/(n1 * (1 - p2ds)) + theta/n2)^(-1)
+            wt[p2ds == 1] <- 0
+            wtdiff <- max(abs(wtx - wt))
+            wtx <- wt
+          }
         } else if (contrast == "RD") {
           # M&Ns iterative weights - quite similar to MH wtx <- n1*n2/(n1+n2)
-          wtx <- (1/n1 + 1/n2)^(-1)
-          p2ds <- sum(wtx * p2d)/sum(wtx)
-          p1ds <- sum(wtx * p1d)/sum(wtx)
-          wty <- ((p1ds * (1 - p1ds)/(p2ds * (1 - p2ds)))/n1 + 1/n2)^(-1)
-          wty[p2ds == 0] <- 0
-          p2ds <- sum(wty * p2d)/sum(wty)
-          p1ds <- sum(wty * p1d)/sum(wty)
-          wt <- ((p1ds * (1 - p1ds)/(p2ds * (1 - p2ds)))/n1 + 1/n2)^(-1)
-          # wt <- (1/n1 + (p2ds*(1-p2ds))/n2)^(-1) #equivalent, according to ...
-          wt[p2ds == 0] <- 0
+          wt <- wtx <- (1/n1 + 1/n2)^(-1)
+          wtdiff <- 1
+          MNiter <- 0
+          while (wtdiff > MNtol) {
+            p2ds <- sum(wtx * p2d)/sum(wtx)
+            p1ds <- sum(wtx * p1d)/sum(wtx)
+            if (distrib == "bin") {
+              wt <- ((p1ds * (1 - p1ds)/(p2ds * (1 - p2ds)))/n1 + 1/n2)^(-1)
+            } else if (distrib == "poi") {
+              wt <- ((p1ds/p2ds)/n1 + 1/n2)^(-1)
+            }
+            wt[p2ds == 0 || p2ds == 1] <- 0
+            if (sum(wt) == 0) wt <- wt + 1 #Fix for when all weights are zero
+            wtdiff <- sum(abs(wtx - wt))
+            wtx <- wt
+         }
         } else if (contrast == "OR") {
           # M&Ns weights are very similar in structure to IVS
           wt <- n1 * n2 * ((1 - p1d) * p2d)^2/

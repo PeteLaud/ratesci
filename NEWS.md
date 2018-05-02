@@ -1,5 +1,11 @@
 # ratesci 0.3-0.9000
 
+## New features
+MN weighting in `scoreci()` now iterates to convergence (@jonjvallejo, #20).
+
+## Bug fixes
+MN weighting in `scoreci()` corrected for distrib="poi".
+
 
 # ratesci 0.3-0
 
