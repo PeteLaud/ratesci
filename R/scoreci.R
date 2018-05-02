@@ -230,8 +230,8 @@ scoreci <- function(
     stop()
   }
   if (cc != FALSE && stratified ==TRUE && contrast != "OR") {
-    print("Warning: Continuity correction is experimental for
-          stratified RD and RR")
+    print(paste("Warning: Continuity correction is experimental for",
+          "stratified RD and RR"))
   }
   if (as.character(cc) == "TRUE") cc <- 0.5
 
@@ -257,8 +257,8 @@ scoreci <- function(
       n2 <- n2[!empty_strat]
     }
     if (warn == TRUE && sum(empty_strat)>0) {
-      print("Warning: at least one stratum contributed no information and
-            was removed")
+      print(paste("Warning: at least one stratum contributed no information",
+            "and was removed"))
     }
 
     # for double-zero cells for RD, add 0.5 to avoid 100% weight with IVS
@@ -1039,6 +1039,7 @@ scoretheta <- function(
     corr <- corr*sign(Sdot)
     score1 <- sum( (wt/sum(wt)) * (Stheta - corr))/pmax(0, sqrt(Vdot))
     scterm <- sum(((wt/sum(wt))^3) * mu3)/(6 * Vdot^(3/2))
+    scterm[sum(((wt/sum(wt))^3) * mu3) == 0] <- 0 #Avoids NA scores
     A <- scterm
     B <- 1
     C_ <- -(score1 + scterm)
