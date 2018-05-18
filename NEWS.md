@@ -5,7 +5,7 @@ MN weighting in `scoreci()` now iterates to convergence (@jonjvallejo, #20).
 
 ## Bug fixes
 MN weighting in `scoreci()` corrected for distrib="poi".
-
+Corrected bug in `scoreci()` for calculation of stratum CIs with TDAS=TRUE.
 
 # ratesci 0.3-0
 
