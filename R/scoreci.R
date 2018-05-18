@@ -424,10 +424,12 @@ scoreci <- function(
       contrast = contrast, distrib = distrib, precis = precis + 1,
       uplow = "low")
     lower_unstrat <- bisect(ftn = function(theta)
-      myfun(theta, stratswitch = FALSE) - qtnorm, contrast = contrast,
+      myfun(theta, stratswitch = FALSE) - qnorm(1 - (1 - level)/2),
+      contrast = contrast,
       distrib = distrib, precis = precis + 1, uplow = "low")
     upper_unstrat <- bisect(ftn = function(theta)
-      myfun(theta, stratswitch = FALSE) + qtnorm, contrast = contrast,
+      myfun(theta, stratswitch = FALSE) + qnorm(1 - (1 - level)/2),
+      contrast = contrast,
       distrib = distrib, precis = precis + 1, uplow = "up")
   }
 
