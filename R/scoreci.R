@@ -13,8 +13,8 @@
 #' when also continuity-corrected.
 #' This function is vectorised in x1, x2, n1, and n2.  Vector inputs may also be
 #' combined into a single stratified analysis (e.g. meta-analysis), either using
-#' fixed effects, or the more general "TDAS" method, which incorporates stratum
-#' variability using a t-distribution score (inspired by
+#' fixed effects, or the more general random effects "TDAS" method, which
+#' incorporates stratum variability using a t-distribution score (inspired by
 #' Hartung-Knapp-Sidik-Jonkman).
 #'
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2
@@ -72,7 +72,9 @@
 #' @param MNtol Numeric value indicating convergence tolerance to be used in
 #'   iteration with weighting = "MN".
 #' @param wt Numeric vector containing (optional) user-specified weights.
-#' @param tdas Logical (default FALSE) indicating whether to use t-distribution
+#' @param tdas (deprecated: parameter renamed to random)
+#' @param random Logical (default FALSE) indicating whether to perform random
+#'   effects meta-analysis for stratified data, using the t-distribution
 #'   method for stratified data (defined in Laud 2017).
 #' @param warn Logical (default TRUE) giving the option to suppress warnings.
 #' @param ... Other arguments.
@@ -123,7 +125,7 @@
 #'           x2 = c(9,1,18,31,6,17,7,23,3,6,12,22,19),
 #'           n1 = c(16,16,34,56,22,54,17,58,14,26,44,29,38),
 #'           n2 = c(16,16,34,56,22,55,15,58,15,27,45,30,38),
-#'           stratified = TRUE, tdas = TRUE)
+#'           stratified = TRUE, random = TRUE)
 #'
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references Laud PJ. Equal-tailed confidence intervals for comparison of
@@ -173,10 +175,16 @@ scoreci <- function(
   weighting = "IVS",
   MNtol = 1E-8,
   wt = NULL,
-  tdas = FALSE,
+  tdas = NULL,
+  random = FALSE,
   warn = TRUE,
   ...
   ) {
+  if (!missing(tdas)) {
+    warning("argument tdas is deprecated; please use random instead.",
+            call. = FALSE)
+    random <- tdas
+  }
   if (!(tolower(substr(distrib, 1, 3)) %in% c("bin", "poi"))) {
     print("Distrib must be one of 'bin' or 'poi'")
     stop()
@@ -282,7 +290,7 @@ scoreci <- function(
   #Warnings if removal of empty strata leave 0 or 1 stratum
   if (stratified == TRUE && nstrat <= 1) {
     stratified <- FALSE
-    tdas <-  FALSE
+    random <-  FALSE
     if (warn == TRUE) print("Warning: only one stratum!")
   }
   if (nstrat == 0) {
@@ -297,11 +305,11 @@ scoreci <- function(
   p2hat <- x2/n2
 
   #wrapper function for scoretheta
-  myfun <- function(theta, randswitch = tdas, ccswitch = cc,
+  myfun <- function(theta, randswitch = random, ccswitch = cc,
                     stratswitch = stratified) {
     scoretheta(theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
                contrast = contrast, distrib = distrib, stratified = stratswitch,
-               wt = wt, weighting = weighting, MNtol = MNtol, tdas = randswitch,
+               wt = wt, weighting = weighting, MNtol = MNtol, random = randswitch,
                skew = skew, ORbias = ORbias, cc = ccswitch)$score
   }
 
@@ -315,7 +323,7 @@ scoreci <- function(
   # random effects point estimate if required
   if (stratified == TRUE) {
     point <- bisect(ftn = function(theta)
-      myfun(theta, randswitch = tdas, ccswitch = 0) - 0, contrast = contrast,
+      myfun(theta, randswitch = random, ccswitch = 0) - 0, contrast = contrast,
       distrib = distrib, precis = precis + 1, uplow = "low")
   }
 
@@ -347,7 +355,7 @@ scoreci <- function(
                        bcf = bcf, contrast = contrast,
                        distrib = distrib, stratified = stratified,
                        weighting = weighting, MNtol = MNtol, wt = wt,
-                       tdas = tdas, skew = skew, ORbias = ORbias, cc = cc)
+                       random = random, skew = skew, ORbias = ORbias, cc = cc)
 ##  Stheta_MLE <- at_MLE$Stheta
   p1d_MLE <- at_MLE$p1d
   p2d_MLE <- at_MLE$p2d
@@ -355,7 +363,7 @@ scoreci <- function(
 ##  V_MLE <- at_MLE$V
 
   # if stratified=TRUE, options are available for assuming fixed effects
-  # (tdas=FALSE) or random effects (tdas=T). The IVS weights are different
+  # (random=FALSE) or random effects (random=TRUE). The IVS weights are different
   # for each version, which in turn can lead to a different point estimate,
   # at which certain quantities are evaluated. However, fixed effects
   # estimates are needed for both, in particular for the heterogeneity test
@@ -364,7 +372,7 @@ scoreci <- function(
                         bcf = bcf, contrast = contrast,
                         distrib = distrib, stratified = stratified,
                         weighting = weighting, MNtol = MNtol, wt = wt,
-                        tdas = FALSE, skew = skew, ORbias = ORbias, cc = cc)
+                        random = FALSE, skew = skew, ORbias = ORbias, cc = cc)
     Stheta_FE <- at_FE$Stheta
     wt_FE <- at_FE$wt
     V_FE <- at_FE$V
@@ -397,7 +405,7 @@ scoreci <- function(
   }
 
   #z- or t- quantile required for specified significance level
-  if (stratified == TRUE && tdas == TRUE) {
+  if (stratified == TRUE && random == TRUE) {
     qtnorm <- qt(1 - (1 - level)/2, nstrat - 1)  #for t-distribution method
   } else {
     qtnorm <- qnorm(1 - (1 - level)/2)
@@ -417,7 +425,7 @@ scoreci <- function(
                                  n2 = n2, bcf = bcf, contrast = contrast,
                                  distrib = distrib, stratified = FALSE,
                                  weighting = weighting, MNtol = MNtol, wt = wt,
-                                 tdas = tdas, skew = skew, ORbias = ORbias,
+                                 random = random, skew = skew, ORbias = ORbias,
                                  cc = cc)
     point_FE_unstrat <- bisect(ftn = function(theta)
       myfun(theta, randswitch = FALSE, ccswitch = 0, stratswitch = FALSE) - 0,
@@ -480,19 +488,19 @@ scoreci <- function(
   scorezero <- scoretheta(theta = theta00, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
                           stratified = stratified,
                           wt = wt, weighting = weighting, MNtol = MNtol,
-                          tdas = tdas, bcf = bcf, contrast = contrast,
+                          random = random, bcf = bcf, contrast = contrast,
                           distrib = distrib, skew = skew, ORbias = ORbias,
                           cc = cc)
   scorenull <- scoretheta(theta = theta0, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
                            stratified = stratified, wt = wt,
-                           weighting = weighting, MNtol = MNtol, tdas = tdas,
+                           weighting = weighting, MNtol = MNtol, random = random,
                            bcf = bcf, contrast = contrast, distrib = distrib,
                            skew = skew, ORbias = ORbias, cc = cc)
   pval_left <- scorenull$pval
   pval_right <- 1 - pval_left
   chisq_zero <- scorezero$score^2
   pval2sided <- pchisq(chisq_zero, 1, lower.tail = FALSE)
-  if (tdas == TRUE) pval2sided <- pf(chisq_zero, 1, nstrat - 1,
+  if (random == TRUE) pval2sided <- pf(chisq_zero, 1, nstrat - 1,
                                      lower.tail = FALSE)
   pval <- cbind(chisq = chisq_zero, pval2sided, theta0 = theta0,
                 scorenull = scorenull$score, pval_left, pval_right)
@@ -626,7 +634,7 @@ scoreci <- function(
 #' Vector inputs may also be combined into a single stratified analysis (e.g.
 #' meta-analysis). This method assumes the contrast is constant across strata
 #' (fixed effects).  For a 'random-effects' method use tdasci (or scoreci with
-#' tdas = TRUE).
+#' random = TRUE).
 #'
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2
 #'   respectively.
@@ -729,7 +737,7 @@ tdasci <- function(
     weighting = weighting,
     MNtol = MNtol,
     wt = wt,
-    tdas = TRUE,
+    random = TRUE,
     skew = FALSE,
     bcf = TRUE,
     ...
@@ -815,7 +823,7 @@ scoretheta <- function(
   wt = NULL,
   weighting = "IVS",
   MNtol = 1E-8,
-  tdas = FALSE,
+  random = FALSE,
   ...
   ) {
 
@@ -1017,7 +1025,7 @@ scoretheta <- function(
         (sum(1/V) - 1 * (sum(wt^2)/W))
       # only needed if want to output tau2.
     }
-    if (tdas == TRUE && weighting == "IVS" && !(all(V == 0) ||
+    if (random == TRUE && weighting == "IVS" && !(all(V == 0) ||
                                                 all(V == Inf | is.na(V)))) {
       wt <- 1/(V + tau2)
     }
@@ -1025,7 +1033,7 @@ scoretheta <- function(
     Sdot <- sum(wt * Stheta)/sum(wt)
     VS <- sum(wt * (Stheta - Sdot)^2)/((nstrat - 1) * sum(wt))
 
-    if (tdas == TRUE) t2 <- tau2 else t2 <- 0
+    if (random == TRUE) t2 <- tau2 else t2 <- 0
     Vdot <- sum(((wt/sum(wt))^2) * (V + t2))
     # from equation (15) of Miettinen&Nurminen, with the addition of between
     # strata variance from Whitehead&Whitehead
@@ -1049,7 +1057,7 @@ scoretheta <- function(
     score <- ifelse((skew == FALSE | scterm == 0), score1, num/(2 * A))
     score[abs(Sdot) < abs(sum( (wt/sum(wt)) * corr))] <- 0
     pval <- pnorm(score)
-    if (tdas == TRUE) {
+    if (random == TRUE) {
       score <- sum((wt/sum(wt)) * (Stheta - corr))/sqrt(VS)
       pval <- pt(score, nstrat - 1)
     }

@@ -150,7 +150,7 @@ test_that("legacy & new methods match published examples", {
                   x2 = c(9,1,18,31,6,17,7,23,3,6,12,22,19),
                   n1 = c(16,16,34,56,22,54,17,58,14,26,44,29,38),
                   n2 = c(16,16,34,56,22,55,15,58,15,27,45,30,38),
-                  stratified = TRUE, tdas = TRUE)$estimates[,c(1,3)],4)),
+                  stratified = TRUE, random = TRUE)$estimates[,c(1,3)],4)),
         c(0.1928,0.4647)
   )
 

@@ -9,7 +9,7 @@ scoreci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
   level = 0.95, skew = TRUE, ORbias = NULL, bcf = TRUE, cc = FALSE,
   theta0 = NULL, precis = 6, plot = FALSE, plotmax = 100,
   stratified = FALSE, weighting = "IVS", MNtol = 1e-08, wt = NULL,
-  tdas = FALSE, warn = TRUE, ...)
+  tdas = NULL, random = FALSE, warn = TRUE, ...)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2
@@ -84,7 +84,10 @@ iteration with weighting = "MN".}
 
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
 
-\item{tdas}{Logical (default FALSE) indicating whether to use t-distribution
+\item{tdas}{(deprecated: parameter renamed to random)}
+
+\item{random}{Logical (default FALSE) indicating whether to perform random
+effects meta-analysis for stratified data, using the t-distribution
 method for stratified data (defined in Laud 2017).}
 
 \item{warn}{Logical (default TRUE) giving the option to suppress warnings.}
@@ -117,8 +120,8 @@ coverage is almost identical to the mid-p method, or Clopper-Pearson
 when also continuity-corrected.
 This function is vectorised in x1, x2, n1, and n2.  Vector inputs may also be
 combined into a single stratified analysis (e.g. meta-analysis), either using
-fixed effects, or the more general "TDAS" method, which incorporates stratum
-variability using a t-distribution score (inspired by
+fixed effects, or the more general random effects "TDAS" method, which
+incorporates stratum variability using a t-distribution score (inspired by
 Hartung-Knapp-Sidik-Jonkman).
 }
 \examples{
@@ -155,7 +158,7 @@ Hartung-Knapp-Sidik-Jonkman).
           x2 = c(9,1,18,31,6,17,7,23,3,6,12,22,19),
           n1 = c(16,16,34,56,22,54,17,58,14,26,44,29,38),
           n2 = c(16,16,34,56,22,55,15,58,15,27,45,30,38),
-          stratified = TRUE, tdas = TRUE)
+          stratified = TRUE, random = TRUE)
 
 }
 \references{

@@ -81,5 +81,5 @@ continuity correction.  This function is vectorised in x1, x2, n1, and n2.
 Vector inputs may also be combined into a single stratified analysis (e.g.
 meta-analysis). This method assumes the contrast is constant across strata
 (fixed effects).  For a 'random-effects' method use tdasci (or scoreci with
-tdas = TRUE).
+random = TRUE).
 }
