@@ -33,8 +33,8 @@
 #'   the Miettinen-Nurminen method).
 #' @param ORbias Logical (default is value of skew for contrast="OR", otherwise
 #'   NULL) indicating whether to apply additional bias correction for OR derived
-#'   from Gart 1985. (Corrigendum to Laud 2017 in press). Only applies if
-#'   contrast is "OR".
+#'   from Gart 1985. (Corrigendum to Laud 2017, published May 2018).
+#'   Only applies if contrast is "OR".
 #' @param bcf Logical (default TRUE) indicating whether to apply bias correction
 #'   in the score denominator. Applicable to distrib = "bin" only. (NB: bcf =
 #'   FALSE option is really only included for legacy validation against previous
@@ -130,6 +130,9 @@
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references Laud PJ. Equal-tailed confidence intervals for comparison of
 #'   rates. Pharmaceutical Statistics 2017; 16:334-348.
+#'
+#'   Laud PJ. Corrigendum: Equal-tailed confidence intervals for comparison of
+#'   rates. Pharmaceutical Statistics 2018; 17:290-293.
 #'
 #'   Laud PJ, Dane A. Confidence intervals for the difference between
 #'   independent binomial proportions: comparison using a graphical approach and
