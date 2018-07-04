@@ -6,3 +6,4 @@
 *.Rproj
 R/sandbox.R
 R/.Rapp.history
+.DS_Store
