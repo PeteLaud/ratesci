@@ -68,7 +68,8 @@ iteration with weighting = "MN".}
 Wrapper function for the TDAS method. Score-based stratified confidence
 intervals for the rate (or risk) difference ("RD") or ratio ("RR") for
 independent binomial or Poisson rates, or for odds ratio ("OR", binomial
-only), or the single rate ("p"). This function combines vector inputs into a
-single stratified analysis (e.g. meta-analysis). The TDAS method incorporates
-any stratum variability into the confidence interval.
+only), or for prevalence or incidence rate ("p"). This function combines
+vector inputs into a single stratified analysis (e.g. meta-analysis).
+The TDAS method incorporates any stratum variability into the confidence
+interval.
 }

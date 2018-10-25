@@ -76,7 +76,7 @@ Wrapper function for the SCAS method. Score-based confidence intervals for
 the rate (or risk) difference ("RD") or ratio ("RR") for independent binomial
 or Poisson rates, or for odds ratio ("OR", binomial only), or the single rate
 ("p"). (This is the "GNbc" method from Laud & Dane, developed from Gart &
-Nam, and generalised as "SCAS" in forthcoming publication) including optional
+Nam, and generalised as "SCAS" in Laud 2017) including optional
 continuity correction.  This function is vectorised in x1, x2, n1, and n2.
 Vector inputs may also be combined into a single stratified analysis (e.g.
 meta-analysis). This method assumes the contrast is constant across strata

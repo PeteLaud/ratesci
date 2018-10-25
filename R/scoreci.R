@@ -632,7 +632,7 @@ scoreci <- function(
 #' the rate (or risk) difference ("RD") or ratio ("RR") for independent binomial
 #' or Poisson rates, or for odds ratio ("OR", binomial only), or the single rate
 #' ("p"). (This is the "GNbc" method from Laud & Dane, developed from Gart &
-#' Nam, and generalised as "SCAS" in forthcoming publication) including optional
+#' Nam, and generalised as "SCAS" in Laud 2017) including optional
 #' continuity correction.  This function is vectorised in x1, x2, n1, and n2.
 #' Vector inputs may also be combined into a single stratified analysis (e.g.
 #' meta-analysis). This method assumes the contrast is constant across strata
@@ -695,9 +695,10 @@ scasci <- function(
 #' Wrapper function for the TDAS method. Score-based stratified confidence
 #' intervals for the rate (or risk) difference ("RD") or ratio ("RR") for
 #' independent binomial or Poisson rates, or for odds ratio ("OR", binomial
-#' only), or the single rate ("p"). This function combines vector inputs into a
-#' single stratified analysis (e.g. meta-analysis). The TDAS method incorporates
-#' any stratum variability into the confidence interval.
+#' only), or for prevalence or incidence rate ("p"). This function combines
+#' vector inputs into a single stratified analysis (e.g. meta-analysis).
+#' The TDAS method incorporates any stratum variability into the confidence
+#' interval.
 #'
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2
 #'   respectively.
@@ -810,7 +811,7 @@ bisect <- function(
 scoretheta <- function(
   #function to evaluate the score at a given value of theta, given the
   #observed data uses the MLE solution (and notation) given in F&M, extended
-  #in Laud2015. This function is vectorised in x1,x2
+  #in Laud 2017. This function is vectorised in x1,x2
   theta,
   x1,
   n1,
@@ -1036,10 +1037,12 @@ scoretheta <- function(
     Sdot <- sum(wt * Stheta)/sum(wt)
     VS <- sum(wt * (Stheta - Sdot)^2)/((nstrat - 1) * sum(wt))
 
-    if (random == TRUE) t2 <- tau2 else t2 <- 0
-    Vdot <- sum(((wt/sum(wt))^2) * (V + t2))
+#    if (random == TRUE) t2 <- tau2 else
+#    t2 <- 0
+#    Vdot <- sum(((wt/sum(wt))^2) * (V + t2))
     # from equation (15) of Miettinen&Nurminen, with the addition of between
     # strata variance from Whitehead&Whitehead
+    Vdot <- sum(((wt/sum(wt))^2) * V)
 
     if (contrast == "OR" && cc > 0) {
 #      corr <- cc * Vdot #This gives essentially the same correction as Gart 1985
@@ -1094,7 +1097,7 @@ scoretheta <- function(
                   p2d = p2d, mu3 = mu3, pval = pval)
   if (stratified) {
     outlist <- append(outlist, list(Sdot = Sdot, Vdot = Vdot, tau2 = tau2,
-               VS = VS, t2 = t2, Q_j = Q_j, Q = Q, wt = wt, p1ds = p1ds,
+               VS = VS, Q_j = Q_j, Q = Q, wt = wt, p1ds = p1ds,
                p2ds = p2ds))
   }
   return(outlist)
