@@ -33,6 +33,9 @@
 #' Laud PJ. Equal-tailed confidence intervals for comparison of
 #' rates. Pharmaceutical Statistics 2017; 16:334-348.
 #'
+#' Laud PJ. Corrigendum: Equal-tailed confidence intervals for comparison of
+#' rates. Pharmaceutical Statistics 2018; 17:290-293.
+#'
 #' Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in
 #' Medicine 1985; 4:213-226.
 #'
