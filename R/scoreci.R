@@ -742,7 +742,7 @@ tdasci <- function(
     MNtol = MNtol,
     wt = wt,
     random = TRUE,
-    skew = FALSE,
+    skew = TRUE, #produces SCAS intervals in stratdata
     bcf = TRUE,
     ...
   )
