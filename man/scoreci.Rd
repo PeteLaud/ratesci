@@ -9,7 +9,7 @@ scoreci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
   level = 0.95, skew = TRUE, ORbias = NULL, bcf = TRUE, cc = FALSE,
   theta0 = NULL, precis = 6, plot = FALSE, plotmax = 100,
   stratified = FALSE, weighting = "IVS", MNtol = 1e-08, wt = NULL,
-  tdas = NULL, random = FALSE, warn = TRUE, ...)
+  tdas = NULL, random = FALSE, prediction = FALSE, warn = TRUE, ...)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2
@@ -89,6 +89,9 @@ iteration with weighting = "MN".}
 \item{random}{Logical (default FALSE) indicating whether to perform random
 effects meta-analysis for stratified data, using the t-distribution
 method for stratified data (defined in Laud 2017).}
+
+\item{prediction}{Logical (default FALSE) indicating whether to produce
+a prediction interval (work in progress).}
 
 \item{warn}{Logical (default TRUE) giving the option to suppress warnings.}
 

@@ -76,6 +76,8 @@
 #' @param random Logical (default FALSE) indicating whether to perform random
 #'   effects meta-analysis for stratified data, using the t-distribution
 #'   method for stratified data (defined in Laud 2017).
+#' @param prediction Logical (default FALSE) indicating whether to produce
+#'   a prediction interval (work in progress).
 #' @param warn Logical (default TRUE) giving the option to suppress warnings.
 #' @param ... Other arguments.
 #' @importFrom stats pchisq pf pnorm pt qbeta qgamma qnorm qqnorm qt dbinom
@@ -180,6 +182,7 @@ scoreci <- function(
   wt = NULL,
   tdas = NULL,
   random = FALSE,
+  prediction = FALSE,
   warn = TRUE,
   ...
   ) {
@@ -309,11 +312,12 @@ scoreci <- function(
 
   #wrapper function for scoretheta
   myfun <- function(theta, randswitch = random, ccswitch = cc,
-                    stratswitch = stratified) {
+                    stratswitch = stratified, predswitch = FALSE) {
     scoretheta(theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
                contrast = contrast, distrib = distrib, stratified = stratswitch,
                wt = wt, weighting = weighting, MNtol = MNtol, random = randswitch,
-               skew = skew, ORbias = ORbias, cc = ccswitch)$score
+               prediction = predswitch, skew = skew, ORbias = ORbias,
+               cc = ccswitch)$score
   }
 
   #find point estimate for theta as the value where scoretheta = 0
@@ -379,7 +383,7 @@ scoreci <- function(
     Stheta_FE <- at_FE$Stheta
     wt_FE <- at_FE$wt
     V_FE <- at_FE$V
-##    tau2_FE <- at_FE$tau2
+    tau2_FE <- at_FE$tau2
 ##    Q_each <- at_FE$Q_j
     Q_FE <- at_FE$Q
     I2 <- max(0, 100 * (Q_FE - (nstrat - 1))/Q_FE)
@@ -421,6 +425,17 @@ scoreci <- function(
   upper <- bisect(ftn = function(theta)
     myfun(theta) + qtnorm, contrast = contrast, distrib = distrib,
     precis = precis + 1, uplow = "up")
+
+  # Produce prediction interval if required
+  if (stratified == TRUE && random == TRUE && prediction == TRUE) {
+    lowpred <- bisect(ftn = function(theta)
+      myfun(theta, predswitch = TRUE) - qtnorm, contrast = contrast, distrib = distrib,
+      precis = precis + 1, uplow = "low")
+    uppred <- bisect(ftn = function(theta)
+      myfun(theta, predswitch = TRUE) + qtnorm, contrast = contrast, distrib = distrib,
+      precis = precis + 1, uplow = "up")
+    pred <- cbind(round(cbind(Lower = lowpred, Upper = uppred), precis))
+  } else pred <- NULL
 
   #get estimate & CI for each stratum
   if (stratified == TRUE) {
@@ -606,11 +621,14 @@ scoreci <- function(
 
   outlist <- list(estimates = estimates, pval = pval)
   if (stratified == TRUE) {
-    Qtest <- c(Q = Q_FE, pval_het = pval_het, I2 = I2, Qc = Qc,
-               pval_qualhet = Qcprob) #tau2 = tau2_FE, Qc_m, Qc_p,
+    Qtest <- c(Q = Q_FE, pval_het = pval_het, I2 = I2, tau2 = tau2_FE, Qc = Qc,
+               pval_qualhet = Qcprob) #Qc_m, Qc_p,
     #NB Qc_m + Qc_p = Q only when theta0=MLE
     wtpct <- 100 * wt_MLE/sum(wt_MLE)
     wt1pct <- 100 * wt_FE/sum(wt_FE)
+    if (random == TRUE && prediction == TRUE) {
+      outlist <- append(outlist, list(prediction = pred))
+    }
     outlist <- append(outlist,
       list(Qtest = Qtest, weighting = weighting,
       stratdata = cbind(x1j = x1, n1j = n1, x2j = x2, n2j = n2,
@@ -621,7 +639,7 @@ scoreci <- function(
   }
   outlist <- append(outlist, list(call = c(distrib = distrib,
                    contrast = contrast, level = level, skew = skew,
-                   ORbias = ORbias, bcf = bcf, cc = cc)))
+                   ORbias = ORbias, bcf = bcf, cc = cc, random = random)))
   return(outlist)
 }
 
@@ -722,6 +740,7 @@ tdasci <- function(
   weighting = "IVS",
   MNtol = 1E-8,
   wt = NULL,
+  prediction = FALSE,
   ...
 ) {
   scoreci(
@@ -742,6 +761,7 @@ tdasci <- function(
     MNtol = MNtol,
     wt = wt,
     random = TRUE,
+    prediction = prediction,
     skew = TRUE, #produces SCAS intervals in stratdata
     bcf = TRUE,
     ...
@@ -828,6 +848,7 @@ scoretheta <- function(
   weighting = "IVS",
   MNtol = 1E-8,
   random = FALSE,
+  prediction = FALSE,
   ...
   ) {
 
@@ -1060,6 +1081,14 @@ scoretheta <- function(
     if (random == TRUE) {
       tnum <- sum((wt/sum(wt)) * (Stheta - corr)) * sqrt(sum(wt)) # ~N(0,1)
       tdenom <- sqrt(VS * sum(wt))
+      if (prediction == TRUE) {
+        #Prediction interval inspired by Higgins et al. 2009
+        tnum <- sum((wt/sum(wt)) * (Stheta - corr))
+        #Version 1, using t_k-2 as suggested by Higgins
+        #tdenom <- sqrt(Vdot + tau2)
+        #Proposed version using t_k-1 as per Hartung-Knapp
+        tdenom <- sqrt(VS + tau2)
+      }
       score <- tnum/tdenom
       pval <- pt(score, nstrat - 1)
     }
