@@ -1035,13 +1035,6 @@ scoretheta <- function(
     }
 
     Sdot <- sum(wt * Stheta)/sum(wt)
-    VS <- sum(wt * (Stheta - Sdot)^2)/((nstrat - 1) * sum(wt))
-
-#    if (random == TRUE) t2 <- tau2 else
-#    t2 <- 0
-#    Vdot <- sum(((wt/sum(wt))^2) * (V + t2))
-    # from equation (15) of Miettinen&Nurminen, with the addition of between
-    # strata variance from Whitehead&Whitehead
     Vdot <- sum(((wt/sum(wt))^2) * V)
 
     if (contrast == "OR" && cc > 0) {
@@ -1063,8 +1056,11 @@ scoretheta <- function(
     score <- ifelse((skew == FALSE | scterm == 0), score1, num/(2 * A))
     score[abs(Sdot) < abs(sum( (wt/sum(wt)) * corr))] <- 0
     pval <- pnorm(score)
+    VS <- sum(wt/sum(wt) * (Stheta - Sdot)^2)/(nstrat - 1)
     if (random == TRUE) {
-      score <- sum((wt/sum(wt)) * (Stheta - corr))/sqrt(VS)
+      tnum <- sum((wt/sum(wt)) * (Stheta - corr)) * sqrt(sum(wt)) # ~N(0,1)
+      tdenom <- sqrt(VS * sum(wt))
+      score <- tnum/tdenom
       pval <- pt(score, nstrat - 1)
     }
     p2ds <- sum(wt * p2d/sum(wt))
