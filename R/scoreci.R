@@ -343,12 +343,12 @@ scoreci <- function(
   } else {
     if (contrast %in% c("RR", "OR")) {
       point[x1 == 0 & x2 == 0] <- NA
-      point[(x1 > 0 & x2 == 0) && skew == FALSE] <- Inf
+      point[(x1 > 0 & x2 == 0) & skew == FALSE] <- Inf
       if (distrib == "bin") point[x1 == n1 & x2 == n2] <- 1
     }
     if (contrast == "OR") {
       point[x1 == n1 & x2 == n2] <- NA
-      point[(x1 == n1 & x2 > 0) && skew == FALSE] <- Inf
+      point[(x1 == n1 & x2 > 0) & skew == FALSE] <- Inf
     }
     if (contrast == "RD") {
       if (distrib == "bin") point[x1 == n1 & x2 == n2] <- 0
@@ -1109,7 +1109,7 @@ scoretheta <- function(
     C_ <- -((Stheta - corr)/sqrt(V) + scterm)
     num <- (-B + Re(sqrt(as.complex(B^2 - 4 * A * C_))))
 
-    score <- ifelse((skew == FALSE || mu3 == 0),
+    score <- ifelse((skew == FALSE | mu3 == 0),
 #                        | (distrib == "poi" & abs(mu3) <= 10e-16)), #this has undesirable effects when p is very small
                 ifelse(Stheta == 0, 0, (Stheta - corr)/sqrt(V)), num/(2 * A)
     )
