@@ -1109,8 +1109,8 @@ scoretheta <- function(
     C_ <- -((Stheta - corr)/sqrt(V) + scterm)
     num <- (-B + Re(sqrt(as.complex(B^2 - 4 * A * C_))))
 
-    score <- ifelse((skew == FALSE | mu3 == 0 |
-                       (distrib == "poi" & abs(mu3) <= 10e-16)),
+    score <- ifelse((skew == FALSE | mu3 == 0),
+#                        | (distrib == "poi" & abs(mu3) <= 10e-16)), #this has undesirable effects when p is very small
                 ifelse(Stheta == 0, 0, (Stheta - corr)/sqrt(V)), num/(2 * A)
     )
     score[abs(Stheta)<abs(corr)] <- 0
