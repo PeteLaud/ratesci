@@ -13,7 +13,8 @@ correction, developed from the Miettinen-Nurminen and Gart-Nam methods,
 and the "Method of Variance Estimates Recovery", originating from Newcombe.
 For the single-stratum case, the SCAS (skewness-corrected asymptotic score)
 method is recommended (Laud 2017), on the basis of superior equal-tailed
-coverage.
+coverage. Hypothesis tests (a corrected version of the Farrington-Manning
+test) follow naturally from the score-based methods.
 }
 \section{ratesci functions}{
 
@@ -54,6 +55,11 @@ parameters: A review and corrections for skewness. Biometrics 1988;
 Gart JJ, Nam JM. Approximate interval estimation of the difference in
 binomial parameters: correction for skewness and extension to multiple
 tables. Biometrics 1990; 46(3):637-643.
+
+Farrington CP, Manning G. Test statistics and sample size formulae
+for comparative binomial trials with null hypothesis of non-zero risk
+difference or non-unity relative risk. Statistics in Medicine 1990;
+9(12):1447–1454.
 
 Newcombe RG. Interval estimation for the difference between independent
 proportions: comparison of eleven methods. Statistics in Medicine 1998;
