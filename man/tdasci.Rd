@@ -8,7 +8,7 @@ comparisons of independent binomial or Poisson rates.}
 tdasci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin", contrast = "RD",
   level = 0.95, cc = 0, theta0 = NULL, precis = 6, plot = FALSE,
   plotmax = 100, weighting = "IVS", MNtol = 1e-08, wt = NULL,
-  prediction = FALSE, ...)
+  skew = TRUE, prediction = FALSE, ...)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2
@@ -60,6 +60,10 @@ iterative weights.}
 iteration with weighting = "MN".}
 
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
+
+\item{skew}{Logical (default TRUE) indicating whether to apply skewness
+correction (for the SCAS method recommended in Laud 2017) or not (for
+the Miettinen-Nurminen method).}
 
 \item{prediction}{Logical (default FALSE) indicating whether to produce
 a prediction interval (work in progress).}
