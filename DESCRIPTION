@@ -15,7 +15,10 @@ Description: Computes confidence intervals for the rate (or risk)
     Includes skewness-corrected asymptotic score ('SCAS') methods, 
     which have been developed in Laud (2017) <doi:10.1002/pst.1813>
     from Miettinen & Nurminen (1985) <doi:10.1002/sim.4780040211> and 
-    Gart & Nam (1988) <doi:10.2307/2531848>. Also includes MOVER methods
+    Gart & Nam (1988) <doi:10.2307/2531848>. The same score produces 
+    hypothesis tests analogous to the test for binomial RD and RR by 
+    Farrington & Manning (1990) <doi:10.1002/sim.4780091208>. 
+    The package also includes MOVER methods
     (Method Of Variance Estimates Recovery) for all contrasts, derived 
     from the Newcombe method but using equal-tailed Jeffreys intervals,
     and generalised for Bayesian applications incorporating prior 

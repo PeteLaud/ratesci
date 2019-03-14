@@ -50,10 +50,10 @@
 #'   stratified methods.
 #' @param theta0 Number to be used in a one-sided significance test (e.g.
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
-#'   excludes theta0. NB: can also be used for a superiority test by setting
-#'   theta0 = 0 (RD) or 1 (RR/OR). By default, a two-sided test against theta0 =
-#'   0 (or 1 as appropriate) is also output: if bcf=F and skew=F this is the
-#'   same as Pearson's Chi-squared test.
+#'   excludes theta0. If bcf=F and skew=F this gives a Farrington-Manning test.
+#'   By default, a two-sided test against theta0 = 0 (for RD) or 1 (for RR/OR)
+#'   is also output: if bcf=F and skew=F this is the same as Pearson's
+#'   Chi-squared test.
 #' @param precis Number (default 6) specifying precision (i.e. number of decimal
 #'   places) to be used in optimisation subroutine for the confidence interval.
 #' @param plot Logical (default FALSE) indicating whether to output plot of the
