@@ -428,6 +428,7 @@ scoreci <- function(
 
   # Produce prediction interval if required
   if (stratified == TRUE && random == TRUE && prediction == TRUE) {
+    qtnorm <- qt(1 - (1 - level)/2, nstrat - 2)
     lowpred <- bisect(ftn = function(theta)
       myfun(theta, predswitch = TRUE) - qtnorm, contrast = contrast, distrib = distrib,
       precis = precis + 1, uplow = "low")
@@ -468,10 +469,9 @@ scoreci <- function(
       upper[x2 == 0] <- Inf
     } else {
       lower[sum(x1) == 0] <- 0
-      lower[myfun(1e-15) - qtnorm < 0] <- 0
       upper[sum(x2) == 0] <- Inf
       point[sum(x2) == 0 & sum(x1) == 0] <- NA
-      upper[myfun(10^100) + qtnorm > 0] <- Inf
+      upper[upper>1e+15] <- Inf
     }
   }
   if (contrast %in% c("OR")) {
@@ -748,6 +748,7 @@ tdasci <- function(
   weighting = "IVS",
   MNtol = 1E-8,
   wt = NULL,
+  skew = TRUE, #produces SCAS intervals in stratdata by default
   prediction = FALSE,
   ...
 ) {
@@ -770,7 +771,7 @@ tdasci <- function(
     wt = wt,
     random = TRUE,
     prediction = prediction,
-    skew = TRUE, #produces SCAS intervals in stratdata
+    skew = skew,
     bcf = TRUE,
     ...
   )
@@ -1087,14 +1088,11 @@ scoretheta <- function(
     pval <- pnorm(score)
     VS <- sum(wt/sum(wt) * (Stheta - Sdot)^2)/(nstrat - 1)
     if (random == TRUE) {
-      tnum <- sum((wt/sum(wt)) * (Stheta - corr)) * sqrt(sum(wt)) # ~N(0,1)
-      tdenom <- sqrt(VS * sum(wt))
+      tnum <- sum((wt/sum(wt)) * (Stheta - corr))
+      #tnum <- score * (sqrt(Vdot)) #Skewness correction may be incorporated here??
+      tdenom <- sqrt(VS)
       if (prediction == TRUE) {
-        #Prediction interval inspired by Higgins et al. 2009
-        tnum <- sum((wt/sum(wt)) * (Stheta - corr))
-        #Version 1, using t_k-2 as suggested by Higgins
-        #tdenom <- sqrt(Vdot + tau2)
-        #Proposed version using t_k-1 as per Hartung-Knapp
+        #Prediction interval from Higgins et al. 2009, using Hartung-Knapp variance estimate
         tdenom <- sqrt(VS + tau2)
       }
       score <- tnum/tdenom

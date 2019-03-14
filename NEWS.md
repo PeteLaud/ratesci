@@ -2,6 +2,8 @@
 
 ## New features
 * MN weighting in `scoreci()` now iterates to convergence (@jonjvallejo, #20).
+* `tdasci()` default uses skew=TRUE for stratum CIs.
+* Added optional prediction interval for random effects method.
 
 ## Bug fixes
 * MN weighting in `scoreci()` corrected for distrib="poi".
