@@ -8,3 +8,7 @@ r:
   - devel
 sudo: false
 cache: packages
+addons:
+  apt:
+    packages:
+      - libmpfr-dev
