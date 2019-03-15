@@ -37,6 +37,7 @@ exactci <- function(
 #' @param n Numeric vector of sample sizes (for binomial rates) or exposure
 #'   times (for Poisson rates).
 #' @inheritParams scoreci
+#' @importFrom Rmpfr mpfr asNumeric
 #' @export
 scaspci <- function(
   x,
@@ -46,11 +47,13 @@ scaspci <- function(
   cc = FALSE,
   ...
 ) {
+  x <- Rmpfr::mpfr(x,50)
+  n <- Rmpfr::mpfr(n,50)
   if (as.character(cc) == "TRUE") cc <- 0.5
   z <- qnorm(1 - (1 - level)/2)
   if (distrib == "poi") {
     Du <- (x + cc)/n - (z^2 - 1)/(6 * n)
-    Dl <- pmax(0, (x - cc)/n - (z^2 - 1)/(6 * n))
+    Dl <- Rmpfr::pmax(0, (x - cc)/n - (z^2 - 1)/(6 * n))
     A <- 1
     Bu <- -2 * Du - z^2/n
     Bl <- -2 * Dl - z^2/n
@@ -64,11 +67,11 @@ scaspci <- function(
     E <- (z^2 - 1)/(3 * n) - 1
     #Alteration to published formula,
     #to deal with non-nested intervals when level>0.99
-    Du <- pmax(0, (n-x + cc)/n - (z^2 - 1)/(6 * n))
-    Dl <- pmax(0, (x - cc)/n - (z^2 - 1)/(6 * n))
+    Du <- Rmpfr::pmax(0, (n-x + cc)/n - (z^2 - 1)/(6 * n))
+    Dl <- Rmpfr::pmax(0, (x - cc)/n - (z^2 - 1)/(6 * n))
     A <- z^2/n + E^2
-    Bu <- 2 * E * (Du) - z^2/n
-    Bl <- 2 * E * (Dl) - z^2/n
+    Bu <- 2 * E * Du - z^2/n
+    Bl <- 2 * E * Dl - z^2/n
     Cu <- Du^2
     Cl <- Dl^2
     E0 <- 1 + 1/(3 * n)
@@ -78,14 +81,14 @@ scaspci <- function(
     C0 <- D0^2
   }
 
-  CI <- cbind(
-    Lower = (-Bl - Re(sqrt(as.complex(Bl^2 - 4 * A * Cl))))/(2 * A),
-    MLE = (-B0 - Re(sqrt(as.complex(B0^2 - 4 * A0 * C0))))/(2 * A0),
+  CI <- (cbind(
+    Lower = Rmpfr::asNumeric((-Bl - sqrt(Rmpfr::pmax(0,Bl^2 - 4 * A * Cl)))/(2 * A)),
+    MLE = Rmpfr::asNumeric((-B0 - sqrt(Rmpfr::pmax(0,(B0^2 - 4 * A0 * C0))))/(2 * A0)),
     Upper = if (distrib == "bin") {
-      1 - (-Bu - Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A)
-      } else (-Bu + Re(sqrt(as.complex(Bu^2 - 4 * A * Cu))))/(2 * A)
-  )
-  return(CI)
+      Rmpfr::asNumeric(1 - (-Bu - sqrt(Rmpfr::pmax(0,Bu^2 - 4 * A * Cu)))/(2 * A))
+      } else Rmpfr::asNumeric((-Bu + sqrt(Rmpfr::pmax(0,Bu^2 - 4 * A * Cu)))/(2 * A))
+  ))
+  return((CI))
 }
 
 #' Selected confidence intervals for the single binomial or Poisson rate.
