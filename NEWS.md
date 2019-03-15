@@ -9,6 +9,7 @@
 * MN weighting in `scoreci()` corrected for distrib="poi".
 * Fixed bug in `scoreci()` for calculation of stratum CIs with random=TRUE.
 * Fixed bug in `scoreci()` for distrib="poi" and contrast="p" (#7).
+* Fixed finite precision bug in `scaspci()`.
 
 ## Other
 * Renamed tdas argument to 'random'.
