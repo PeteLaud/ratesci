@@ -5,8 +5,8 @@
 \title{MOVER confidence intervals for comparisons of independent binomial or Poisson
 rates.}
 \usage{
-moverci(x1, n1, x2 = NULL, n2 = NULL, a1 = 0.5, b1 = 0.5, a2 = 0.5,
-  b2 = 0.5, cc = FALSE, level = 0.95, distrib = "bin",
+moverci(x1, n1, x2 = NULL, n2 = NULL, a1 = 0.5, b1 = 0.5,
+  a2 = 0.5, b2 = 0.5, cc = FALSE, level = 0.95, distrib = "bin",
   contrast = "RD", type = "jeff", adj = FALSE, ...)
 }
 \arguments{
