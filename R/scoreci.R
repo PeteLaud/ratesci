@@ -45,9 +45,11 @@
 #'   IMPORTANT NOTES:
 #'   1) This is a 'continuity correction' aimed at approximating strictly
 #'   conservative coverage, NOT for dealing with zero cell counts. Such
-#'   'sparse data adjustments' are not needed in the score method.
+#'   'sparse data adjustments' are not needed in the score method,
+#'   except to deal with double-zero cells for RD with IVS weights.
 #'   2) The continuity corrections provided here have not been fully tested for
 #'   stratified methods.
+#' @param sda Sparse data adjustment (default 0.5)
 #' @param theta0 Number to be used in a one-sided significance test (e.g.
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 #'   excludes theta0. If bcf=F and skew=F this gives a Farrington-Manning test.
@@ -60,6 +62,7 @@
 #'   score function
 #' @param plotmax Numeric value indicating maximum value to be displayed on
 #'   x-axis of plots (useful for ratio contrasts which can be infinite).
+#' @param xlim pair of values indicating range of values to be plotted
 #' @param stratified Logical (default FALSE) indicating whether to combine
 #'   vector inputs into a single stratified analysis.
 #'   IMPORTANT NOTE: The mechanism for stratified calculations is enabled for
@@ -172,10 +175,12 @@ scoreci <- function(
   ORbias = NULL,
   bcf = TRUE,
   cc = FALSE,
+  sda = 0.5,
   theta0 = NULL,
   precis = 6,
   plot = FALSE,
   plotmax = 100,
+  xlim = NULL,
   stratified = FALSE,
   weighting = "IVS",
   MNtol = 1E-8,
@@ -279,16 +284,20 @@ scoreci <- function(
     # weights. Same for double-100% cells for RR & RD. NB this should only
     # be necessary for weighting='IVS'
     if (weighting == "IVS") {
-      zero_rd <- ifelse(contrast %in% c("RD"), (x1 == 0 & x2 == 0), 0)
-      x1 <- x1 + (zero_rd * 0.5)
-      x2 <- x2 + (zero_rd * 0.5)
-      n1 <- n1 + (zero_rd * 1)
-      n2 <- n2 + (zero_rd * 1)
-      full_rd <- ifelse(contrast %in% c("RD", "RR"), (x1 == n1 & x2 == n2), 0)
-      x1 <- x1 + (full_rd * 0.5)
-      x2 <- x2 + (full_rd * 0.5)
-      n1 <- n1 + (full_rd * 1)
-      n2 <- n2 + (full_rd * 1)
+      if (contrast %in% c("RD")) {
+        zero_rd <- (x1 == 0 & x2 == 0)
+      } else zero_rd <- 0
+      x1 <- x1 + (zero_rd * sda)
+      x2 <- x2 + (zero_rd * sda)
+      n1 <- n1 + (zero_rd * 2 * sda)
+      n2 <- n2 + (zero_rd * 2 * sda)
+      if (contrast %in% c("RD", "RR")) {
+        full_rd <- (x1 == n1 & x2 == n2)
+      } else full_rd <- 0
+      x1 <- x1 + (full_rd * sda)
+      x2 <- x2 + (full_rd * sda)
+      n1 <- n1 + (full_rd * 2 * sda)
+      n2 <- n2 + (full_rd * 2 * sda)
     }
   }
   nstrat <- length(x1) # update nstrat after removing empty strata
@@ -558,14 +567,16 @@ scoreci <- function(
       lines(xrange, (1.96 * sqrt(1 - xrange^2/sum(1/V_FE))), lty = 3)
       lines(xrange, (-1.96 * sqrt(1 - xrange^2/sum(1/V_FE))), lty = 3)
     }
-    if (contrast == "RD") {
-      if (distrib == "bin") {
-        xlim <- c(max(-1, min(lower - (upper - lower)/2)),
-                  min(1, max(upper + (upper - lower)/2)))
-      } else if (distrib == "poi") {
-        xlim <- c(lower - (upper - lower)/2, upper + (upper - lower)/2)
-      }
-    } else xlim <- c(max(0, min(0.5 * lower)), min(plotmax, max(1.5 * upper)))
+    if (is.null(xlim)) {
+      if (contrast == "RD") {
+        if (distrib == "bin") {
+          xlim <- c(max(-1, min(lower - (upper - lower)/2)),
+                    min(1, max(upper + (upper - lower)/2)))
+        } else if (distrib == "poi") {
+          xlim <- c(lower - (upper - lower)/2, upper + (upper - lower)/2)
+        }
+      } else xlim <- c(max(0, min(0.5 * lower)), min(plotmax, max(1.5 * upper)))
+    }
     myseq <- seq(xlim[1], xlim[2], length.out = 400)
     if (stratified) dim1 <- 1 else dim1 <- nstrat
     sc <- array(sapply(myseq, function(x) myfun(x)),
