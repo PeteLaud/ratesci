@@ -1100,13 +1100,23 @@ scoretheta <- function(
     VS <- sum(wt/sum(wt) * (Stheta - Sdot)^2)/(nstrat - 1)
     if (random == TRUE) {
       tnum <- sum((wt/sum(wt)) * (Stheta - corr))
-      #tnum <- score * (sqrt(Vdot)) #Skewness correction may be incorporated here??
+      #tnum <- score * (sqrt(Vdot)) #Skewness correction may be incorporated here??  #testing 12Aug2019 - nope
       tdenom <- sqrt(VS)
       if (prediction == TRUE) {
         #Prediction interval from Higgins et al. 2009, using Hartung-Knapp variance estimate
         tdenom <- sqrt(VS + tau2)
       }
-      score <- tnum/tdenom
+      score1 <- tnum/tdenom
+##  Aborted attempt to add skewness correction to TDAS (for contrast="p")
+#      score1 <- (tnum + scterm)/tdenom
+## Or
+#      A <- scterm
+#      B <- 1
+#      C_ <- -(score1 + scterm)
+#      num <- (-B + sqrt(max(0, B^2 - 4 * A * C_)))
+#      score <- ifelse((skew == FALSE | scterm == 0), score1, num/(2 * A))
+#      score[abs(Sdot) < abs(sum( (wt/sum(wt)) * corr))] <- 0
+      score <- score1
       pval <- pt(score, nstrat - 1)
     }
     p2ds <- sum(wt * p2d/sum(wt))
@@ -1128,7 +1138,10 @@ scoretheta <- function(
 
     score <- ifelse((skew == FALSE | mu3 == 0),
 #                        | (distrib == "poi" & abs(mu3) <= 10e-16)), #this has undesirable effects when p is very small
-                ifelse(Stheta == 0, 0, (Stheta - corr)/sqrt(V)), num/(2 * A)
+                      ifelse(Stheta == 0, 0, #Jul19
+                       (Stheta - corr)/sqrt(V)
+                       )  #Jul19
+                      , num/(2 * A)
     )
     score[abs(Stheta)<abs(corr)] <- 0
 
