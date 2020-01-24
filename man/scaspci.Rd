@@ -26,7 +26,8 @@ Appendix S2 (default 0.5 if cc=TRUE).
 IMPORTANT NOTES:
 1) This is a 'continuity correction' aimed at approximating strictly
 conservative coverage, NOT for dealing with zero cell counts. Such
-'sparse data adjustments' are not needed in the score method.
+'sparse data adjustments' are not needed in the score method,
+except to deal with double-zero cells for RD with IVS weights.
 2) The continuity corrections provided here have not been fully tested for
 stratified methods.}
 

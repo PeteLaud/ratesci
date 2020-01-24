@@ -7,8 +7,8 @@ rates.}
 \usage{
 scoreci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin",
   contrast = "RD", level = 0.95, skew = TRUE, ORbias = NULL,
-  bcf = TRUE, cc = FALSE, theta0 = NULL, precis = 6,
-  plot = FALSE, plotmax = 100, stratified = FALSE,
+  bcf = TRUE, cc = FALSE, sda = 0.5, theta0 = NULL, precis = 6,
+  plot = FALSE, plotmax = 100, xlim = NULL, stratified = FALSE,
   weighting = "IVS", MNtol = 1e-08, wt = NULL, tdas = NULL,
   random = FALSE, prediction = FALSE, warn = TRUE, ...)
 }
@@ -49,9 +49,12 @@ Appendix S2 (default 0.5 if cc=TRUE).
 IMPORTANT NOTES:
 1) This is a 'continuity correction' aimed at approximating strictly
 conservative coverage, NOT for dealing with zero cell counts. Such
-'sparse data adjustments' are not needed in the score method.
+'sparse data adjustments' are not needed in the score method,
+except to deal with double-zero cells for RD with IVS weights.
 2) The continuity corrections provided here have not been fully tested for
 stratified methods.}
+
+\item{sda}{Sparse data adjustment (default 0.5)}
 
 \item{theta0}{Number to be used in a one-sided significance test (e.g.
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
@@ -68,6 +71,8 @@ score function}
 
 \item{plotmax}{Numeric value indicating maximum value to be displayed on
 x-axis of plots (useful for ratio contrasts which can be infinite).}
+
+\item{xlim}{pair of values indicating range of values to be plotted}
 
 \item{stratified}{Logical (default FALSE) indicating whether to combine
 vector inputs into a single stratified analysis.
