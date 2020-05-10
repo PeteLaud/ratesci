@@ -67,7 +67,7 @@ scaspci <- function(
     E <- (z^2 - 1)/(3 * n) - 1
     #Alteration to published formula,
     #to deal with non-nested intervals when level>0.99
-    Du <- Rmpfr::pmax(0, (n-x + cc)/n - (z^2 - 1)/(6 * n))
+    Du <- Rmpfr::pmax(0, (n-x - cc)/n - (z^2 - 1)/(6 * n))
     Dl <- Rmpfr::pmax(0, (x - cc)/n - (z^2 - 1)/(6 * n))
     A <- z^2/n + E^2
     Bu <- 2 * E * Du - z^2/n
