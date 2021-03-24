@@ -1,5 +1,5 @@
 library(ratesci)
-context("consistency")
+context("Consistency")
 
 #Exploring the extent of a problem with the non-iterative SCAS method when x=1 or 2
 #(or n-1 or n-2)

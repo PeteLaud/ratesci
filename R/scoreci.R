@@ -300,6 +300,7 @@ scoreci <- function(
       n2 <- n2 + (full_rd * 2 * sda)
     }
   }
+
   nstrat <- length(x1) # update nstrat after removing empty strata
 
   #Warnings if removal of empty strata leave 0 or 1 stratum

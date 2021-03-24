@@ -27,12 +27,10 @@ x2 <- xs[,2]
 #ucl <- scoreci(x1=x1,n1=n1,x2=x2,n2=n2,contrast="RD",distrib="poi",precis=10)$estimates[,3]
 #sum(ucl == 1)
 #1/matrix(ucl,nrow=51,byrow=T)[1:10,1:10]
-  
-#cc <- TRUE
 
 for (cc in c(FALSE,TRUE)) {
   for (skew in c(TRUE, FALSE)) {
-  
+
   test_that("Transposed inputs produce inverted intervals", {
     expect_equal(
       unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RD",precis=10)$estimates[, 1]),
@@ -51,11 +49,11 @@ for (cc in c(FALSE,TRUE)) {
       signif(1/unname(scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RR",distrib="poi",precis=10)$estimates)[, 3],digits=5)
     )
     expect_equal(
-      round(signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="OR",precis=10)$estimates)[, 1],digits=5),6), 
+      round(signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="OR",precis=10)$estimates)[, 1],digits=5),6),
       round(signif(unname(1/scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="OR",precis=10)$estimates)[, 3],digits=5),6)
     )
   })
-  
+
   }
 }
 
@@ -70,7 +68,7 @@ for(a in 0:n) {
       }
     }
   }
-}	
+}
 
 test_that("Transposed inputs produce inverted paired intervals", {
   expect_equal(
@@ -84,7 +82,7 @@ test_that("Transposed inputs produce inverted paired intervals", {
 })
 
 if (FALSE) {
-  
+
 scoreci(x1=0,x2=0,n1=20,n2=10,contrast="RR",plot=T)
 scoreci(x1=100,x2=0,n1=200,n2=5,plot=T)
 scoreci(x1=0,x2=100,n1=5,n2=200,plot=T)
@@ -102,8 +100,8 @@ bcf=TRUE
 skew=TRUE
 myfun <- function(theta, ...) {
   #  scoretheta(theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
-  #             contrast = contrast, distrib = distrib, skew = skew)$score 
-  scoretheta(theta = theta, x1 = x1, n1 = n1, contrast = "p", skew = T)$score 
+  #             contrast = contrast, distrib = distrib, skew = skew)$score
+  scoretheta(theta = theta, x1 = x1, n1 = n1, contrast = "p", skew = T)$score
 }
 myfun(theta=0.00064)
 myfun(theta=0.00065)
