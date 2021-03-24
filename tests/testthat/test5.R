@@ -17,8 +17,16 @@ for (level in c(0.9, 0.95, 0.99, 0.999)) {
       round(scaspci(x=xs, n=n, level=level)[, c(1:3)], 10)
     )
     expect_equal(
+      round(scoreci(x1=xs, n1=n, contrast="p", cc=T, level=level, precis=11)$estimates[, c(1:3)], 10),
+      round(scaspci(x=xs, n=n, cc=T, level=level)[, c(1:3)], 10)
+    )
+    expect_equal(
       round(scoreci(x1=xs, n1=n, contrast="p", level=level, distrib="poi", precis=11)$estimates[, c(1:3)], 10),
       round(scaspci(x=xs, n=n, level=level, distrib="poi")[, c(1:3)], 10)
+    )
+    expect_equal(
+      round(scoreci(x1=xs, n1=n, contrast="p", cc=T, level=level, distrib="poi", precis=11)$estimates[, c(1:3)], 10),
+      round(scaspci(x=xs, n=n, cc=T, level=level, distrib="poi")[, c(1:3)], 10)
     )
   })
 }
