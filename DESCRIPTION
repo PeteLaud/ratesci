@@ -30,7 +30,7 @@ Description: Computes confidence intervals for the rate (or risk)
 Depends: R (>= 3.2.5)
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Imports: Rmpfr
 Suggests: testthat
 LazyData: true

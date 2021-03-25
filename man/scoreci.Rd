@@ -5,12 +5,36 @@
 \title{Score confidence intervals for comparisons of independent binomial or Poisson
 rates.}
 \usage{
-scoreci(x1, n1, x2 = NULL, n2 = NULL, distrib = "bin",
-  contrast = "RD", level = 0.95, skew = TRUE, ORbias = NULL,
-  bcf = TRUE, cc = FALSE, sda = 0.5, theta0 = NULL, precis = 6,
-  plot = FALSE, plotmax = 100, xlim = NULL, stratified = FALSE,
-  weighting = "IVS", MNtol = 1e-08, wt = NULL, tdas = NULL,
-  random = FALSE, prediction = FALSE, warn = TRUE, ...)
+scoreci(
+  x1,
+  n1,
+  x2 = NULL,
+  n2 = NULL,
+  distrib = "bin",
+  contrast = "RD",
+  level = 0.95,
+  skew = TRUE,
+  simpleskew = FALSE,
+  ORbias = NULL,
+  RRtang = TRUE,
+  bcf = TRUE,
+  cc = FALSE,
+  sda = NULL,
+  theta0 = NULL,
+  precis = 6,
+  plot = FALSE,
+  plotmax = 100,
+  xlim = NULL,
+  stratified = FALSE,
+  weighting = "IVS",
+  MNtol = 1e-08,
+  wt = NULL,
+  tdas = NULL,
+  random = FALSE,
+  prediction = FALSE,
+  warn = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2

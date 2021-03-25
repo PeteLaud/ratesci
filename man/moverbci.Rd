@@ -5,8 +5,21 @@
 \title{Approximate Bayesian ("MOVER-B") confidence intervals for
 comparisons of independent binomial or Poisson rates.}
 \usage{
-moverbci(x1, n1, x2, n2, a1 = 0.5, b1 = 0.5, a2 = 0.5, b2 = 0.5,
-  distrib = "bin", contrast = "RD", level = 0.95, cc = 0, ...)
+moverbci(
+  x1,
+  n1,
+  x2,
+  n2,
+  a1 = 0.5,
+  b1 = 0.5,
+  a2 = 0.5,
+  b2 = 0.5,
+  distrib = "bin",
+  contrast = "RD",
+  level = 0.95,
+  cc = 0,
+  ...
+)
 }
 \arguments{
 \item{x1, x2}{Numeric vectors of numbers of events in group 1 & group 2

@@ -4,9 +4,16 @@
 \alias{pairbinci}
 \title{Confidence intervals for comparisons of paired binomial rates.}
 \usage{
-pairbinci(x, contrast = "RD", level = 0.95, method_RD = "Score",
-  method_RR = "Score", method_OR = "SCAS", theta0 = NULL,
-  precis = 6)
+pairbinci(
+  x,
+  contrast = "RD",
+  level = 0.95,
+  method_RD = "Score",
+  method_RR = "Score",
+  method_OR = "SCAS",
+  theta0 = NULL,
+  precis = 6
+)
 }
 \arguments{
 \item{x}{A numeric vector object specified as c(a,b,c,d)
