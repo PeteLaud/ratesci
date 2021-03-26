@@ -53,7 +53,7 @@
 #'   except to deal with double-zero cells for RD with IVS weights.
 #'   2) The continuity corrections provided here have not been fully tested for
 #'   stratified methods.
-#' @param sda Sparse data adjustment (default 0.5)
+#' @param sda Sparse data adjustment (default 0.5 for RD)
 #' @param theta0 Number to be used in a one-sided significance test (e.g.
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 #'   excludes theta0. If bcf=F and skew=F this gives a Farrington-Manning test.
@@ -236,8 +236,13 @@ scoreci <- function(
     print("x1 > n1 or x2 > n2 not possible for distrib = 'bin'")
     stop()
   }
-  if (is.null(ORbias) && contrast == "OR") {
-    ORbias <- skew
+  if (contrast != "OR") {
+    ORbias <- NULL
+  }
+  if (is.null(sda)) {
+    if (weighting %in% c("IVS") && contrast == "RD") {
+      sda <- 0.5
+    } else sda <- 0
   }
   if (!is.null(theta0)) {
     if (contrast == "RD") {
@@ -282,9 +287,16 @@ scoreci <- function(
     # for stratified calculations, remove any strata with no observations
     if (contrast == "p") {
       empty_strat <- (n1 == 0)
-    } else empty_strat <- (n1 == 0 | n2 == 0 |
-                      (contrast %in% c("RR", "OR") & (x1 == 0 & x2 == 0)) |
-                      (contrast == "OR" & (x1 == n1 & x2 == n2)))
+    } else
+        empty_strat <- (n1 == 0 | n2 == 0 )  |
+    # Also drop uninformative strata for RR & OR [what about x1=0 & x2=n2 etc?]
+    # Note for OR_IVS such strata actually have zero weight
+    # It would be preferable to include in the analysis with zero weight to avoid ITT concerns
+##              ((weighting == "IVS") &
+              ((contrast %in% c("RR","OR") & (x1 == 0 & x2 == 0)) |
+              (contrast == "OR" & (x1 == n1 & x2 == n2)))
+##              )
+
     x1 <- x1[!empty_strat]
     n1 <- n1[!empty_strat]
     if (contrast != "p") {
@@ -292,23 +304,30 @@ scoreci <- function(
       n2 <- n2[!empty_strat]
     }
     if (warn == TRUE && sum(empty_strat)>0) {
-      print(paste("Warning: at least one stratum contributed no information",
-            "and was removed"))
+      print(paste("Note: at least one stratum contributed no information",
+                  "and was removed"))
     }
 
-    # for double-zero cells for RD, add 0.5 to avoid 100% weight with IVS
-    # weights. Same for double-100% cells for RR & RD. NB this should only
-    # be necessary for weighting='IVS'
-    if (weighting == "IVS") {
-      if (contrast %in% c("RD")) {
-        zero_rd <- (x1 == 0 & x2 == 0)
+    # Sparse data adjustment:
+    # for double-zero cells for RD, add sda (default 0.5) to avoid 100% weight with IVS
+    # weights. Same for double-100% cells for RR (yes, really) & RD. NB this should only
+    # be necessary for weighting='IVS',
+    # (but some might prefer to use sda instead of excluding empty strata.)
+    # Suggest default should be sda=0.5 for RD, sda=0 for RR & OR
+    if (weighting %in% c("IVS")) {
+    #  if (contrast %in% c("OR") && weighting == "MH") { # ??OR struggles with zero event counts with MH weights
+    #    zero_rd <- (x1 == 0 | x2 == 0 | x1 == n1 | x2 == n2) #& !empty_strat
+    #  } else zero_rd <- 0
+      if (contrast %in% c("RD", "RR")) { #NB could apply the same for RR/OR instead of dropping strata
+#      if (contrast %in% c("RD")) {
+        zero_rd <- (x1 == 0 & x2 == 0) #& !empty_strat
       } else zero_rd <- 0
       x1 <- x1 + (zero_rd * sda)
       x2 <- x2 + (zero_rd * sda)
       n1 <- n1 + (zero_rd * 2 * sda)
       n2 <- n2 + (zero_rd * 2 * sda)
       if (contrast %in% c("RD", "RR")) {
-        full_rd <- (x1 == n1 & x2 == n2)
+        full_rd <- (x1 == n1 & x2 == n2) #& !empty_strat
       } else full_rd <- 0
       x1 <- x1 + (full_rd * sda)
       x2 <- x2 + (full_rd * sda)
@@ -318,12 +337,13 @@ scoreci <- function(
   }
 
   nstrat <- length(x1) # update nstrat after removing empty strata
+  sda <- rep_len(sda, length.out = nstrat)
 
   #Warnings if removal of empty strata leave 0 or 1 stratum
   if (stratified == TRUE && nstrat <= 1) {
     stratified <- FALSE
     random <-  FALSE
-    if (warn == TRUE) print("Warning: only one stratum!")
+    if (warn == TRUE) print("Note: only one stratum!")
   }
   if (nstrat == 0) {
     if (warn == TRUE) print("Warning: no usable data!")
