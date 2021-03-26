@@ -362,8 +362,17 @@ scoreci <- function(
     scoretheta(theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
                contrast = contrast, distrib = distrib, stratified = stratswitch,
                wt = wt, weighting = weighting, MNtol = MNtol, random = randswitch,
-               prediction = predswitch, skew = skew, ORbias = ORbias,
-               cc = ccswitch)$score
+               prediction = predswitch, skew = skew, ORbias = ORbias, RRtang = RRtang,
+               cc = ccswitch, simpleskew = simpleskew)$score
+  }
+  #wrapper function for plotting determinants
+  mydtmnt <- function(theta, randswitch = random, ccswitch = cc,
+                    stratswitch = stratified, predswitch = FALSE) {
+    myout <- scoretheta(theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
+                        contrast = contrast, distrib = distrib, stratified = stratswitch,
+                        wt = wt, weighting = weighting, MNtol = MNtol, random = randswitch,
+                        prediction = predswitch, skew = skew, ORbias = ORbias, RRtang = RRtang,
+                        cc = ccswitch, simpleskew = simpleskew)$dtmnt
   }
 
   #find point estimate for theta as the value where scoretheta = 0
@@ -628,6 +637,8 @@ scoreci <- function(
     if (stratified) dim1 <- 1 else dim1 <- nstrat
     sc <- array(sapply(myseq, function(x) myfun(x)),
                 dim = c(dim1, length(myseq)))
+    dt <- array(sapply(myseq, function(x) mydtmnt(x)),
+                dim = c(dim1, length(myseq)))
     if (stratified == FALSE) {
       qnval <- qtnorm
       ylim <- c(-2.5, 2.5) * qnval
@@ -655,11 +666,22 @@ scoreci <- function(
         lines(rep(point[i], 2), c(-1.75 * qnval + 0.4, 0), lty = 3)
       }
     } else {
+      if(skew==T && !simpleskew) {
+        plot(myseq, dt[1, ], type = "l", ylim = c(-5,10), xlab = contrast,
+             ylab = "Determinant", yaxs = "i", col = "blue",
+             main = paste("Determinant function for", distrib, contrast,
+                          "\n", paste(x1, collapse=","), "/", paste(n1, collapse=","),
+                          " vs ", paste(x2, collapse=","), "/", paste(n2, collapse=","))
+        )
+        abline(h = 0, lty = 2)
+      }
       qtval <- qtnorm
       ylim <-  c(-2.5, 2.5) * qtval
       plot(myseq, sc[1, ], type = "l", ylim = ylim, xlab = contrast,
            ylab = "Score", yaxs = "i", col = "blue",
-           main = paste("Score function for", distrib, contrast)
+           main = paste("Score function for", distrib, contrast,
+                        "\n", paste(x1, collapse=","), "/", paste(n1, collapse=","),
+                        " vs ", paste(x2, collapse=","), "/", paste(n2, collapse=","))
            #log = ifelse(contrast == "RD", "", "x")
       )
       abline(h = c(-1, 1) * qtval)
@@ -1161,7 +1183,13 @@ scoretheta <- function(
     B <- 1
     C_ <- -(score1 + scterm)
     num <- (-B + sqrt(max(0, B^2 - 4 * A * C_)))
+    dtmnt <- B^2 - 4 * A * C_
     score <- ifelse((skew == FALSE | scterm == 0), score1, num/(2 * A))
+    if (skew == TRUE & simpleskew == TRUE) {
+#      score <- score1 - (score1^2 - 1) * mu3/(6 * V^(3/2)) #Bartlett version
+      qtnorm <- qnorm(1 - (1 - 0.95)/2) # need extra parameter to specify a different confidence level for simpleskew
+      score <- score1 - (qtnorm^2 - 1) * scterm
+    }
     score[abs(Sdot) < abs(sum( (wt/sum(wt)) * corr))] <- 0
     pval <- pnorm(score)
     VS <- sum(wt/sum(wt) * (Stheta - Sdot)^2)/(nstrat - 1)
