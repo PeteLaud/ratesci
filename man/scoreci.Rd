@@ -15,7 +15,7 @@ scoreci(
   level = 0.95,
   skew = TRUE,
   simpleskew = FALSE,
-  ORbias = NULL,
+  ORbias = TRUE,
   RRtang = TRUE,
   bcf = TRUE,
   cc = FALSE,
@@ -60,14 +60,13 @@ the Miettinen-Nurminen method).}
 \item{simpleskew}{Logical (default FALSE) indicating whether to use the
 "simplified" skewness correction instead of the quadratic solution.}
 
-\item{ORbias}{Logical (default is value of skew for contrast="OR", otherwise
+\item{ORbias}{Logical (default is TRUE for contrast="OR", otherwise
 NULL) indicating whether to apply additional bias correction for OR derived
 from Gart 1985. (Corrigendum to Laud 2017, published May 2018).
 Only applies if contrast is "OR".}
 
 \item{RRtang}{Logical (default TRUE) indicating whether to use Tang's score for
-contrast = "RR". Causes IVS weights to match Tang's INV weights.
-Ignored if weights = 'MH'.}
+contrast = "RR". Ignored for other contrasts, or if weights = 'MH'.}
 
 \item{bcf}{Logical (default TRUE) indicating whether to apply bias correction
 in the score denominator. Applicable to distrib = "bin" only. (NB: bcf =
@@ -85,7 +84,7 @@ except to deal with double-zero cells for RD with IVS weights.
 2) The continuity corrections provided here have not been fully tested for
 stratified methods.}
 
-\item{sda}{Sparse data adjustment (default 0.5)}
+\item{sda}{Sparse data adjustment (default 0.5 for RD)}
 
 \item{theta0}{Number to be used in a one-sided significance test (e.g.
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI

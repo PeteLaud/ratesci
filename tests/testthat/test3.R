@@ -135,11 +135,13 @@ test_that("legacy & new methods match published examples", {
 
   #Fagerland Newcombe for OR
   expect_equal(
-    unname(round(moverci(x1=c(24,29,7),n1=c(73,55,18),x2=c(53,11,1),n2=c(65,11,18),contrast="OR",type="wilson")[,c(1,3)],3)),
+    unname(round(moverci(x1=c(24,29,7),n1=c(73,55,18),x2=c(53,11,1),n2=c(65,11,18),
+                         contrast="OR", type="wilson")[,c(1,3)],3)),
     matrix(c(0.050,0.242,0,0.427,1.395,75.890),byrow=T,nrow=3)
   )
   expect_equal(
-    unname(round(scoreci(x1=c(24,29,7),n1=c(73,55,18),x2=c(53,11,1),n2=c(65,11,18),contrast="OR",skew=F)$estimates[,c(1,3)],3)),
+    unname(round(scoreci(x1=c(24,29,7),n1=c(73,55,18),x2=c(53,11,1),n2=c(65,11,18),
+                         contrast="OR", skew=FALSE, ORbias=FALSE)$estimates[,c(1,3)],3)),
     matrix(c(0.050,0.245,0,0.417,1.416,76.428),byrow=T,nrow=3)
   )
 
@@ -151,7 +153,8 @@ test_that("legacy & new methods match published examples", {
   )
   #Cornfield
   expect_equal(
-    unname(round(scoreci(x1=28,n1=99,x2=23,n2=182,contrast='OR',bcf=F,skew=F,cc=T)$estimates[,c(1,3)],2)),
+    unname(round(scoreci(x1=28,n1=99,x2=23,n2=182,contrast='OR',
+                         ORbias=F, bcf=F, skew=F, cc=T)$estimates[,c(1,3)],2)),
     c(1.41, 5.30)
   )
 
@@ -162,22 +165,26 @@ test_that("legacy & new methods match published examples", {
     c(1.24, 7.12)
   )
   expect_equal(
-    unname(round(scoreci(x1=c(4,2,4,1),n1=c(16,16,18,15),x2=c(5,3,10,3),n2=c(79,87,90,82),contrast='OR',bcf=F,skew=F,cc=T,stratified=T)$estimates[,c(1,3)],2)),
+    unname(round(scoreci(x1=c(4,2,4,1),n1=c(16,16,18,15),x2=c(5,3,10,3),n2=c(79,87,90,82),
+                         contrast='OR',ORbias=F,bcf=F,skew=F,cc=T,stratified=T)$estimates[,c(1,3)],2)),
     c(1.29, 7.31)
   )
     #Cornfield examples - very close
   expect_equal(
-    unname(round(scoreci(x1=3,n1=14,x2=60,n2=92,contrast='OR',bcf=F,skew=F,cc=T,level=pchisq(3.841,1))$estimates[,c(1,3)],4)),
+    unname(round(scoreci(x1=3,n1=14,x2=60,n2=92,contrast='OR', ORbias=F,
+                         bcf=F,skew=F,cc=T,level=pchisq(3.841,1))$estimates[,c(1,3)],4)),
     c(0.0296, 0.6228)
   )
   expect_equal(
-    unname(round(scoreci(x1=3,n1=14,x2=60,n2=92,contrast='OR',bcf=F,skew=F,cc=T,level=0.99)$estimates[,c(1,3)],4)),
+    unname(round(scoreci(x1=3,n1=14,x2=60,n2=92,contrast='OR', ORbias=F,
+                         bcf=F,skew=F,cc=T,level=0.99)$estimates[,c(1,3)],4)),
     c(0.0209, 0.8797)
   )
 
   #Gart & Thomas 1982 Cornfield example
   expect_equal(
-    unname(round(scoreci(x1=28,n1=51,x2=71,n2=230,contrast='OR',bcf=F,skew=F,cc=F)$estimates[,c(1,3)],3)),
+    unname(round(scoreci(x1=28,n1=51,x2=71,n2=230,contrast='OR', ORbias=F,
+                         bcf=F,skew=F,cc=F)$estimates[,c(1,3)],3)),
     c(1.476, 5.035)
   )
 
