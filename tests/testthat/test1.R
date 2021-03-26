@@ -41,8 +41,16 @@ for (cc in c(FALSE,TRUE)) {
       -unname(scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RD",distrib="poi",precis=10)$estimates[, 3])
     )
     expect_equal(
-      signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",precis=100)$estimates)[, 1],digits=5),
-      signif(1/unname(scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RR",precis=100)$estimates)[, 3],digits=5)
+      signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",RRtang=F,precis=100)$estimates)[, 1],digits=5),
+      signif(1/unname(scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RR",RRtang=F,precis=100)$estimates)[, 3],digits=5)
+    )
+    expect_equal(
+      signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",RRtang=T,precis=100)$estimates)[, 1],digits=5),
+      signif(1/unname(scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RR",RRtang=T,precis=100)$estimates)[, 3],digits=5)
+    )
+    expect_equal(
+      signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",RRtang=F,precis=100)$estimates)[, 1],digits=5),
+      signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",RRtang=T,precis=100)$estimates)[, 1],digits=5)
     )
     expect_equal(
       signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",distrib="poi",precis=10)$estimates)[, 1],digits=5),

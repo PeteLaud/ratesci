@@ -70,7 +70,8 @@ x-axis of plots (useful for ratio contrasts which can be infinite).}
 
 \item{weighting}{String indicating which weighting method to use if
 stratified = "TRUE":  "IVS" = Inverse Variance of Score (default, see Laud
-2017 for details), "MH" = Mantel-Haenszel, "MN" = Miettinen-Nurminen
+2017 for details), "INV" = Tang's inverse variance weights (bias correction
+omitted), "MH" = Mantel-Haenszel, "MN" = Miettinen-Nurminen
 iterative weights.}
 
 \item{MNtol}{Numeric value indicating convergence tolerance to be used in

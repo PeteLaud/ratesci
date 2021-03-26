@@ -57,10 +57,17 @@ contrast="p" gives an interval for the single proportion or rate x1/n1.}
 correction (for the SCAS method recommended in Laud 2017) or not (for
 the Miettinen-Nurminen method).}
 
+\item{simpleskew}{Logical (default FALSE) indicating whether to use the
+"simplified" skewness correction instead of the quadratic solution.}
+
 \item{ORbias}{Logical (default is value of skew for contrast="OR", otherwise
 NULL) indicating whether to apply additional bias correction for OR derived
 from Gart 1985. (Corrigendum to Laud 2017, published May 2018).
 Only applies if contrast is "OR".}
+
+\item{RRtang}{Logical (default TRUE) indicating whether to use Tang's score for
+contrast = "RR". Causes IVS weights to match Tang's INV weights.
+Ignored if weights = 'MH'.}
 
 \item{bcf}{Logical (default TRUE) indicating whether to apply bias correction
 in the score denominator. Applicable to distrib = "bin" only. (NB: bcf =
@@ -106,7 +113,8 @@ been fully evaluated.}
 
 \item{weighting}{String indicating which weighting method to use if
 stratified = "TRUE":  "IVS" = Inverse Variance of Score (default, see Laud
-2017 for details), "MH" = Mantel-Haenszel, "MN" = Miettinen-Nurminen
+2017 for details), "INV" = Tang's inverse variance weights (bias correction
+omitted), "MH" = Mantel-Haenszel, "MN" = Miettinen-Nurminen
 iterative weights.}
 
 \item{MNtol}{Numeric value indicating convergence tolerance to be used in
@@ -224,6 +232,10 @@ Laud PJ. Equal-tailed confidence intervals for comparison of
   Gart JJ, Nam Jm. Approximate interval estimation of the difference in
   binomial parameters: correction for skewness and extension to multiple
   tables. Biometrics 1990; 46(3):637-643.
+
+  Tang Y. Score confidence intervals and sample sizes for stratified
+  comparisons of binomial proportions. Statistics in Medicine 2020;
+  39:3427–3457.
 }
 \author{
 Pete Laud, \email{p.j.laud@sheffield.ac.uk}

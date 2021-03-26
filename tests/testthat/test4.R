@@ -47,7 +47,7 @@ for (i in 1:3) {
                   cbind(
                     RDbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,contrast="RD")$estimates[,c(1,3)],3),
                     RDpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,contrast="RD",distrib="poi")$estimates[,c(1,3)],3),
-                    RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,contrast="RR")$estimates[,c(1,3)],3),
+                    RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,contrast="RR",RRtang=FALSE)$estimates[,c(1,3)],3),
                     RRpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,contrast="RR",distrib="poi")$estimates[,c(1,3)],3),
                     OR=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,ORbias=F,contrast="OR")$estimates[,c(1,3)],3)
 #                    OR=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=T,ORbias=T,contrast="OR")$estimates[,c(1,3)],3) #Corrigendum version
@@ -55,7 +55,7 @@ for (i in 1:3) {
                   cbind(
                     RDbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=F,contrast="RD")$estimates[,c(1,3)],3),
                     RDpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=F,contrast="RD",distrib="poi")$estimates[,c(1,3)],3),
-                    RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=F,contrast="RR")$estimates[,c(1,3)],3),
+                    RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=F,contrast="RR",RRtang=FALSE)$estimates[,c(1,3)],3),
                     RRpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=F,contrast="RR",distrib="poi")$estimates[,c(1,3)],3),
                     OR=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,theta0=0.5,skew=F,ORbias=F,contrast="OR")$estimates[,c(1,3)],3)
                   ), MOVERJ=
@@ -106,17 +106,17 @@ n2hk <- c(16,16,34,56,22,55,15,58,15,27,45,30,38)
 tab3 <-rbind(
   SCASmh=c(
     RDbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",stratified=T,weighting="MH",skew=T,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],3),
-    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="MH",skew=T,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],2),
+    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="MH",skew=T,RRtang=FALSE,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],2),
     OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",stratified=T,weighting="MH",skew=T,ORbias=F,random=F,hk=F,fixtau=T)$estimates[,c(2,1,3)],2)
   ),
   SCASiv=c(
     RDbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",stratified=T,weighting="IVS",skew=T,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],3),
-    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="IVS",skew=T,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],2),
+    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="IVS",skew=T,RRtang=FALSE,random=F,hk=T,fixtau=T)$estimates[,c(2,1,3)],2),
     OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",stratified=T,weighting="IVS",skew=T,ORbias=F,random=F,hk=F,fixtau=T)$estimates[,c(2,1,3)],2)
   ),
   TDAS=c(
     RDbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",stratified=T,weighting="IVS",skew=F,random=T)$estimates[,c(2,1,3)],3),
-    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="IVS",skew=T,random=T)$estimates[,c(2,1,3)],2),
+    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="IVS",skew=T,RRtang=FALSE,random=T)$estimates[,c(2,1,3)],2),
     OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",stratified=T,weighting="IVS",skew=F,random=T)$estimates[,c(2,1,3)],2)
   )
 )
@@ -156,14 +156,14 @@ for (i in 1:3) {
     c(
       RDbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,skew=T,contrast="RD",cc=0.5)$estimates[,c(1,3)],3),
       RDpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,skew=T,contrast="RD",distrib="poi",cc=0.5)$estimates[,c(1,3)],3),
-      RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,skew=T,contrast="RR",cc=0.5)$estimates[,c(1,3)],3),
+      RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,skew=T,contrast="RR",RRtang=FALSE,cc=0.5)$estimates[,c(1,3)],3),
       RRpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,skew=T,contrast="RR",distrib="poi",cc=0.5)$estimates[,c(1,3)],3),
       OR=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,skew=T,contrast="OR",cc=0.5)$estimates[,c(1,3)],3)
     ), SCAScc0.25=
       c(
         RDbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,skew=T,contrast="RD",cc=0.25)$estimates[,c(1,3)],3),
         RDpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,skew=T,contrast="RD",distrib="poi",cc=0.25)$estimates[,c(1,3)],3),
-        RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,skew=T,contrast="RR",cc=0.25)$estimates[,c(1,3)],3),
+        RRbin=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,skew=T,contrast="RR",RRtang=FALSE,cc=0.25)$estimates[,c(1,3)],3),
         RRpoi=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,skew=T,contrast="RR",distrib="poi",cc=0.25)$estimates[,c(1,3)],3),
         OR=fround(scoreci(x1=x1,x2=x2,n1=n1,n2=n2,stratified=F,skew=T,contrast="OR",cc=0.25)$estimates[,c(1,3)],3)
       ), MOVERcc0.5=

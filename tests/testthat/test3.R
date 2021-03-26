@@ -40,11 +40,11 @@ test_that("legacy & new methods match published examples", {
 
   #Gart Nam 1988 for skewness corrected RR
   expect_equal(
-    unname(round(scoreci(x1=c(8,6),n1=c(15,10),x2=c(4,6),n2=c(15,20),contrast="RR",bcf=F,skew=F)$estimates[,c(1,3)],3)),
+    unname(round(scoreci(x1=c(8,6),n1=c(15,10),x2=c(4,6),n2=c(15,20),contrast="RR",RRtang=FALSE,bcf=F,skew=F)$estimates[,c(1,3)],3)),
     matrix(c(0.815,5.336,0.844,4.594),byrow=T,nrow=2)
   )
   expect_equal(
-    unname(round(scoreci(x1=c(8,6),n1=c(15,10),x2=c(4,6),n2=c(15,20),contrast="RR",bcf=F,skew=T)$estimates[,c(1,3)],3)),
+    unname(round(scoreci(x1=c(8,6),n1=c(15,10),x2=c(4,6),n2=c(15,20),contrast="RR",RRtang=FALSE,bcf=F,skew=T)$estimates[,c(1,3)],3)),
     matrix(c(0.806,6.148,0.822,4.954),byrow=T,nrow=2)
   )
   #Li Tang Wong for Poisson RR (don't quite match!)
@@ -68,9 +68,67 @@ test_that("legacy & new methods match published examples", {
     matrix(c(0.282,0.563,0.398,0.761,1.277,40.751),byrow=T,nrow=3)
   )
   expect_equal(
-    unname(round(scoreci(x1=c(24,29,7),n1=c(73,55,18),x2=c(53,11,1),n2=c(65,11,18),contrast="RR",skew=F)$estimates[,c(1,3)],3)),
+    unname(round(scoreci(x1=c(24,29,7),n1=c(73,55,18),x2=c(53,11,1),n2=c(65,11,18),contrast="RR",RRtang=FALSE,skew=F)$estimates[,c(1,3)],3)),
     matrix(c(0.280,0.560,0.397,0.742,1.296,42.544),byrow=T,nrow=3)
   )
+
+  #Tang alternative RR score examples, data from Mehrotra & Railkar
+  expect_equal(
+    unname(round(scoreci(x2=c(26, 25, 11), n2=c(453, 174, 70),
+                         x1=c(21, 11, 8), n1=c(464, 165, 69),
+                         contrast="RR", RRtang=TRUE, skew=FALSE, bcf=FALSE,
+                         stratified=TRUE)$estimates[,c(1, 3)], 4)),
+    c(0.4444, 0.9468)
+  )
+  expect_equal(
+    unname(round(scoreci(x2=c(26, 25, 11), n2=c(453, 174, 70),
+                         x1=c(21, 11, 8), n1=c(464, 165, 69),
+                         contrast="RR", RRtang=TRUE, skew=TRUE, bcf=FALSE,
+                         stratified=TRUE)$estimates[,c(1, 3)], 4)),
+    c(0.4410, 0.9462)
+  )
+
+  #Tang OR score examples, data from Mehrotra & Railkar
+  expect_equal(
+    unname(round(scoreci(x2=c(26, 25, 11), n2=c(453, 174, 70),
+                         x1=c(21, 11, 8), n1=c(464, 165, 69),
+                         contrast="OR", RRtang=TRUE, skew=FALSE, bcf=FALSE, ORbias=TRUE,
+                         stratified=TRUE)$estimates[,c(1, 3)], 4)),
+    c(0.4155, 0.9466)
+  )
+  expect_equal(
+    unname(round(scoreci(x2=c(26, 25, 11), n2=c(453, 174, 70),
+                         x1=c(21, 11, 8), n1=c(464, 165, 69),
+                         contrast="OR", RRtang=TRUE, skew=TRUE, bcf=FALSE,
+                         stratified=TRUE)$estimates[,c(1, 3)], 4)),
+    c(0.4124, 0.9461)
+  )
+
+
+
+  #Check CMH test equivalences stated by Tang
+  x1 <- c(21,11,8)
+  n1 <- c(464,165,69)
+  x0 <- x2 <- c(26,25,11)
+  n0 <- n2 <- c(453,174,70)
+  event <- c(rep(1,x1[1]),rep(0,n1[1]-x1[1]),rep(1,x1[2]),rep(0,n1[2]-x1[2]),rep(1,x1[3]),rep(0,n1[3]-x1[3]),
+             rep(1,x0[1]),rep(0,n0[1]-x0[1]),rep(1,x0[2]),rep(0,n0[2]-x0[2]),rep(1,x0[3]),rep(0,n0[3]-x0[3]))
+  strat <-factor(c(rep(1,n1[1]),rep(2,n1[2]),rep(3,n1[3]),rep(1,n0[1]),rep(2,n0[2]),rep(3,n0[3])))
+  trt <-factor(c(rep(1,sum(n1)),rep(0,sum(n0))))
+
+  expect_equal(
+    scoreci(x1,n1,x2,n2,stratified=T,contrast="RD",skew=F,bcf=T,weighting="MH",random=F)$pval[2],
+    mantelhaen.test(x=event, y=trt, z=strat,correct=F)$p.value
+  )
+  expect_equal(
+    scoreci(x1,n1,x2,n2,stratified=T,contrast="RR",skew=F,bcf=T,weighting="MH",random=F)$pval[2],
+    mantelhaen.test(x=event, y=trt, z=strat,correct=F)$p.value
+  )
+  expect_equal(
+    scoreci(x1,n1,x2,n2,stratified=T,contrast="OR",skew=F,bcf=T,weighting="INV",random=F)$pval[2],
+    mantelhaen.test(x=event, y=trt, z=strat,correct=F)$p.value
+  )
+
 
 
   #ODDS RATIO
