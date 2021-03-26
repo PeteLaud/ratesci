@@ -1,15 +1,27 @@
 # ratesci 0.3-0.9000
 
+## To-do
+* [Add checks on valid determinants when solving quadratics 
+  - produce warning & highlight on plot of score function.]
+* [Check input vector lengths match]
+
 ## New features
 * MN weighting in `scoreci()` now iterates to convergence (@jonjvallejo, #20).
 * `tdasci()` default uses skew=TRUE for stratum CIs.
 * Added optional prediction interval for random effects method.
+* Added xlim argument to control plot output.
+* Added sda argument to control sparse data adjustment (needs work to improve versatility).
+* Added INV option for weights that omit the bias correction.
+* Added RRtang argument to apply Tang's alternative score for stratified RR with INV/IVS weights.
+* Added simplified skewness correction option.
+* Changed ORbias default to TRUE.
 
 ## Bug fixes
 * MN weighting in `scoreci()` corrected for distrib="poi".
 * Fixed bug in `scoreci()` for calculation of stratum CIs with random=TRUE.
 * Fixed bug in `scoreci()` for distrib="poi" and contrast="p" (#7).
 * Fixed finite precision bug in `scaspci()`.
+* Fixed bug in `rateci()` for closed-form calculation of continuity-corrected SCAS.
 
 ## Other
 * Renamed tdas argument to 'random'.
