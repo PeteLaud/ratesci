@@ -48,7 +48,7 @@ ratesci contains the following functions:
 For comparisons of rates (contrasts RD, RR and OR):
 - `scoreci()`: for score-based confidence intervals including Miettinen-Nurminen and SCAS, with or without stratification.
 - `scasci()`: wrapper function to compute SCAS intervals.
-- `tdasci()`: wrapper function to compute TDAS stratified intervals.
+- `tdasci()`: wrapper function to compute TDAS stratified intervals incorporating random effects.
 - `moverci()`: for the MOVER methods, including Newcombe and MOVER-J.
 - `moverbci()`: wrapper function to compute MOVER-B intervals.
 - `pairbinci()`: for paired binomial data.
