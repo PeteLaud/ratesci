@@ -80,11 +80,12 @@ IMPORTANT NOTES:
 1) This is a 'continuity correction' aimed at approximating strictly
 conservative coverage, NOT for dealing with zero cell counts. Such
 'sparse data adjustments' are not needed in the score method,
-except to deal with double-zero cells for RD with IVS weights.
+except to deal with double-zero cells for RD (& double-100% cells for
+binomial RD & RR) with IVS weights.
 2) The continuity corrections provided here have not been fully tested for
 stratified methods.}
 
-\item{sda}{Sparse data adjustment (default 0.5 for RD)}
+\item{sda}{Sparse data adjustment (default 0.5 for RD & RR)}
 
 \item{theta0}{Number to be used in a one-sided significance test (e.g.
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
