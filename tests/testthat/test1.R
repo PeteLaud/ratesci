@@ -49,10 +49,6 @@ for (cc in c(FALSE,TRUE)) {
       signif(1/unname(scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RR",RRtang=T,precis=100)$estimates)[, 3],digits=5)
     )
     expect_equal(
-      signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",RRtang=F,precis=100)$estimates)[, 1],digits=5),
-      signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",RRtang=T,precis=100)$estimates)[, 1],digits=5)
-    )
-    expect_equal(
       signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",distrib="poi",precis=10)$estimates)[, 1],digits=5),
       signif(1/unname(scoreci(x1=x2,n1=n2,x2=x1,n2=n1,skew=skew,cc=cc,contrast="RR",distrib="poi",precis=10)$estimates)[, 3],digits=5)
     )
@@ -65,6 +61,31 @@ for (cc in c(FALSE,TRUE)) {
   }
 }
 
+test_that("Tang score matches IVS", {
+  expect_equal(
+    signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",RRtang=F,precis=100)$estimates)[, 1],digits=5),
+    signif(unname(scoreci(x1=x1,n1=n1,x2=x2,n2=n2,skew=skew,cc=cc,contrast="RR",RRtang=T,precis=100)$estimates)[, 1],digits=5)
+  )
+})
+
+#Check symmetry of results for 2-stratum examples
+n1 <- n2 <- 10
+xs<-expand.grid(0:n1,0:n1,0:n2,0:n2)
+x1 <- xs[,c(1,2)]
+x2 <- xs[,c(3,4)]
+
+cc <- FALSE
+skew <- FALSE
+i <- 3
+#for (i in 1:dim(x1)[1]) {
+for (i in 1:1000) {
+  test_that("Transposed stratified inputs produce inverted intervals", {
+    expect_equal(
+      unname(scoreci(x1=unlist(x1[i,]), n1=c(n1,n1), x2=unlist(x2[i,]), n2=c(n2,n2), stratified=T, skew=skew, cc=cc, contrast="RD",precis=10)$estimates[, 1]),
+      -unname(scoreci(x1=unlist(x2[i,]),n1=c(n2,n2),x2=unlist(x1[i,]),n2=c(n1,n1), stratified=T,skew=skew,cc=cc,contrast="RD",precis=10)$estimates[, 3])
+    )
+  })
+}
 
 n <- 10
 combos <- NULL
