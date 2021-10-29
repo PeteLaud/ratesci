@@ -115,9 +115,9 @@ tab3 <-rbind(
     OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",stratified=T,weighting="IVS",skew=T,ORbias=F,random=F,hk=F,fixtau=T)$estimates[,c(2,1,3)],2)
   ),
   TDAS=c(
-    RDbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",stratified=T,weighting="IVS",skew=F,random=T)$estimates[,c(2,1,3)],3),
-    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="IVS",skew=T,RRtang=FALSE,random=T)$estimates[,c(2,1,3)],2),
-    OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",ORbias=F,stratified=T,weighting="IVS",skew=F,random=T)$estimates[,c(2,1,3)],2)
+    RDbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RD",stratified=T,weighting="IVS",random=T)$estimates[,c(2,1,3)],3),
+    RRbin=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="RR",stratified=T,weighting="IVS",RRtang=FALSE,random=T)$estimates[,c(2,1,3)],2),
+    OR=fround(scoreci(x1=x1hk,x2=x2hk,n1=n1hk,n2=n2hk,contrast="OR",ORbias=F,stratified=T,weighting="IVS",random=T)$estimates[,c(2,1,3)],2)
   )
 )
 tab3
