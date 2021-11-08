@@ -1,7 +1,7 @@
-# ratesci 0.3-0.9000
+# ratesci 0.3-0.9000 (2021-mm-dd)
 
 ## To-do
-* [Add checks on valid determinants when solving quadratics 
+* [Add checks on valid discriminants when solving quadratics 
   - produce warning & highlight on plot of score function.]
 * [Check input vector lengths match]
 
@@ -9,12 +9,15 @@
 * MN weighting in `scoreci()` now iterates to convergence (@jonjvallejo, #20).
 * `tdasci()` default uses skew=TRUE for stratum CIs.
 * Added optional prediction interval for random effects method.
-* Added xlim argument to control plot output.
+* Added xlim and ylim arguments to control plot output.
 * Added sda argument to control sparse data adjustment (needs work to improve versatility).
 * Added INV option for weights that omit the bias correction.
 * Added RRtang argument to apply Tang's alternative score for stratified RR with INV/IVS weights.
 * Added simplified skewness correction option.
+* Introduced warning and plot features for very rare occasions when quadratic 
+  skewness correction has a negative discriminant.
 * Changed ORbias default to TRUE.
+* Added hetplot argument to separate heterogeneity plots from score function plot.
 
 ## Bug fixes
 * MN weighting in `scoreci()` corrected for distrib="poi".
@@ -22,12 +25,13 @@
 * Fixed bug in `scoreci()` for distrib="poi" and contrast="p" (#7).
 * Fixed finite precision bug in `scaspci()`.
 * Fixed bug in `rateci()` for closed-form calculation of continuity-corrected SCAS.
+* Fixed bug in `scoreci()` for stratified zero scores calculated as NA, resulting in UL=0.
 
 ## Other
 * Renamed tdas argument to 'random'.
 * Removed redundant t2 variable.
 
-# ratesci 0.3-0
+# ratesci 0.3-0 (2018-02-15)
 
 ## New features
 * Added bias correction in `scoreci()` for OR SCAS method (derived from Gart 1985).
@@ -44,7 +48,7 @@
 * Set Stheta to 0 if |Stheta|<cc in `scoreci()`
 * Fixed stratified calulations for contrast = "p" in `scoreci()`.
 
-# ratesci 0.2-0
+# ratesci 0.2-0 (2017-04-21)
 
 ## New features
 * Added `pairbinci()` for all comparisons of paired binomial rates.

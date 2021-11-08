@@ -24,7 +24,9 @@ scoreci(
   precis = 6,
   plot = FALSE,
   plotmax = 100,
+  hetplot = FALSE,
   xlim = NULL,
+  ylim = NULL,
   stratified = FALSE,
   weighting = "IVS",
   MNtol = 1e-08,
@@ -103,7 +105,12 @@ score function}
 \item{plotmax}{Numeric value indicating maximum value to be displayed on
 x-axis of plots (useful for ratio contrasts which can be infinite).}
 
-\item{xlim}{pair of values indicating range of values to be plotted}
+\item{hetplot}{Logical (default FALSE) indicating whether to output plots for
+evaluating heterogeneity of stratified datasets.}
+
+\item{xlim}{pair of values indicating range of values to be plotted.}
+
+\item{ylim}{pair of values indicating range of values to be plotted.}
 
 \item{stratified}{Logical (default FALSE) indicating whether to combine
 vector inputs into a single stratified analysis.
@@ -125,8 +132,9 @@ iteration with weighting = "MN".}
 \item{tdas}{(deprecated: parameter renamed to random)}
 
 \item{random}{Logical (default FALSE) indicating whether to perform random
-effects meta-analysis for stratified data, using the t-distribution
-method for stratified data (defined in Laud 2017).}
+effects meta-analysis for stratified data, using the t-distribution (TDAS)
+method for stratified data (defined in Laud 2017).
+NOTE: If random=TRUE, then skew=TRUE only affects the per-stratum estimates.}
 
 \item{prediction}{Logical (default FALSE) indicating whether to produce
 a prediction interval (work in progress).}
@@ -203,6 +211,11 @@ Hartung-Knapp-Sidik-Jonkman).
           n1 = c(16, 16, 34, 56, 22, 54, 17, 58, 14, 26, 44, 29, 38),
           n2 = c(16, 16, 34, 56, 22, 55, 15, 58, 15, 27, 45, 30, 38),
           stratified = TRUE, random = TRUE)
+
+  #Stratified example, with plots :
+  scoreci(x1 = c(1,16), n1 = c(20,40), x2 = c(0,139), n2 = c(80,160),
+          contrast = 'RD', skew = TRUE, simpleskew = FALSE,
+          distrib = 'bin', stratified = TRUE, plot = TRUE, weighting = 'MH')
 
 }
 \references{
