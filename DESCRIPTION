@@ -25,8 +25,8 @@ Description: Computes confidence intervals for the rate (or risk)
     information. So-called 'exact' methods for strictly conservative 
     coverage are approximated using continuity corrections.
     Also includes methods for stratified calculations (e.g. meta-analysis),
-    either assuming fixed effects or incorporating stratum
-    heterogeneity.
+    either assuming fixed effects (matching the CMH test) or incorporating 
+    stratum heterogeneity.
 Depends: R (>= 3.2.5)
 License: GPL-3
 Encoding: UTF-8
