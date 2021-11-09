@@ -1,31 +1,34 @@
 
 # Internal function for Clopper-Pearson/Garwood and mid-p, binomial or Poisson
-exactci <- function(
-  #function to calculate exact 'exact' confidence interval for a single
-  #binomial or Poisson rate x/n
-  x,
-  n,
-  level = 0.95,
-  midp = TRUE,
-  distrib = "bin",
-  precis = 8
-) {
-
+exactci <- function( # function to calculate exact 'exact' confidence interval for a single
+                    # binomial or Poisson rate x/n
+                    x,
+                    n,
+                    level = 0.95,
+                    midp = TRUE,
+                    distrib = "bin",
+                    precis = 8) {
   alpha <- 1 - level
   if (as.character(midp) == "TRUE") midp <- 0.5
   if (distrib == "bin") {
-    lowroot <- function(p) pbinom(x - 1, n, p) + midp * dbinom(x, n, p) -
-      (1 - alpha/2)
-    uproot <- function(p) pbinom(x, n, p) - midp * dbinom(x, n, p) - alpha/2
+    lowroot <- function(p) {
+      pbinom(x - 1, n, p) + midp * dbinom(x, n, p) -
+        (1 - alpha / 2)
+    }
+    uproot <- function(p) pbinom(x, n, p) - midp * dbinom(x, n, p) - alpha / 2
   } else if (distrib == "poi") {
-    lowroot <- function(p) ppois(x, p) + midp * dpois(x, p) - (1 - alpha/2)
-    uproot <- function(p) ppois(x, p) - midp * dpois(x, p) - alpha/2
+    lowroot <- function(p) ppois(x, p) + midp * dpois(x, p) - (1 - alpha / 2)
+    uproot <- function(p) ppois(x, p) - midp * dpois(x, p) - alpha / 2
   }
-  lower <- bisect(ftn = lowroot, precis = precis, uplow = "low",
-                  contrast = "p", distrib = distrib)
-  upper <- bisect(ftn = uproot, precis = precis, uplow = "up", contrast = "p",
-                  distrib = distrib)
-  return(cbind(Lower = lower, Upper = upper)/ifelse(distrib == "poi", n, 1))
+  lower <- bisect(
+    ftn = lowroot, precis = precis, uplow = "low",
+    contrast = "p", distrib = distrib
+  )
+  upper <- bisect(
+    ftn = uproot, precis = precis, uplow = "up", contrast = "p",
+    distrib = distrib
+  )
+  return(cbind(Lower = lower, Upper = upper) / ifelse(distrib == "poi", n, 1))
 }
 
 
@@ -39,54 +42,54 @@ exactci <- function(
 #' @inheritParams scoreci
 #' @importFrom Rmpfr mpfr asNumeric
 #' @export
-scaspci <- function(
-  x,
-  n,
-  distrib = "bin",
-  level = 0.95,
-  cc = FALSE,
-  ...
-) {
-  x <- Rmpfr::mpfr(x,50)
-  n <- Rmpfr::mpfr(n,50)
+scaspci <- function(x,
+                    n,
+                    distrib = "bin",
+                    level = 0.95,
+                    cc = FALSE,
+                    ...) {
+  x <- Rmpfr::mpfr(x, 50)
+  n <- Rmpfr::mpfr(n, 50)
   if (as.character(cc) == "TRUE") cc <- 0.5
-  z <- qnorm(1 - (1 - level)/2)
+  z <- qnorm(1 - (1 - level) / 2)
   if (distrib == "poi") {
-    Du <- (x + cc)/n - (z^2 - 1)/(6 * n)
-    Dl <- Rmpfr::pmax(0, (x - cc)/n - (z^2 - 1)/(6 * n))
+    Du <- (x + cc) / n - (z^2 - 1) / (6 * n)
+    Dl <- Rmpfr::pmax(0, (x - cc) / n - (z^2 - 1) / (6 * n))
     A <- 1
-    Bu <- -2 * Du - z^2/n
-    Bl <- -2 * Dl - z^2/n
+    Bu <- -2 * Du - z^2 / n
+    Bl <- -2 * Dl - z^2 / n
     Cu <- Du^2
     Cl <- Dl^2
-    D0 <- -1/(6 * n) - x/n
+    D0 <- -1 / (6 * n) - x / n
     B0 <- 2 * D0
     A0 <- 1
     C0 <- D0^2
   } else if (distrib == "bin") {
-    E <- (z^2 - 1)/(3 * n) - 1
-    #Alteration to published formula,
-    #to deal with non-nested intervals when level>0.99
-    Du <- Rmpfr::pmax(0, (n-x - cc)/n - (z^2 - 1)/(6 * n))
-    Dl <- Rmpfr::pmax(0, (x - cc)/n - (z^2 - 1)/(6 * n))
-    A <- z^2/n + E^2
-    Bu <- 2 * E * Du - z^2/n
-    Bl <- 2 * E * Dl - z^2/n
+    E <- (z^2 - 1) / (3 * n) - 1
+    # Alteration to published formula,
+    # to deal with non-nested intervals when level>0.99
+    Du <- Rmpfr::pmax(0, (n - x - cc) / n - (z^2 - 1) / (6 * n))
+    Dl <- Rmpfr::pmax(0, (x - cc) / n - (z^2 - 1) / (6 * n))
+    A <- z^2 / n + E^2
+    Bu <- 2 * E * Du - z^2 / n
+    Bl <- 2 * E * Dl - z^2 / n
     Cu <- Du^2
     Cl <- Dl^2
-    E0 <- 1 + 1/(3 * n)
-    D0 <- -1/(6 * n) - x/n
+    E0 <- 1 + 1 / (3 * n)
+    D0 <- -1 / (6 * n) - x / n
     A0 <- E0^2
     B0 <- 2 * E0 * D0
     C0 <- D0^2
   }
 
   CI <- (cbind(
-    Lower = Rmpfr::asNumeric((-Bl - sqrt(Rmpfr::pmax(0,Bl^2 - 4 * A * Cl)))/(2 * A)),
-    MLE = Rmpfr::asNumeric((-B0 - sqrt(Rmpfr::pmax(0,(B0^2 - 4 * A0 * C0))))/(2 * A0)),
+    Lower = Rmpfr::asNumeric((-Bl - sqrt(Rmpfr::pmax(0, Bl^2 - 4 * A * Cl))) / (2 * A)),
+    MLE = Rmpfr::asNumeric((-B0 - sqrt(Rmpfr::pmax(0, (B0^2 - 4 * A0 * C0)))) / (2 * A0)),
     Upper = if (distrib == "bin") {
-      Rmpfr::asNumeric(1 - (-Bu - sqrt(Rmpfr::pmax(0,Bu^2 - 4 * A * Cu)))/(2 * A))
-      } else Rmpfr::asNumeric((-Bu + sqrt(Rmpfr::pmax(0,Bu^2 - 4 * A * Cu)))/(2 * A))
+      Rmpfr::asNumeric(1 - (-Bu - sqrt(Rmpfr::pmax(0, Bu^2 - 4 * A * Cu))) / (2 * A))
+    } else {
+      Rmpfr::asNumeric((-Bu + sqrt(Rmpfr::pmax(0, Bu^2 - 4 * A * Cu))) / (2 * A))
+    }
   ))
   return((CI))
 }
@@ -115,14 +118,12 @@ scaspci <- function(
 #'   Clopper-Pearson/Garwood if cc == TRUE and mid-p if cc == FALSE.
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @export
-rateci <- function(
-  x,
-  n,
-  distrib = "bin",
-  level = 0.95,
-  cc = FALSE,
-  precis = 6
-) {
+rateci <- function(x,
+                   n,
+                   distrib = "bin",
+                   level = 0.95,
+                   cc = FALSE,
+                   precis = 6) {
   # in case x is input as a vector but n is not
   if (length(n) < length(x) && length(x) > 1) {
     n <- rep(n, length.out = length(x))
@@ -157,11 +158,13 @@ rateci <- function(
   if (cc == 0) {
     return(list(scas = ci_scas, jeff = ci_jeff, midp = ci_exact))
   } else if (cc == 0.5) {
-    if(distrib == "bin") {
+    if (distrib == "bin") {
       return(list(scas_cc = ci_scas, jeff_cc = ci_jeff, cp = ci_exact))
-    } else return(list(scas_cc = ci_scas, jeff_cc = ci_jeff, garwood = ci_exact))
+    } else {
+      return(list(scas_cc = ci_scas, jeff_cc = ci_jeff, garwood = ci_exact))
+    }
   } else {
     return(list(scas_cc = ci_scas, jeff_cc = ci_jeff))
-    #exact method not applicable if using a compromise value of cc
+    # exact method not applicable if using a compromise value of cc
   }
 }

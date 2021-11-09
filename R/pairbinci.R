@@ -47,12 +47,12 @@
 #   ...more parameters to be added: cc? skew??
 #' @importFrom stats uniroot pbinom ppois dpois
 #' @examples
-#'   #Data example from Agresti-Min 2005
-#'   pairbinci(x = c(53,16,8,9), contrast="RD", method_RD="Score")
-#'   pairbinci(x = c(53,16,8,9), contrast="RD", method_RD="TDAS")
-#'   pairbinci(x = c(53,16,8,9), contrast="RR", method_RR="Score")
-#'   pairbinci(x = c(53,16,8,9), contrast="RR", method_RR="TDAS")
-#'   pairbinci(x = c(53,16,8,9), contrast="OR", method_OR="SCAS")
+#' # Data example from Agresti-Min 2005
+#' pairbinci(x = c(53, 16, 8, 9), contrast = "RD", method_RD = "Score")
+#' pairbinci(x = c(53, 16, 8, 9), contrast = "RD", method_RD = "TDAS")
+#' pairbinci(x = c(53, 16, 8, 9), contrast = "RR", method_RR = "Score")
+#' pairbinci(x = c(53, 16, 8, 9), contrast = "RR", method_RR = "TDAS")
+#' pairbinci(x = c(53, 16, 8, 9), contrast = "OR", method_OR = "SCAS")
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of
@@ -81,16 +81,14 @@
 #'
 #' @export
 
-pairbinci <- function(
-  x,
-  contrast = "RD",
-  level = 0.95,
-  method_RD = "Score",
-  method_RR = "Score",
-  method_OR = "SCAS",
-  theta0 = NULL,
-  precis = 6
-) {
+pairbinci <- function(x,
+                      contrast = "RD",
+                      level = 0.95,
+                      method_RD = "Score",
+                      method_RR = "Score",
+                      method_OR = "SCAS",
+                      theta0 = NULL,
+                      precis = 6) {
   if (!(tolower(substr(contrast, 1, 2)) %in% c("rd", "rr", "or"))) {
     print("Contrast must be one of 'RD', 'RR' or 'OR'")
     stop()
@@ -100,67 +98,84 @@ pairbinci <- function(
     stop()
   }
 
-  #Convert the data into 2 columns of 0s and 1s for use in TDAS-based method
-  #and output 2x2 table for validation
+  # Convert the data into 2 columns of 0s and 1s for use in TDAS-based method
+  # and output 2x2 table for validation
   x1i <- rep(c(1, 1, 0, 0), x)
   x2i <- rep(c(1, 0, 1, 0), x)
   xi <- table(x1i, x2i)
 
-   if (contrast == "OR") {
-    #special case for OR, use conditional method based on transforming the
-    #SCAS interval for a single proportion
-     b <- x[2]
-     c <- x[3]
-     if (method_OR == "SCAS") {
-       #could add transformed Wilson version for reference
-       trans_th0 <- NULL
-       if (!is.null(theta0)) trans_th0 <- theta0/(1 + theta0)
-       OR_ci <- scasci(x1 = b, n1 = b + c, contrast = "p", distrib = "bin",
-                      level = level, theta0 = trans_th0)
-       estimates <- rbind(
-         c(OR_ci$estimates[, c(1:3)]/(1 - OR_ci$estimates[, c(1:3)]),
-          OR_ci$estimates[, 4]))
-       pval <- OR_ci$pval
-       outlist <- list(xi, estimates = estimates, pval = pval)
-     } else if (method_OR == "midp") {
-       trans_ci <- exactci(x = b, n = b + c, midp = TRUE, level = level)
-       estimates <- c(trans_ci/(1 - trans_ci))
-       outlist <- list(xi, estimates = estimates)
-     }
+  if (contrast == "OR") {
+    # special case for OR, use conditional method based on transforming the
+    # SCAS interval for a single proportion
+    b <- x[2]
+    c <- x[3]
+    if (method_OR == "SCAS") {
+      # could add transformed Wilson version for reference
+      trans_th0 <- NULL
+      if (!is.null(theta0)) trans_th0 <- theta0 / (1 + theta0)
+      OR_ci <- scasci(
+        x1 = b, n1 = b + c, contrast = "p", distrib = "bin",
+        level = level, theta0 = trans_th0
+      )
+      estimates <- rbind(
+        c(
+          OR_ci$estimates[, c(1:3)] / (1 - OR_ci$estimates[, c(1:3)]),
+          OR_ci$estimates[, 4]
+        )
+      )
+      pval <- OR_ci$pval
+      outlist <- list(xi, estimates = estimates, pval = pval)
+    } else if (method_OR == "midp") {
+      trans_ci <- exactci(x = b, n = b + c, midp = TRUE, level = level)
+      estimates <- c(trans_ci / (1 - trans_ci))
+      outlist <- list(xi, estimates = estimates)
+    }
   } else {
-    if ((contrast =="RD" && method_RD == "TDAS") ||
-       (contrast =="RR" && method_RR == "TDAS")) {
-      #stratified TDAS method for paired data as suggested in Laud 2017
+    if ((contrast == "RD" && method_RD == "TDAS") ||
+      (contrast == "RR" && method_RR == "TDAS")) {
+      # stratified TDAS method for paired data as suggested in Laud 2017
       n1i <- n2i <- rep(1, sum(x))
-      out <- tdasci(x1 = x1i, n1 = n1i, x2 = x2i, n2 = n2i, weighting = "MH",
-                    contrast = contrast, distrib = "bin", level = level,
-                    theta0 = theta0, warn = FALSE)
+      out <- tdasci(
+        x1 = x1i, n1 = n1i, x2 = x2i, n2 = n2i, weighting = "MH",
+        contrast = contrast, distrib = "bin", level = level,
+        theta0 = theta0, warn = FALSE
+      )
       outlist <- list(xi, estimates = out$estimates, pval = out$pval)
     }
-    #Score methods by Tango (for RD) & Tang (for RR):
-    if ((contrast =="RD" && method_RD == "Score") ||
-       (contrast =="RR" && method_RR == "Score")) {
+    # Score methods by Tango (for RD) & Tang (for RR):
+    if ((contrast == "RD" && method_RD == "Score") ||
+      (contrast == "RR" && method_RR == "Score")) {
       myfun <- function(theta) {
         scorepair(theta = theta, x = x, contrast = contrast)$score
       }
       # Use bisection routine to locate lower and upper confidence limits
-      qtnorm <- qnorm(1 - (1 - level)/2)
-      MLE <- bisect(ftn = function(theta) myfun(theta) - 0, distrib = "bin",
-                    contrast = contrast, precis = precis + 1, uplow = "low")
-      lower <- bisect(ftn = function(theta) myfun(theta) - qtnorm,
-                    distrib = "bin", precis = precis + 1, contrast = contrast,
-                    uplow = "low")
-      upper <- bisect(ftn = function(theta) myfun(theta) + qtnorm,
-                    distrib = "bin", precis = precis + 1, contrast=contrast,
-                    uplow = "up")
-      estimates <- cbind(Lower = lower, MLE = MLE, Upper = upper,
-                         level = level)
+      qtnorm <- qnorm(1 - (1 - level) / 2)
+      MLE <- bisect(
+        ftn = function(theta) myfun(theta) - 0, distrib = "bin",
+        contrast = contrast, precis = precis + 1, uplow = "low"
+      )
+      lower <- bisect(
+        ftn = function(theta) myfun(theta) - qtnorm,
+        distrib = "bin", precis = precis + 1, contrast = contrast,
+        uplow = "low"
+      )
+      upper <- bisect(
+        ftn = function(theta) myfun(theta) + qtnorm,
+        distrib = "bin", precis = precis + 1, contrast = contrast,
+        uplow = "up"
+      )
+      estimates <- cbind(
+        Lower = lower, MLE = MLE, Upper = upper,
+        level = level
+      )
 
       # optionally add p-value for a test of null hypothesis: theta<=theta0
       # default value of theta0 depends on contrast
       if (contrast == "RD") {
         theta00 <- 0
-      } else theta00 <- 1
+      } else {
+        theta00 <- 1
+      }
       if (is.null(theta0)) {
         theta0 <- theta00
       }
@@ -170,58 +185,57 @@ pairbinci <- function(
       pval_right <- 1 - pval_left
       chisq_zero <- scorezero$score^2
       pval2sided <- pchisq(chisq_zero, 1, lower.tail = FALSE)
-      pval <- cbind(chisq = chisq_zero, pval2sided, theta0 = theta0,
-                    scorenull = scorenull$score, pval_left, pval_right)
+      pval <- cbind(
+        chisq = chisq_zero, pval2sided, theta0 = theta0,
+        scorenull = scorenull$score, pval_left, pval_right
+      )
 
       outlist <- list(xi, estimates = estimates, pval = pval)
     }
 
-    #Placeholder:
-    #Add code for MOVER Jeffreys methods from Tang2010 (and add SCAS version)?
-    #For both RD & RR this appears to be inferior to the Score methods
-#    if ((contrast =="RD" && method_RD == "MOVER") ||
-#       (contrast =="RR" && method_RR == "MOVER")) {
-#    }
-
+    # Placeholder:
+    # Add code for MOVER Jeffreys methods from Tang2010 (and add SCAS version)?
+    # For both RD & RR this appears to be inferior to the Score methods
+    #    if ((contrast =="RD" && method_RD == "MOVER") ||
+    #       (contrast =="RR" && method_RR == "MOVER")) {
+    #    }
   }
   return(outlist)
 }
 
 
 # Internal function
-scorepair <- function(
-  #function to evaluate the score at a given value of theta, given the observed
-  #data for paired binomial RD and RR
-  #uses the MLE solution (and notation) given in Fagerland 2014 from
-  #Tango (1998/1999) & Tang (2003)
-  #This function is not vectorised
-  theta,
-  x,
-  contrast = "RD",
-  ...
-) {
+scorepair <- function( # function to evaluate the score at a given value of theta, given the observed
+                      # data for paired binomial RD and RR
+                      # uses the MLE solution (and notation) given in Fagerland 2014 from
+                      # Tango (1998/1999) & Tang (2003)
+                      # This function is not vectorised
+                      theta,
+                      x,
+                      contrast = "RD",
+                      ...) {
   N <- sum(x)
   if (contrast == "RD") {
-    #notation per Tango 1999 letter
+    # notation per Tango 1999 letter
     Stheta <- ((x[2] - x[3]) - N * theta)
     A <- 2 * N
-    B <- -x[2] - x[3] + (2*N - x[2] + x[3]) * theta
+    B <- -x[2] - x[3] + (2 * N - x[2] + x[3]) * theta
     C_ <- -x[3] * theta * (1 - theta)
     num <- (-B + Re(sqrt(as.complex(B^2 - 4 * A * C_))))
-    p2d <- ifelse(num == 0, 0, num/(2 * A))
-    V <- pmax(0, N*(2 * p2d + theta * (1 - theta)))
+    p2d <- ifelse(num == 0, 0, num / (2 * A))
+    V <- pmax(0, N * (2 * p2d + theta * (1 - theta)))
   }
   if (contrast == "RR") {
-    #per Tang 2003
+    # per Tang 2003
     Stheta <- ((x[2] + x[1]) - (x[3] + x[1]) * theta)
     A <- N * (1 + theta)
     B <- (x[1] + x[3]) * theta^2 - (x[1] + x[2] + 2 * x[3])
-    C_ <- x[3] * (1 - theta) * (x[1] + x[2] + x[3])/N
+    C_ <- x[3] * (1 - theta) * (x[1] + x[2] + x[3]) / N
     num <- (-B + Re(sqrt(as.complex(B^2 - 4 * A * C_))))
-    q21 <- ifelse(num == 0, 0, num/(2 * A))
+    q21 <- ifelse(num == 0, 0, num / (2 * A))
     V <- pmax(0, N * (1 + theta) * q21 + (x[1] + x[2] + x[3]) * (theta - 1))
   }
-  score <- ifelse(Stheta == 0, 0, Stheta/sqrt(V))
+  score <- ifelse(Stheta == 0, 0, Stheta / sqrt(V))
   pval <- pnorm(score)
   outlist <- list(score = score, pval = pval)
   return(outlist)
