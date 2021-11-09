@@ -1,7 +1,7 @@
 ratesci
 =====
 
-[![R-CMD-check](https://github.com/r-lib/devtools/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/devtools/actions)
+[![R-CMD-check](https://github.com/PeteLaud/ratesci/workflows/R-CMD-check/badge.svg)](https://github.com/PeteLaud/ratesci)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/ratesci)](http://cran.r-project.org/package=ratesci)
 [![Total Downloads](https://cranlogs.r-pkg.org/badges/grand-total/ratesci)](https://cranlogs.r-pkg.org/badges/grand-total/ratesci)
