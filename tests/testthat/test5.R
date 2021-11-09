@@ -7,7 +7,7 @@ context("Consistency")
 # conditions.
 # Seems to be OK for level≤0.99
 
-n <- 9333
+n <- 333
 xs <- 0:n
 for (level in c(0.9, 0.95, 0.99, 0.999)) {
   test_that("noniterative scas matches iterative version", {
