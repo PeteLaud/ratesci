@@ -7,17 +7,15 @@ context("Consistency")
 # conditions.
 # Seems to be OK for level≤0.99
 
-n <- 333
+n <- 9333
 xs <- 1:10
-rounded <- 8
-#for (level in c(0.9, 0.95, 0.99, 0.999)) {
-for (level in c(0.95)) {
+rounded <- 10
+for (level in c(0.9, 0.95, 0.99, 0.999)) {
     test_that("noniterative scas matches iterative version", {
     expect_equal(
       round(scoreci(x1 = xs, n1 = n, contrast = "p", level = level, precis = rounded + 1)$estimates[, c(1:3)], rounded),
       round(scaspci(x = xs, n = n, level = level)[, c(1:3)], rounded) #Env test bug 9Nov2021 relates to this line
     )
-    if (FALSE) {
     expect_equal(
       round(scoreci(x1 = xs, n1 = n, contrast = "p", cc = T, level = level, precis = rounded + 1)$estimates[, c(1:3)], rounded),
       round(scaspci(x = xs, n = n, cc = T, level = level)[, c(1:3)], rounded)
@@ -30,6 +28,5 @@ for (level in c(0.95)) {
       round(scoreci(x1 = xs, n1 = n, contrast = "p", cc = T, level = level, distrib = "poi", precis = rounded + 1)$estimates[, c(1:3)], rounded),
       round(scaspci(x = xs, n = n, cc = T, level = level, distrib = "poi")[, c(1:3)], rounded)
     )
-    }
   })
 }
