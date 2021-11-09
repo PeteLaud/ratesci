@@ -1,9 +1,0 @@
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
-.gitignore
-*.Rproj
-R/sandbox.R
-R/.Rapp.history
-.DS_Store
