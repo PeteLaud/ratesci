@@ -6,3 +6,4 @@
 ^R/sandbox.R$
 ^\.github$
 ^R/debug.R
+^hidetests$
