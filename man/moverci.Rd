@@ -82,11 +82,11 @@ approximate Bayesian confidence interval incorporating prior beliefs about
 the group event rates.
 }
 \examples{
-  #Binomial RD, MOVER-J method:
-  moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
+# Binomial RD, MOVER-J method:
+moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29)
 
-  #Binomial RD, Newcombe method:
-  moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, type = "wilson")
+# Binomial RD, Newcombe method:
+moverci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, type = "wilson")
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of

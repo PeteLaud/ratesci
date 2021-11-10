@@ -70,12 +70,12 @@ For OR, intervals are produced based on transforming various intervals for
 the single proportion, including SCAS, mid-p and Jeffreys.
 }
 \examples{
-  #Data example from Agresti-Min 2005
-  pairbinci(x = c(53,16,8,9), contrast="RD", method_RD="Score")
-  pairbinci(x = c(53,16,8,9), contrast="RD", method_RD="TDAS")
-  pairbinci(x = c(53,16,8,9), contrast="RR", method_RR="Score")
-  pairbinci(x = c(53,16,8,9), contrast="RR", method_RR="TDAS")
-  pairbinci(x = c(53,16,8,9), contrast="OR", method_OR="SCAS")
+# Data example from Agresti-Min 2005
+pairbinci(x = c(53, 16, 8, 9), contrast = "RD", method_RD = "Score")
+pairbinci(x = c(53, 16, 8, 9), contrast = "RD", method_RD = "TDAS")
+pairbinci(x = c(53, 16, 8, 9), contrast = "RR", method_RR = "Score")
+pairbinci(x = c(53, 16, 8, 9), contrast = "RR", method_RR = "TDAS")
+pairbinci(x = c(53, 16, 8, 9), contrast = "OR", method_OR = "SCAS")
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of

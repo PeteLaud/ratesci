@@ -70,10 +70,13 @@ score function}
 x-axis of plots (useful for ratio contrasts which can be infinite).}
 
 \item{weighting}{String indicating which weighting method to use if
-stratified = "TRUE":  "IVS" = Inverse Variance of Score (default, see Laud
-2017 for details), "INV" = Tang's inverse variance weights (bias correction
-omitted), "MH" = Mantel-Haenszel, "MN" = Miettinen-Nurminen
-iterative weights.}
+stratified = "TRUE":
+"IVS" = Inverse Variance of Score (default, see Laud 2017 for details),
+"INV" = Tang's inverse variance weights (bias correction omitted),
+"MH" = Mantel-Haenszel,
+"MN" = Miettinen-Nurminen iterative weights.
+For CI consistent with a CMH test, select skew=F and use
+MH weighting for RD/RR and IVS for OR.}
 
 \item{MNtol}{Numeric value indicating convergence tolerance to be used in
 iteration with weighting = "MN".}

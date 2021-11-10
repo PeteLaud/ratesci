@@ -52,8 +52,8 @@ quantiles of a Beta distribution as described in Brown et al. 2001) also
 included by way of a "continuity correction" parameter.
 }
 \examples{
-  #Jeffreys method:
-  jeffreysci(x = 5, n = 56)
+# Jeffreys method:
+jeffreysci(x = 5, n = 56)
 }
 \references{
 Laud PJ. Equal-tailed confidence intervals for comparison of
