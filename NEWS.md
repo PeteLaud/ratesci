@@ -1,8 +1,6 @@
 # ratesci 0.3-0.9000 (2021-mm-dd)
 
 ## To-do
-* [Add checks on valid discriminants when solving quadratics 
-  - produce warning & highlight on plot of score function.]
 * [Check input vector lengths match]
 
 ## New features
@@ -12,7 +10,8 @@
 * Added xlim and ylim arguments to control plot output.
 * Added sda argument to control sparse data adjustment (needs work to improve versatility).
 * Added INV option for weights that omit the bias correction.
-* Added RRtang argument to apply Tang's alternative score for stratified RR with INV/IVS weights.
+* Added RRtang argument to apply Tang's alternative score Stheta = (p1hat - p2hat * theta)/p2d 
+for stratified RR with INV/IVS weights.
 * Added simplified skewness correction option.
 * Introduced warning and plot features for very rare occasions when quadratic 
   skewness correction has a negative discriminant.

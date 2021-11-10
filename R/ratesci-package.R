@@ -57,6 +57,10 @@
 #' difference or non-unity relative risk. Statistics in Medicine 1990;
 #' 9(12):1447–1454.
 #'
+#' Tang Y. Score confidence intervals and sample sizes for stratified
+#' comparisons of binomial proportions. Statistics in Medicine 2020;
+#' 39:3427–3457.
+#'
 #' Newcombe RG. Interval estimation for the difference between independent
 #' proportions: comparison of eleven methods. Statistics in Medicine 1998;
 #' 17(8):873-890.

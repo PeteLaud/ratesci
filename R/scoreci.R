@@ -37,8 +37,6 @@
 #'   NULL) indicating whether to apply additional bias correction for OR derived
 #'   from Gart 1985. (Corrigendum to Laud 2017, published May 2018).
 #'   Only applies if contrast is "OR".
-#' @param RRtang Logical (default TRUE) indicating whether to use Tang's score
-#'   for contrast = "RR". Ignored for other contrasts, or if weights = 'MH'.
 #' @param bcf Logical (default TRUE) indicating whether to apply bias correction
 #'   in the score denominator. Applicable to distrib = "bin" only. (NB: bcf =
 #'   FALSE option is really only included for legacy validation against previous
@@ -69,8 +67,6 @@
 #'   x-axis of plots (useful for ratio contrasts which can be infinite).
 #' @param xlim pair of values indicating range of values to be plotted.
 #' @param ylim pair of values indicating range of values to be plotted.
-#' @param hetplot Logical (default FALSE) indicating whether to output plots for
-#'   evaluating heterogeneity of stratified datasets.
 #' @param stratified Logical (default FALSE) indicating whether to combine
 #'   vector inputs into a single stratified analysis.
 #'   IMPORTANT NOTE: The mechanism for stratified calculations is enabled for
@@ -82,11 +78,17 @@
 #'   "INV" = Tang's inverse variance weights (bias correction omitted),
 #'   "MH" = Mantel-Haenszel,
 #'   "MN" = Miettinen-Nurminen iterative weights.
-#'   For CI consistent with a CMH test, select skew=F and use
+#'   For CI consistent with a CMH test, select skew=FALSE and use
 #'   MH weighting for RD/RR and IVS for OR.
+#' @param wt Numeric vector containing (optional) user-specified weights.
+#' @param RRtang Logical (default TRUE) indicating whether to use Tang's score
+#'   Stheta <- (p1hat - p2hat * theta)/p2d. Only relevant for stratified = TRUE,
+#'   for contrast = "RR" and weighting = "IVS". Ignored for other contrasts,
+#'   or if weighting = "MH".
+#' @param hetplot Logical (default FALSE) indicating whether to output plots for
+#'   evaluating heterogeneity of stratified datasets.
 #' @param MNtol Numeric value indicating convergence tolerance to be used in
 #'   iteration with weighting = "MN".
-#' @param wt Numeric vector containing (optional) user-specified weights.
 #' @param tdas (deprecated: parameter renamed to random)
 #' @param random Logical (default FALSE) indicating whether to perform random
 #'   effects meta-analysis for stratified data, using the t-distribution (TDAS)
@@ -148,7 +150,8 @@
 #'           n2 = c(16, 16, 34, 56, 22, 55, 15, 58, 15, 27, 45, 30, 38),
 #'           stratified = TRUE, random = TRUE)
 #'
-#'   #Stratified example, with plots :
+#'   # Stratified example, with rare instance of non-calculable skewness correction
+#'   # seen on plot of score function:
 #'   scoreci(x1 = c(1, 16), n1 = c(20, 40), x2 = c(0, 139), n2 = c(80, 160),
 #'           contrast = 'RD', skew = TRUE, simpleskew = FALSE,
 #'           distrib = 'bin', stratified = TRUE, plot = TRUE, weighting = 'IVS')
@@ -690,7 +693,7 @@ scoreci <- function(
   if (plot == TRUE) {
     if (stratified) {
       if (hetplot == TRUE) {  #Note some problems for OR may need fixing
-#    if (sum(sqrt(V_FE)) > 0) {
+    if (sum(sqrt(V_FE)) > 0) {
       qqnorm(Stheta_FE/sqrt(V_FE))
       abline(coef = c(0, 1))
       plot(x = 1/sqrt(V_FE), y = Stheta_FE/sqrt(V_FE),
@@ -705,7 +708,7 @@ scoreci <- function(
       xrange <- seq(0.1, max(1/sqrt(V_FE)), length.out = 30)
       lines(xrange, (1.96 * sqrt(1 - xrange^2/sum(1/V_FE))), lty = 3)
       lines(xrange, (-1.96 * sqrt(1 - xrange^2/sum(1/V_FE))), lty = 3)
-#      }
+    }
       }
     }
     if (is.null(xlim)) {
