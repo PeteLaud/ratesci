@@ -1,8 +1,5 @@
 # ratesci 0.3-0.9000 (2021-mm-dd)
 
-## To-do
-* [Check input vector lengths match]
-
 ## New features
 * MN weighting in `scoreci()` now iterates to convergence (@jonjvallejo, #20).
 * `tdasci()` default uses skew=TRUE for stratum CIs.
