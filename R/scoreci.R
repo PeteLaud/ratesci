@@ -161,7 +161,7 @@
 #' )
 #'
 #' # Stratified example, with extremely rare instance of non-calculable skewness
-#'  correction seen on plot of score function:
+#' # correction seen on plot of score function:
 #' scoreci(
 #'   x1 = c(1, 16), n1 = c(20, 40), x2 = c(0, 139), n2 = c(80, 160),
 #'   contrast = "RD", skew = TRUE, simpleskew = FALSE,

@@ -75,7 +75,7 @@ stratified = "TRUE":
 "INV" = Tang's inverse variance weights (bias correction omitted),
 "MH" = Mantel-Haenszel,
 "MN" = Miettinen-Nurminen iterative weights.
-For CI consistent with a CMH test, select skew=F and use
+For CI consistent with a CMH test, select skew=FALSE and use
 MH weighting for RD/RR and IVS for OR.}
 
 \item{MNtol}{Numeric value indicating convergence tolerance to be used in

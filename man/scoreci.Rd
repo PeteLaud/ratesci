@@ -68,7 +68,9 @@ from Gart 1985. (Corrigendum to Laud 2017, published May 2018).
 Only applies if contrast is "OR".}
 
 \item{RRtang}{Logical (default TRUE) indicating whether to use Tang's score
-for contrast = "RR". Ignored for other contrasts, or if weights = 'MH'.}
+Stheta <- (p1hat - p2hat * theta)/p2d. Only relevant for stratified = TRUE,
+for contrast = "RR" and weighting = "IVS". Ignored for other contrasts,
+or if weighting = "MH".}
 
 \item{bcf}{Logical (default TRUE) indicating whether to apply bias correction
 in the score denominator. Applicable to distrib = "bin" only. (NB: bcf =
@@ -124,7 +126,7 @@ stratified = "TRUE":
 "INV" = Tang's inverse variance weights (bias correction omitted),
 "MH" = Mantel-Haenszel,
 "MN" = Miettinen-Nurminen iterative weights.
-For CI consistent with a CMH test, select skew=F and use
+For CI consistent with a CMH test, select skew=FALSE and use
 MH weighting for RD/RR and IVS for OR.}
 
 \item{MNtol}{Numeric value indicating convergence tolerance to be used in
@@ -177,48 +179,61 @@ incorporates stratum variability using a t-distribution score (inspired by
 Hartung-Knapp-Sidik-Jonkman).
 }
 \examples{
-  #Binomial RD, SCAS method:
-  scoreci(x1 = c(12, 19, 5), n1 = c(16, 29, 56),
-          x2 = c(1, 22, 0), n2 = c(16, 30, 29))
+# Binomial RD, SCAS method:
+scoreci(
+  x1 = c(12, 19, 5), n1 = c(16, 29, 56),
+  x2 = c(1, 22, 0), n2 = c(16, 30, 29)
+)
 
-  #Binomial RD, MN method:
-  scoreci(x1 = c(12, 19, 5), n1 = c(16, 29, 56),
-          x2 = c(1, 22, 0), n2 = c(16, 30, 29), skew = FALSE)
+# Binomial RD, MN method:
+scoreci(
+  x1 = c(12, 19, 5), n1 = c(16, 29, 56),
+  x2 = c(1, 22, 0), n2 = c(16, 30, 29), skew = FALSE
+)
 
-  #Poisson RR, SCAS method:
-  scoreci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR")
+# Poisson RR, SCAS method:
+scoreci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR")
 
-  #Poisson RR, MN method:
-  scoreci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi",
-          contrast = "RR", skew = FALSE)
+# Poisson RR, MN method:
+scoreci(
+  x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi",
+  contrast = "RR", skew = FALSE
+)
 
-  #Binomial rate, SCAS method:
-  scoreci(x1 = c(5, 0), n1 = c(56, 29), contrast = "p")
+# Binomial rate, SCAS method:
+scoreci(x1 = c(5, 0), n1 = c(56, 29), contrast = "p")
 
-  #Binomial rate, Wilson score method:
-  scoreci(x1 = c(5, 0), n1 = c(56, 29), contrast = "p", skew = FALSE)
+# Binomial rate, Wilson score method:
+scoreci(x1 = c(5, 0), n1 = c(56, 29), contrast = "p", skew = FALSE)
 
-  #Poisson rate, SCAS method:
-  scoreci(x1 = c(5, 0), n1 = c(56, 29), distrib = "poi", contrast = "p")
+# Poisson rate, SCAS method:
+scoreci(x1 = c(5, 0), n1 = c(56, 29), distrib = "poi", contrast = "p")
 
-  #Stratified example, using data from Hartung & Knapp:
-  scoreci(x1 = c(15, 12, 29, 42, 14, 44, 14, 29, 10, 17, 38, 19, 21),
-          x2 = c(9, 1, 18, 31, 6, 17, 7, 23, 3, 6, 12, 22, 19),
-          n1 = c(16, 16, 34, 56, 22, 54, 17, 58, 14, 26, 44, 29, 38),
-          n2 = c(16, 16, 34, 56, 22, 55, 15, 58, 15, 27, 45, 30, 38),
-          stratified = TRUE)
+# Stratified example, using data from Hartung & Knapp:
+scoreci(
+  x1 = c(15, 12, 29, 42, 14, 44, 14, 29, 10, 17, 38, 19, 21),
+  x2 = c(9, 1, 18, 31, 6, 17, 7, 23, 3, 6, 12, 22, 19),
+  n1 = c(16, 16, 34, 56, 22, 54, 17, 58, 14, 26, 44, 29, 38),
+  n2 = c(16, 16, 34, 56, 22, 55, 15, 58, 15, 27, 45, 30, 38),
+  stratified = TRUE
+)
 
-  #TDAS example, using data from Hartung & Knapp:
-  scoreci(x1 = c(15, 12, 29, 42, 14, 44, 14, 29, 10, 17, 38, 19, 21),
-          x2 = c(9, 1, 18, 31, 6, 17, 7, 23, 3, 6, 12, 22, 19),
-          n1 = c(16, 16, 34, 56, 22, 54, 17, 58, 14, 26, 44, 29, 38),
-          n2 = c(16, 16, 34, 56, 22, 55, 15, 58, 15, 27, 45, 30, 38),
-          stratified = TRUE, random = TRUE)
+# TDAS example, using data from Hartung & Knapp:
+scoreci(
+  x1 = c(15, 12, 29, 42, 14, 44, 14, 29, 10, 17, 38, 19, 21),
+  x2 = c(9, 1, 18, 31, 6, 17, 7, 23, 3, 6, 12, 22, 19),
+  n1 = c(16, 16, 34, 56, 22, 54, 17, 58, 14, 26, 44, 29, 38),
+  n2 = c(16, 16, 34, 56, 22, 55, 15, 58, 15, 27, 45, 30, 38),
+  stratified = TRUE, random = TRUE
+)
 
-  #Stratified example, with plots :
-  scoreci(x1 = c(1, 16), n1 = c(20, 40), x2 = c(0, 139), n2 = c(80, 160),
-          contrast = 'RD', skew = TRUE, simpleskew = FALSE,
-          distrib = 'bin', stratified = TRUE, plot = TRUE, weighting = 'IVS')
+# Stratified example, with extremely rare instance of non-calculable skewness
+# correction seen on plot of score function:
+scoreci(
+  x1 = c(1, 16), n1 = c(20, 40), x2 = c(0, 139), n2 = c(80, 160),
+  contrast = "RD", skew = TRUE, simpleskew = FALSE,
+  distrib = "bin", stratified = TRUE, plot = TRUE, weighting = "IVS"
+)
 
 }
 \references{

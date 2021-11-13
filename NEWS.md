@@ -7,9 +7,10 @@
 * Added xlim and ylim arguments to control plot output.
 * Added sda argument to control sparse data adjustment (needs work to improve versatility).
 * Added INV option for weights that omit the bias correction.
-* Added RRtang argument to apply Tang's alternative score Stheta = (p1hat - p2hat * theta)/p2d 
-for stratified RR with INV/IVS weights.
-* Added simplified skewness correction option.
+* Added RRtang argument to apply Tang's alternative score (see Tang 2020)
+    Stheta = (p1hat - p2hat * theta)/p2d 
+  for stratified RR with INV/IVS weights.
+* Added simplified skewness correction option (see Tang 2021 & Laud 2021).
 * Introduced warning and plot features for very rare occasions when quadratic 
   skewness correction has a negative discriminant.
 * Changed ORbias default to TRUE.
@@ -21,7 +22,7 @@ for stratified RR with INV/IVS weights.
 * Fixed bug in `scoreci()` for distrib="poi" and contrast="p" (#7).
 * Fixed finite precision bug in `scaspci()`.
 * Fixed bug in `rateci()` for closed-form calculation of continuity-corrected SCAS.
-* Fixed bug in `scoreci()` for stratified zero scores calculated as NA, resulting in UL=0.
+* Fixed bug in `scoreci()` for stratified zero scores calculated as NA, resulting in UL=0. (Thanks to Lidia Mukina for reporting the bug.)
 
 ## Other
 * Renamed tdas argument to 'random'.
