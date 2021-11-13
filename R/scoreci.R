@@ -112,49 +112,61 @@
 #'   the selected weighting method} \item{stratdata}{a matrix containing stratum
 #'   estimates and weights}}
 #' @examples
-#'   #Binomial RD, SCAS method:
-#'   scoreci(x1 = c(12, 19, 5), n1 = c(16, 29, 56),
-#'           x2 = c(1, 22, 0), n2 = c(16, 30, 29))
+#' # Binomial RD, SCAS method:
+#' scoreci(
+#'   x1 = c(12, 19, 5), n1 = c(16, 29, 56),
+#'   x2 = c(1, 22, 0), n2 = c(16, 30, 29)
+#' )
 #'
-#'   #Binomial RD, MN method:
-#'   scoreci(x1 = c(12, 19, 5), n1 = c(16, 29, 56),
-#'           x2 = c(1, 22, 0), n2 = c(16, 30, 29), skew = FALSE)
+#' # Binomial RD, MN method:
+#' scoreci(
+#'   x1 = c(12, 19, 5), n1 = c(16, 29, 56),
+#'   x2 = c(1, 22, 0), n2 = c(16, 30, 29), skew = FALSE
+#' )
 #'
-#'   #Poisson RR, SCAS method:
-#'   scoreci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR")
+#' # Poisson RR, SCAS method:
+#' scoreci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi", contrast = "RR")
 #'
-#'   #Poisson RR, MN method:
-#'   scoreci(x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi",
-#'           contrast = "RR", skew = FALSE)
+#' # Poisson RR, MN method:
+#' scoreci(
+#'   x1 = 5, n1 = 56, x2 = 0, n2 = 29, distrib = "poi",
+#'   contrast = "RR", skew = FALSE
+#' )
 #'
-#'   #Binomial rate, SCAS method:
-#'   scoreci(x1 = c(5, 0), n1 = c(56, 29), contrast = "p")
+#' # Binomial rate, SCAS method:
+#' scoreci(x1 = c(5, 0), n1 = c(56, 29), contrast = "p")
 #'
-#'   #Binomial rate, Wilson score method:
-#'   scoreci(x1 = c(5, 0), n1 = c(56, 29), contrast = "p", skew = FALSE)
+#' # Binomial rate, Wilson score method:
+#' scoreci(x1 = c(5, 0), n1 = c(56, 29), contrast = "p", skew = FALSE)
 #'
-#'   #Poisson rate, SCAS method:
-#'   scoreci(x1 = c(5, 0), n1 = c(56, 29), distrib = "poi", contrast = "p")
+#' # Poisson rate, SCAS method:
+#' scoreci(x1 = c(5, 0), n1 = c(56, 29), distrib = "poi", contrast = "p")
 #'
-#'   #Stratified example, using data from Hartung & Knapp:
-#'   scoreci(x1 = c(15, 12, 29, 42, 14, 44, 14, 29, 10, 17, 38, 19, 21),
-#'           x2 = c(9, 1, 18, 31, 6, 17, 7, 23, 3, 6, 12, 22, 19),
-#'           n1 = c(16, 16, 34, 56, 22, 54, 17, 58, 14, 26, 44, 29, 38),
-#'           n2 = c(16, 16, 34, 56, 22, 55, 15, 58, 15, 27, 45, 30, 38),
-#'           stratified = TRUE)
+#' # Stratified example, using data from Hartung & Knapp:
+#' scoreci(
+#'   x1 = c(15, 12, 29, 42, 14, 44, 14, 29, 10, 17, 38, 19, 21),
+#'   x2 = c(9, 1, 18, 31, 6, 17, 7, 23, 3, 6, 12, 22, 19),
+#'   n1 = c(16, 16, 34, 56, 22, 54, 17, 58, 14, 26, 44, 29, 38),
+#'   n2 = c(16, 16, 34, 56, 22, 55, 15, 58, 15, 27, 45, 30, 38),
+#'   stratified = TRUE
+#' )
 #'
-#'   #TDAS example, using data from Hartung & Knapp:
-#'   scoreci(x1 = c(15, 12, 29, 42, 14, 44, 14, 29, 10, 17, 38, 19, 21),
-#'           x2 = c(9, 1, 18, 31, 6, 17, 7, 23, 3, 6, 12, 22, 19),
-#'           n1 = c(16, 16, 34, 56, 22, 54, 17, 58, 14, 26, 44, 29, 38),
-#'           n2 = c(16, 16, 34, 56, 22, 55, 15, 58, 15, 27, 45, 30, 38),
-#'           stratified = TRUE, random = TRUE)
+#' # TDAS example, using data from Hartung & Knapp:
+#' scoreci(
+#'   x1 = c(15, 12, 29, 42, 14, 44, 14, 29, 10, 17, 38, 19, 21),
+#'   x2 = c(9, 1, 18, 31, 6, 17, 7, 23, 3, 6, 12, 22, 19),
+#'   n1 = c(16, 16, 34, 56, 22, 54, 17, 58, 14, 26, 44, 29, 38),
+#'   n2 = c(16, 16, 34, 56, 22, 55, 15, 58, 15, 27, 45, 30, 38),
+#'   stratified = TRUE, random = TRUE
+#' )
 #'
-#'   # Stratified example, with rare instance of non-calculable skewness correction
-#'   # seen on plot of score function:
-#'   scoreci(x1 = c(1, 16), n1 = c(20, 40), x2 = c(0, 139), n2 = c(80, 160),
-#'           contrast = 'RD', skew = TRUE, simpleskew = FALSE,
-#'           distrib = 'bin', stratified = TRUE, plot = TRUE, weighting = 'IVS')
+#' # Stratified example, with extremely rare instance of non-calculable skewness
+#'  correction seen on plot of score function:
+#' scoreci(
+#'   x1 = c(1, 16), n1 = c(20, 40), x2 = c(0, 139), n2 = c(80, 160),
+#'   contrast = "RD", skew = TRUE, simpleskew = FALSE,
+#'   distrib = "bin", stratified = TRUE, plot = TRUE, weighting = "IVS"
+#' )
 #'
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references Laud PJ. Equal-tailed confidence intervals for comparison of
@@ -192,41 +204,41 @@
 #'   39:3427–3457.
 #'
 #' @export
-scoreci <- function(
-  x1,
-  n1,
-  x2 = NULL,
-  n2 = NULL,
-  distrib = "bin",
-  contrast = "RD",
-  level = 0.95,
-  skew = TRUE,
-  simpleskew = FALSE,
-  ORbias = TRUE,
-  RRtang = TRUE,
-  bcf = TRUE,
-  cc = FALSE,
-  sda = NULL,
-  theta0 = NULL,
-  precis = 6,
-  plot = FALSE,
-  plotmax = 100,
-  hetplot = FALSE,
-  xlim = NULL,
-  ylim = NULL,
-  stratified = FALSE,
-  weighting = "IVS",
-  MNtol = 1E-8,
-  wt = NULL,
-  tdas = NULL,
-  random = FALSE,
-  prediction = FALSE,
-  warn = TRUE,
-  ...
-  ) {
+scoreci <- function(x1,
+                    n1,
+                    x2 = NULL,
+                    n2 = NULL,
+                    distrib = "bin",
+                    contrast = "RD",
+                    level = 0.95,
+                    skew = TRUE,
+                    simpleskew = FALSE,
+                    ORbias = TRUE,
+                    RRtang = TRUE,
+                    bcf = TRUE,
+                    cc = FALSE,
+                    sda = NULL,
+                    theta0 = NULL,
+                    precis = 6,
+                    plot = FALSE,
+                    plotmax = 100,
+                    hetplot = FALSE,
+                    xlim = NULL,
+                    ylim = NULL,
+                    stratified = FALSE,
+                    weighting = "IVS",
+                    MNtol = 1E-8,
+                    wt = NULL,
+                    tdas = NULL,
+                    random = FALSE,
+                    prediction = FALSE,
+                    warn = TRUE,
+                    ...) {
   if (!missing(tdas)) {
-    warning("argument tdas is deprecated; please use random instead.",
-            call. = FALSE)
+    warning(
+      "argument tdas is deprecated; please use random instead.",
+      call. = FALSE
+    )
     random <- tdas
   }
   if (!(tolower(substr(distrib, 1, 3)) %in% c("bin", "poi"))) {
@@ -263,7 +275,9 @@ scoreci <- function(
   if (is.null(sda)) {
     if (weighting %in% c("IVS", "INV") && contrast %in% c("RD", "RR")) {
       sda <- 0.5
-    } else sda <- 0
+    } else {
+      sda <- 0
+    }
   }
   if (!is.null(theta0)) {
     if (contrast == "RD") {
@@ -286,14 +300,16 @@ scoreci <- function(
     print("MN weights not applicable to the single rate")
     stop()
   }
-  if (cc != FALSE && stratified ==TRUE && contrast != "OR") {
-    print(paste("Warning: Continuity correction is experimental for",
-          "stratified RD and RR"))
+  if (cc != FALSE && stratified == TRUE && contrast != "OR") {
+    print(paste(
+      "Warning: Continuity correction is experimental for",
+      "stratified RD and RR"
+    ))
   }
-  #Tang score intended only for IVS/INV weighting -
-  #Tang p3431 does not use it for MH weights.
+  # Tang score intended only for IVS/INV weighting -
+  # Tang p3431 does not use it for MH weights.
   if (!(distrib == "bin" && contrast == "RR" &&
-        weighting %in% c("IVS", "INV"))) {
+    weighting %in% c("IVS", "INV"))) {
     RRtang <- FALSE
   }
   if (as.character(cc) == "TRUE") cc <- 0.5
@@ -305,21 +321,21 @@ scoreci <- function(
     n2 <- rep(n2, length.out = nstrat)
   }
 
-  #check for empty strata, and for uninformative strata
+  # check for empty strata, and for uninformative strata
   if (stratified == TRUE) {
     # for stratified calculations, remove any strata with no observations
     if (contrast == "p") {
       empty_strat <- (n1 == 0)
-    } else
-        empty_strat <- (n1 == 0 | n2 == 0 )  |
-    # Also drop uninformative strata for RR & OR
-    # Note for OR_IVS such strata should actually have zero weight(?)
-    # It would be preferable to include in the analysis with zero weight
-    # to avoid ITT concerns
-##              ((weighting == "IVS") &
-              ((contrast %in% c("RR","OR") & (x1 == 0 & x2 == 0)) |
-              (contrast == "OR" & (x1 == n1 & x2 == n2)))
-##              )
+    } else {
+      empty_strat <- (n1 == 0 | n2 == 0) |
+        # Also drop uninformative strata for RR & OR
+        # Note for OR_IVS such strata should actually have zero weight(?)
+        # It would be preferable to include in the analysis with zero weight
+        # to avoid ITT concerns
+        ## ((weighting == "IVS") & ..
+        (contrast %in% c("RR", "OR") & (x1 == 0 & x2 == 0)) |
+          (contrast == "OR" & (x1 == n1 & x2 == n2))
+    }
 
     x1 <- x1[!empty_strat]
     n1 <- n1[!empty_strat]
@@ -327,9 +343,11 @@ scoreci <- function(
       x2 <- x2[!empty_strat]
       n2 <- n2[!empty_strat]
     }
-    if (warn == TRUE && sum(empty_strat)>0) {
-      print(paste("Note: at least one stratum contributed no information",
-                  "and was removed"))
+    if (warn == TRUE && sum(empty_strat) > 0) {
+      print(paste(
+        "Note: at least one stratum contributed no information",
+        "and was removed"
+      ))
     }
 
     # Sparse data adjustment:
@@ -340,22 +358,26 @@ scoreci <- function(
     # (but some might prefer to use sda instead of excluding empty strata.)
     # Suggest default should be sda=0.5 for RD & RR, sda=0 for OR
     if (weighting %in% c("IVS", "INV")) {
-    #  if (contrast %in% c("OR") && weighting == "MH") {
-        # ??OR struggles with zero event counts with MH weights
-    #    zero_rd <- (x1 == 0 | x2 == 0 | x1 == n1 | x2 == n2) #& !empty_strat
-    #  } else zero_rd <- 0
-      #NB could apply the same for RR/OR instead of dropping strata
-      if (contrast %in% c("RD", "RR")) { #Currently has no effect for RR
-#      if (contrast %in% c("RD")) {
-        zero_rd <- (x1 == 0 & x2 == 0) #& !empty_strat
-      } else zero_rd <- 0
+      #  if (contrast %in% c("OR") && weighting == "MH") {
+      # ??OR struggles with zero event counts with MH weights
+      #    zero_rd <- (x1 == 0 | x2 == 0 | x1 == n1 | x2 == n2) #& !empty_strat
+      #  } else zero_rd <- 0
+      # NB could apply the same for RR/OR instead of dropping strata
+      if (contrast %in% c("RD", "RR")) { # Currently has no effect for RR
+        #      if (contrast %in% c("RD")) {
+        zero_rd <- (x1 == 0 & x2 == 0) # & !empty_strat
+      } else {
+        zero_rd <- 0
+      }
       x1 <- x1 + (zero_rd * sda)
       x2 <- x2 + (zero_rd * sda)
       n1 <- n1 + (zero_rd * 2 * sda)
       n2 <- n2 + (zero_rd * 2 * sda)
-      if (contrast %in% c("RD", "RR") & distrib == 'bin') {
-        full_rd <- (x1 == n1 & x2 == n2) #& !empty_strat
-      } else full_rd <- 0
+      if (contrast %in% c("RD", "RR") & distrib == "bin") {
+        full_rd <- (x1 == n1 & x2 == n2) # & !empty_strat
+      } else {
+        full_rd <- 0
+      }
       x1 <- x1 + (full_rd * sda)
       x2 <- x2 + (full_rd * sda)
       n1 <- n1 + (full_rd * 2 * sda)
@@ -366,10 +388,10 @@ scoreci <- function(
   nstrat <- length(x1) # update nstrat after removing empty strata
   sda <- rep_len(sda, length.out = nstrat)
 
-  #Warnings if removal of empty strata leave 0 or 1 stratum
+  # Warnings if removal of empty strata leave 0 or 1 stratum
   if (stratified == TRUE && nstrat <= 1) {
     stratified <- FALSE
-    random <-  FALSE
+    random <- FALSE
     if (warn == TRUE) print("Note: only one stratum!")
   }
   if (nstrat == 0) {
@@ -380,63 +402,71 @@ scoreci <- function(
     }
   }
 
-  p1hat <- x1/n1
-  p2hat <- x2/n2
+  p1hat <- x1 / n1
+  p2hat <- x2 / n2
 
-  #wrapper function for scoretheta
-  myfun <- function(
-    theta,
-    randswitch = random,
-    ccswitch = cc,
-    stratswitch = stratified,
-    skewswitch = skew,
-    ssswitch = simpleskew,
-    predswitch = FALSE
-  ) {
-    scoretheta(theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
-               contrast = contrast, distrib = distrib, stratified = stratswitch,
-               wt = wt, weighting = weighting, MNtol = MNtol,
-               random = randswitch, prediction = predswitch, skew = skewswitch,
-               simpleskew = ssswitch, ORbias = ORbias, RRtang = RRtang,
-               cc = ccswitch, level = level)$score
+  # wrapper function for scoretheta
+  myfun <- function(theta,
+                    randswitch = random,
+                    ccswitch = cc,
+                    stratswitch = stratified,
+                    skewswitch = skew,
+                    ssswitch = simpleskew,
+                    predswitch = FALSE) {
+    scoretheta(
+      theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
+      contrast = contrast, distrib = distrib, stratified = stratswitch,
+      wt = wt, weighting = weighting, MNtol = MNtol,
+      random = randswitch, prediction = predswitch, skew = skewswitch,
+      simpleskew = ssswitch, ORbias = ORbias, RRtang = RRtang,
+      cc = ccswitch, level = level
+    )$score
   }
 
-  #wrapper function for plotting discriminants
-  mydsct <- function(
-    theta,
-    randswitch = random,
-    ccswitch = cc,
-    stratswitch = stratified,
-    predswitch = FALSE
-  ) {
-    myout <- scoretheta(theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
-                        bcf = bcf, contrast = contrast, distrib = distrib,
-                        stratified = stratswitch, wt = wt, weighting = weighting,
-                        MNtol = MNtol, random = randswitch, RRtang = RRtang,
-                        prediction = predswitch, skew = skew, ORbias = ORbias,
-                        cc = ccswitch, simpleskew = simpleskew, level = level)$dsct
+  # wrapper function for plotting discriminants
+  mydsct <- function(theta,
+                     randswitch = random,
+                     ccswitch = cc,
+                     stratswitch = stratified,
+                     predswitch = FALSE) {
+    myout <- scoretheta(
+      theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
+      bcf = bcf, contrast = contrast, distrib = distrib,
+      stratified = stratswitch, wt = wt, weighting = weighting,
+      MNtol = MNtol, random = randswitch, RRtang = RRtang,
+      prediction = predswitch, skew = skew, ORbias = ORbias,
+      cc = ccswitch, simpleskew = simpleskew, level = level
+    )$dsct
   }
 
-  #find point estimate for theta as the value where scoretheta = 0
-  #fixed effects point estimate taken with no cc
-  point_FE <- bisect(ftn = function(theta)
-    myfun(theta, randswitch = FALSE, ccswitch = 0) - 0, contrast = contrast,
-    distrib = distrib, precis = precis + 1, uplow = "low")
+  # find point estimate for theta as the value where scoretheta = 0
+  # fixed effects point estimate taken with no cc
+  point_FE <- bisect(
+    ftn = function(theta) {
+      myfun(theta, randswitch = FALSE, ccswitch = 0) - 0
+    }, contrast = contrast, distrib = distrib,
+    precis = precis + 1, uplow = "low"
+  )
   point <- point_FE
 
   # random effects point estimate if required
   if (stratified == TRUE) {
-    point <- bisect(ftn = function(theta)
-      myfun(theta, randswitch = random, ccswitch = 0) - 0, contrast = contrast,
-      distrib = distrib, precis = precis + 1, uplow = "low")
+    point <- bisect(
+      ftn = function(theta) {
+        myfun(theta, randswitch = random, ccswitch = 0) - 0
+      }, contrast = contrast, distrib = distrib,
+      precis = precis + 1, uplow = "low"
+    )
   }
 
   # fix some extreme cases with zero counts
   if (stratified == TRUE) {
-    if (skew == FALSE & contrast %in% c("RR", "OR"))
+    if (skew == FALSE & contrast %in% c("RR", "OR")) {
       point[sum(x2) > 0 & sum(x1) == 0] <- 0
-    if (skew == FALSE & contrast %in% c("RR", "OR"))
+    }
+    if (skew == FALSE & contrast %in% c("RR", "OR")) {
       point[sum(x1) > 0 & sum(x2) == 0] <- Inf
+    }
   } else {
     if (contrast %in% c("RR", "OR")) {
       point[x1 == 0 & x2 == 0] <- NA
@@ -455,52 +485,57 @@ scoreci <- function(
 
   # identify certain quantities evaluated at the maximum likelihood point
   # estimate for theta (incorporating random effects)
-  at_MLE <- scoretheta(theta = ifelse(is.na(point), 1, point), x1 = x1, x2 = x2,
-                       n1 = n1, n2 = n2,
-                       bcf = bcf, contrast = contrast,
-                       distrib = distrib, stratified = stratified,
-                       weighting = weighting, MNtol = MNtol, wt = wt,
-                       random = random, skew = skew, ORbias = ORbias,
-                       RRtang = RRtang, cc = cc, simpleskew = simpleskew, level = level)
-##  Stheta_MLE <- at_MLE$Stheta
+  at_MLE <- scoretheta(
+    theta = ifelse(is.na(point), 1, point), x1 = x1, x2 = x2,
+    n1 = n1, n2 = n2,
+    bcf = bcf, contrast = contrast,
+    distrib = distrib, stratified = stratified,
+    weighting = weighting, MNtol = MNtol, wt = wt,
+    random = random, skew = skew, ORbias = ORbias,
+    RRtang = RRtang, cc = cc, simpleskew = simpleskew, level = level
+  )
+  ##  Stheta_MLE <- at_MLE$Stheta
   p1d_MLE <- at_MLE$p1d
   p2d_MLE <- at_MLE$p2d
   wt_MLE <- at_MLE$wt
-##  V_MLE <- at_MLE$V
+  ##  V_MLE <- at_MLE$V
 
   # if stratified=TRUE, options are available for assuming fixed effects
-  # (random=FALSE) or random effects (random=TRUE). The IVS weights are different
-  # for each version, which in turn can lead to a different point estimate,
-  # at which certain quantities are evaluated. However, fixed effects
+  # (random=FALSE) or random effects (random=TRUE). The IVS weights are
+  # different for each version, which in turn can lead to a different point
+  # estimate, at which certain quantities are evaluated. However, fixed effects
   # estimates are needed for both, in particular for the heterogeneity test
   if (stratified == TRUE && nstrat > 1) {
-    at_FE <- scoretheta(theta = point_FE, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
-                        bcf = bcf, contrast = contrast,
-                        distrib = distrib, stratified = stratified,
-                        weighting = weighting, MNtol = MNtol, wt = wt,
-                        random = FALSE, skew = skew, ORbias = ORbias,
-                        RRtang = RRtang, cc = cc, simpleskew = simpleskew, level = level)
+    at_FE <- scoretheta(
+      theta = point_FE, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
+      bcf = bcf, contrast = contrast,
+      distrib = distrib, stratified = stratified,
+      weighting = weighting, MNtol = MNtol, wt = wt,
+      random = FALSE, skew = skew, ORbias = ORbias,
+      RRtang = RRtang, cc = cc, simpleskew = simpleskew, level = level
+    )
     Stheta_FE <- at_FE$Stheta
     wt_FE <- at_FE$wt
     V_FE <- at_FE$V
     tau2_FE <- at_FE$tau2
-##    Q_each <- at_FE$Q_j
+    ##    Q_each <- at_FE$Q_j
     Q_FE <- at_FE$Q
-    I2 <- max(0, 100 * (Q_FE - (nstrat - 1))/Q_FE)
+    I2 <- max(0, 100 * (Q_FE - (nstrat - 1)) / Q_FE)
     pval_het <- 1 - pchisq(Q_FE, nstrat - 1)
     # Qualitative interaction test is calculated further down
 
     # as per M&N p218 (little r), actually no longer needed for point estimate.
-    p1hat_w <- sum(wt_MLE * x1/n1)/sum(wt_MLE)
-    p2hat_w <- sum(wt_MLE * x2/n2)/sum(wt_MLE)
+    p1hat_w <- sum(wt_MLE * x1 / n1) / sum(wt_MLE)
+    p2hat_w <- sum(wt_MLE * x2 / n2) / sum(wt_MLE)
     # as per M&N p218 (big R)
-    p1d_w <- sum(wt_MLE * at_MLE$p1d)/sum(wt_MLE)
+    p1d_w <- sum(wt_MLE * at_MLE$p1d) / sum(wt_MLE)
     if (contrast != "p") {
-      p2d_w <- sum(wt_MLE * at_MLE$p2d)/sum(wt_MLE)
-    } else p2d_w <- NULL
+      p2d_w <- sum(wt_MLE * at_MLE$p2d) / sum(wt_MLE)
+    } else {
+      p2d_w <- NULL
+    }
 
     if (!is.null(wt)) weighting <- "User-defined"
-
   } else {
     # if removing empty strata leaves only one stratum treat as unstratified
     p1hat_w <- p1hat
@@ -508,59 +543,83 @@ scoreci <- function(
     p1d_w <- p1d_MLE
     if (contrast != "p") p2d_w <- p2d_MLE else p2d_w <- NULL
     wt_MLE <- NULL
-##    Sdot <- Q_each <- NULL
+    ## Sdot <- Q_each <- NULL
   }
 
-  #z- or t- quantile required for specified significance level
+  # z- or t- quantile required for specified significance level
   if (stratified == TRUE && random == TRUE) {
-    qtnorm <- qt(1 - (1 - level)/2, nstrat - 1)  #for t-distribution method
+    qtnorm <- qt(1 - (1 - level) / 2, nstrat - 1) # for t-distribution method
   } else {
-    qtnorm <- qnorm(1 - (1 - level)/2)
+    qtnorm <- qnorm(1 - (1 - level) / 2)
   }
 
   # Use bisection routine to locate lower and upper confidence limits
-  lower <- bisect(ftn = function(theta)
-    myfun(theta) - qtnorm, contrast = contrast, distrib = distrib,
-    precis = precis + 1, uplow = "low")
-  upper <- bisect(ftn = function(theta)
-    myfun(theta) + qtnorm, contrast = contrast, distrib = distrib,
-    precis = precis + 1, uplow = "up")
+  lower <- bisect(
+    ftn = function(theta) {
+      myfun(theta) - qtnorm
+    }, contrast = contrast, distrib = distrib,
+    precis = precis + 1, uplow = "low"
+  )
+  upper <- bisect(
+    ftn = function(theta) {
+      myfun(theta) + qtnorm
+    }, contrast = contrast, distrib = distrib,
+    precis = precis + 1, uplow = "up"
+  )
 
   # Produce prediction interval if required
   if (stratified == TRUE && random == TRUE && prediction == TRUE) {
-    qtnorm <- qt(1 - (1 - level)/2, nstrat - 2)
-    lowpred <- bisect(ftn = function(theta)
-      myfun(theta, predswitch = TRUE) - qtnorm, contrast = contrast,
-      distrib = distrib, precis = precis + 1, uplow = "low")
-    uppred <- bisect(ftn = function(theta)
-      myfun(theta, predswitch = TRUE) + qtnorm, contrast = contrast,
-      distrib = distrib, precis = precis + 1, uplow = "up")
+    qtnorm <- qt(1 - (1 - level) / 2, nstrat - 2)
+    lowpred <- bisect(
+      ftn = function(theta) {
+        myfun(theta, predswitch = TRUE) - qtnorm
+      }, contrast = contrast, distrib = distrib,
+      precis = precis + 1, uplow = "low"
+    )
+    uppred <- bisect(
+      ftn = function(theta) {
+        myfun(theta, predswitch = TRUE) + qtnorm
+      }, contrast = contrast, distrib = distrib,
+      precis = precis + 1, uplow = "up"
+    )
     pred <- cbind(round(cbind(Lower = lowpred, Upper = uppred), precis))
-  } else pred <- NULL
+  } else {
+    pred <- NULL
+  }
 
-  #get estimate & CI for each stratum
+  # get estimate & CI for each stratum
   if (stratified == TRUE) {
-    at_MLE_unstrat <- scoretheta(theta = point, x1 = x1, x2 = x2, n1 = n1,
-                                 n2 = n2, bcf = bcf, contrast = contrast,
-                                 distrib = distrib, stratified = FALSE,
-                                 weighting = weighting, MNtol = MNtol, wt = wt,
-                                 random = random, skew = skew, ORbias = ORbias,
-                                 RRtang = RRtang, cc = cc,
-                                 simpleskew = simpleskew, level = level)
-    point_FE_unstrat <- bisect(ftn = function(theta)
-      myfun(theta, randswitch = FALSE, ccswitch = 0, stratswitch = FALSE) - 0,
-      contrast = contrast, distrib = distrib, precis = precis + 1,
-      uplow = "low")
+    at_MLE_unstrat <- scoretheta(
+      theta = point, x1 = x1, x2 = x2, n1 = n1,
+      n2 = n2, bcf = bcf, contrast = contrast,
+      distrib = distrib, stratified = FALSE,
+      weighting = weighting, MNtol = MNtol, wt = wt,
+      random = random, skew = skew, ORbias = ORbias,
+      RRtang = RRtang, cc = cc,
+      simpleskew = simpleskew, level = level
+    )
+    point_FE_unstrat <- bisect(
+      ftn = function(theta) {
+        myfun(theta, randswitch = FALSE, ccswitch = 0, stratswitch = FALSE) - 0
+      }, contrast = contrast, distrib = distrib,
+      precis = precis + 1, uplow = "low"
+    )
     if (contrast == "RD") {
       if (distrib == "bin") point_FE_unstrat[x1 == n1 & x2 == n2] <- 0
       point_FE_unstrat[x1 == 0 & x2 == 0] <- 0
     }
-    lower_unstrat <- bisect(ftn = function(theta)
-      myfun(theta, stratswitch = FALSE) - qnorm(1 - (1 - level)/2),
-      contrast = contrast, distrib = distrib, precis = precis + 1, uplow = "low")
-    upper_unstrat <- bisect(ftn = function(theta)
-      myfun(theta, stratswitch = FALSE) + qnorm(1 - (1 - level)/2),
-      contrast = contrast, distrib = distrib, precis = precis + 1, uplow = "up")
+    lower_unstrat <- bisect(
+      ftn = function(theta) {
+        myfun(theta, stratswitch = FALSE) - qnorm(1 - (1 - level) / 2)
+      }, contrast = contrast, distrib = distrib,
+      precis = precis + 1, uplow = "low"
+    )
+    upper_unstrat <- bisect(
+      ftn = function(theta) {
+        myfun(theta, stratswitch = FALSE) + qnorm(1 - (1 - level) / 2)
+      }, contrast = contrast, distrib = distrib,
+      precis = precis + 1, uplow = "up"
+    )
     if (contrast %in% c("RR", "OR")) {
       lower_unstrat[x1 == 0] <- 0
       upper_unstrat[x2 == 0] <- Inf
@@ -568,7 +627,7 @@ scoreci <- function(
   }
 
   # fix some extreme cases with zero counts
-  #if (contrast == "RR" && skew == FALSE) p2d_w[sum(x2) == 0] <- 0
+  # if (contrast == "RR" && skew == FALSE) p2d_w[sum(x2) == 0] <- 0
 
   if (contrast %in% c("RR", "OR")) {
     if (stratified == FALSE) {
@@ -578,7 +637,7 @@ scoreci <- function(
       lower[sum(x1) == 0] <- 0
       upper[sum(x2) == 0] <- Inf
       point[sum(x2) == 0 & sum(x1) == 0] <- NA
-      upper[upper>1e+15] <- Inf
+      upper[upper > 1e+15] <- Inf
     }
   }
   if (contrast %in% c("OR")) {
@@ -593,12 +652,15 @@ scoreci <- function(
   if (stratified == FALSE) {
     inputs <- cbind(x1 = x1, n1 = n1)
     if (contrast != "p") inputs <- cbind(inputs, x2 = x2, n2 = n2)
-  } else inputs <- NULL
+  } else {
+    inputs <- NULL
+  }
 
   estimates <- cbind(
     round(cbind(Lower = lower, MLE = point, Upper = upper), precis),
     level = level, inputs,
-    p1hat = p1hat_w, p2hat = p2hat_w, p1mle = p1d_w, p2mle = p2d_w)
+    p1hat = p1hat_w, p2hat = p2hat_w, p1mle = p1d_w, p2mle = p2d_w
+  )
 
   # optionally add p-value for a test of null hypothesis: theta<=theta0
   # default value of theta0 depends on contrast
@@ -606,34 +668,45 @@ scoreci <- function(
     theta00 <- 0
   } else if (contrast == "p") {
     theta00 <- 0.5
-  } else theta00 <- 1
+  } else {
+    theta00 <- 1
+  }
   if (is.null(theta0)) {
     theta0 <- theta00
   }
-  scorezero <- scoretheta(theta = theta00, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
-                          stratified = stratified,
-                          wt = wt, weighting = weighting, MNtol = MNtol,
-                          random = random, bcf = bcf, contrast = contrast,
-                          distrib = distrib, skew = skew, ORbias = ORbias,
-                          RRtang = RRtang, cc = cc, simpleskew = simpleskew, level = level)
-  scorenull <- scoretheta(theta = theta0, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
-                           stratified = stratified, wt = wt,
-                           weighting = weighting, MNtol = MNtol, random = random,
-                           bcf = bcf, contrast = contrast, distrib = distrib,
-                           skew = skew, ORbias = ORbias, RRtang = RRtang,
-                          cc = cc, simpleskew = simpleskew, level = level)
+  scorezero <- scoretheta(
+    theta = theta00, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
+    stratified = stratified,
+    wt = wt, weighting = weighting, MNtol = MNtol,
+    random = random, bcf = bcf, contrast = contrast,
+    distrib = distrib, skew = skew, ORbias = ORbias,
+    RRtang = RRtang, cc = cc, simpleskew = simpleskew, level = level
+  )
+  scorenull <- scoretheta(
+    theta = theta0, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
+    stratified = stratified, wt = wt,
+    weighting = weighting, MNtol = MNtol, random = random,
+    bcf = bcf, contrast = contrast, distrib = distrib,
+    skew = skew, ORbias = ORbias, RRtang = RRtang,
+    cc = cc, simpleskew = simpleskew, level = level
+  )
   pval_left <- scorenull$pval
   pval_right <- 1 - pval_left
   chisq_zero <- scorezero$score^2
   pval2sided <- pchisq(chisq_zero, 1, lower.tail = FALSE)
-  if (random == TRUE) pval2sided <- pf(chisq_zero, 1, nstrat - 1,
-                                     lower.tail = FALSE)
-  pval <- cbind(chisq = chisq_zero, pval2sided, theta0 = theta0,
-                scorenull = scorenull$score, pval_left, pval_right)
+  if (random == TRUE) {
+    pval2sided <- pf(chisq_zero, 1, nstrat - 1,
+      lower.tail = FALSE
+    )
+  }
+  pval <- cbind(
+    chisq = chisq_zero, pval2sided, theta0 = theta0,
+    scorenull = scorenull$score, pval_left, pval_right
+  )
 
-  #Add qualitative interaction test as per equation S4 of Laud 2017
+  # Add qualitative interaction test as per equation S4 of Laud 2017
   if (stratified == TRUE && nstrat > 1) {
-    #V is evaluated at the fixed effects MLE
+    # V is evaluated at the fixed effects MLE
     Qc_j <- (scorenull$Stheta)^2 / at_FE$V
     Qc_m <- sum(Qc_j[scorenull$Stheta > 0])
     Qc_p <- sum(Qc_j[scorenull$Stheta < 0])
@@ -645,45 +718,54 @@ scoreci <- function(
     }
   }
 
-  #Warn for negative discriminant in skewness corrected score
+  # Warn for negative discriminant in skewness corrected score
   if (stratified == TRUE) {
     fullseq <- seq(-1, 1, length.out = 400)
-    #generalise for RR/OR
+    # generalise for RR/OR
     if (contrast %in% c("RR", "OR")) {
-      fullseq <- (round(tan(pi * (fullseq + 1)/4), 10))
+      fullseq <- (round(tan(pi * (fullseq + 1) / 4), 10))
     }
     dt <- array(sapply(fullseq, function(x) mydsct(x)),
-              dim = c(1, length(fullseq)))
+      dim = c(1, length(fullseq))
+    )
     if (any(dt[!is.na(dt)] < 0)) {
       if (skew == TRUE && simpleskew == FALSE && random == FALSE) {
         badrange <- range(fullseq[dt < 0], na.rm = TRUE)
         warning(paste0(
-       "Negative discriminant (min: ", round(min(dt, na.rm=T), 4),
-        ") in quadratic skewness corrected score between (",
-       paste(round(badrange, 5), collapse=','),
-       "). Simplified skewness correction used in this range."),
-        call. = FALSE)
+          "Negative discriminant (min: ", round(min(dt, na.rm = T), 4),
+          ") in quadratic skewness corrected score between (",
+          paste(round(badrange, 5), collapse = ","),
+          "). Simplified skewness correction used in this range."
+        ),
+        call. = FALSE
+        )
       }
     }
   }
 
-  #Create flag to identify where negative discriminants occur within the plotting range
+  # Create flag to identify where negative discriminants occur within the
+  # plotting range
   if (is.null(xlim)) {
     if (contrast == "RD") {
       if (distrib == "bin") {
-        xlim <- c(max(-1, min(lower - (upper - lower)/2)),
-                  min(1, max(upper + (upper - lower)/2)))
+        xlim <- c(
+          max(-1, min(lower - (upper - lower) / 2)),
+          min(1, max(upper + (upper - lower) / 2))
+        )
       } else if (distrib == "poi") {
-        xlim <- c(lower - (upper - lower)/2, upper + (upper - lower)/2)
+        xlim <- c(lower - (upper - lower) / 2, upper + (upper - lower) / 2)
       }
-    } else xlim <- c(max(0, min(0.5 * lower)), min(plotmax, max(1.5 * upper)))
+    } else {
+      xlim <- c(max(0, min(0.5 * lower)), min(plotmax, max(1.5 * upper)))
+    }
   }
   myseq <- seq(xlim[1], xlim[2], length.out = 1000)
   if (stratified) dim1 <- 1 else dim1 <- nstrat
   dtseg <- array(sapply(myseq, function(x) mydsct(x)),
-                 dim = c(dim1, length(myseq)))
+    dim = c(dim1, length(myseq))
+  )
   dtflag <- FALSE
-  if (any(dtseg[!is.na(dtseg)] < 0) && skew==T && !simpleskew) {
+  if (any(dtseg[!is.na(dtseg)] < 0) && skew == T && !simpleskew) {
     dtflag <- TRUE
   }
   # Optional plot of the score function.
@@ -692,68 +774,86 @@ scoreci <- function(
   # purposes.
   if (plot == TRUE) {
     if (stratified) {
-      if (hetplot == TRUE) {  #Note some problems for OR may need fixing
-    if (sum(sqrt(V_FE)) > 0) {
-      qqnorm(Stheta_FE/sqrt(V_FE))
-      abline(coef = c(0, 1))
-      plot(x = 1/sqrt(V_FE), y = Stheta_FE/sqrt(V_FE),
-           xlab = expression("1/"*sqrt("V"["j"])),
-           ylab = expression("S"["j"]*"("*theta*")/"*sqrt("V")),
-           xlim = c(0, max(1/sqrt(V_FE))),
-           ylim = range(c(-2.5, 2.5, Stheta_FE/sqrt(V_FE))),
-           main = expression("Galbraith plot for S"["j"]*"("*theta*")"))
-      abline(coef = c(0, 0))
-      abline(coef = c(1.96, 0), lty = 2)
-      abline(coef = c(-1.96, 0), lty = 2)
-      xrange <- seq(0.1, max(1/sqrt(V_FE)), length.out = 30)
-      lines(xrange, (1.96 * sqrt(1 - xrange^2/sum(1/V_FE))), lty = 3)
-      lines(xrange, (-1.96 * sqrt(1 - xrange^2/sum(1/V_FE))), lty = 3)
-    }
+      if (hetplot == TRUE) { # Note some problems for OR may need fixing
+        if (sum(sqrt(V_FE)) > 0) {
+          qqnorm(Stheta_FE / sqrt(V_FE))
+          abline(coef = c(0, 1))
+          plot(
+            x = 1 / sqrt(V_FE), y = Stheta_FE / sqrt(V_FE),
+            xlab = expression("1/" * sqrt("V"["j"])),
+            ylab = expression("S"["j"] * "(" * theta * ")/" * sqrt("V")),
+            xlim = c(0, max(1 / sqrt(V_FE))),
+            ylim = range(c(-2.5, 2.5, Stheta_FE / sqrt(V_FE))),
+            main = expression("Galbraith plot for S"["j"] * "(" * theta * ")")
+          )
+          abline(coef = c(0, 0))
+          abline(coef = c(1.96, 0), lty = 2)
+          abline(coef = c(-1.96, 0), lty = 2)
+          xrange <- seq(0.1, max(1 / sqrt(V_FE)), length.out = 30)
+          lines(xrange, (1.96 * sqrt(1 - xrange^2 / sum(1 / V_FE))), lty = 3)
+          lines(xrange, (-1.96 * sqrt(1 - xrange^2 / sum(1 / V_FE))), lty = 3)
+        }
       }
     }
     if (is.null(xlim)) {
       if (contrast == "RD") {
         if (distrib == "bin") {
-          xlim <- c(max(-1, min(lower - (upper - lower)/2)),
-                    min(1, max(upper + (upper - lower)/2)))
+          xlim <- c(
+            max(-1, min(lower - (upper - lower) / 2)),
+            min(1, max(upper + (upper - lower) / 2))
+          )
         } else if (distrib == "poi") {
-          xlim <- c(lower - (upper - lower)/2, upper + (upper - lower)/2)
+          xlim <- c(lower - (upper - lower) / 2, upper + (upper - lower) / 2)
         }
-      } else xlim <- c(max(0, min(0.5 * lower)), min(plotmax, max(1.5 * upper)))
+      } else {
+        xlim <- c(max(0, min(0.5 * lower)), min(plotmax, max(1.5 * upper)))
+      }
     }
     myseq <- seq(xlim[1], xlim[2], length.out = 400)
     if (stratified) dim1 <- 1 else dim1 <- nstrat
     sc <- array(sapply(myseq, function(x) myfun(x)),
-                dim = c(dim1, length(myseq)))
+      dim = c(dim1, length(myseq))
+    )
     ssc <- array(sapply(myseq, function(x) myfun(x, ssswitch = TRUE)),
-                dim = c(dim1, length(myseq)))
+      dim = c(dim1, length(myseq))
+    )
     uc <- array(sapply(myseq, function(x) myfun(x, skewswitch = FALSE)),
-                dim = c(dim1, length(myseq)))
+      dim = c(dim1, length(myseq))
+    )
     dtseg <- array(sapply(myseq, function(x) mydsct(x)),
-                dim = c(dim1, length(myseq)))
+      dim = c(dim1, length(myseq))
+    )
 
     if (stratified == FALSE) {
       qnval <- qtnorm
       if (is.null(ylim)) ylim <- c(-2.5, 2.5) * qnval
       for (i in 1:nstrat) {
-        plot(myseq, sc[i, ], type = "l", xlim = xlim, ylim = ylim,
-             xlab = contrast, yaxs = "i", ylab = "Score", col = "blue",
-             main = paste0("Score function for ",
-                           ifelse(distrib == "bin", "binomial", "Poisson"),
-                           " ", contrast, "\n", x1[i], "/", n1[i],
-                           ifelse(contrast == "p", "",
-                                  paste0(" vs ", x2[i], "/", n2[i])))
-             #log = ifelse(contrast == "RD", "", "x")
+        plot(myseq, sc[i, ],
+          type = "l", xlim = xlim, ylim = ylim,
+          xlab = contrast, yaxs = "i", ylab = "Score", col = "blue",
+          main = paste0(
+            "Score function for ",
+            ifelse(distrib == "bin", "binomial", "Poisson"),
+            " ", contrast, "\n", x1[i], "/", n1[i],
+            ifelse(contrast == "p", "",
+              paste0(" vs ", x2[i], "/", n2[i])
+            )
+          )
+          # log = ifelse(contrast == "RD", "", "x")
         )
-        if (any(dtseg[!is.na(dtseg)] < 0) && skew==T && !simpleskew) {
+        if (any(dtseg[!is.na(dtseg)] < 0) && skew == T && !simpleskew) {
           lines(myseq, ssc[i, ], col = "grey", lty = 2)
-#          lines(myseq[dtseg < 0], uc[i, dtseg < 0], col = "green", lty = 1)
-#          lines(myseq, uc[i, ], col = "green", lty = 3)
+          # lines(myseq[dtseg < 0], uc[i, dtseg < 0], col = "green", lty = 1)
+          # lines(myseq, uc[i, ], col = "green", lty = 3)
         }
-        text(x = c(lower[i], point[i], upper[i]), y = c(-1.5, -1.75, -2) * qnval,
-             labels = formatC(c(lower[i], point[i], upper[i]), format = "fg",
-                              4, flag = "#"),
-             pos = 4, offset = -0.2, cex = 0.8, xpd = TRUE)
+        text(
+          x = c(lower[i], point[i], upper[i]), y = c(-1.5, -1.75, -2) * qnval,
+          labels = formatC(c(lower[i], point[i], upper[i]),
+            format = "fg",
+            4, flag = "#"
+          ),
+          pos = 4, offset = -0.2, cex = 0.8, xpd = TRUE
+        )
         abline(h = c(-1, 1) * qnval)
         abline(h = 0, lty = 2)
         lines(rep(lower[i], 2), c(ylim[1], -1.5 * qnval - 0.3), lty = 3)
@@ -765,23 +865,26 @@ scoreci <- function(
       }
     } else if (stratified == TRUE) {
       qtval <- qtnorm
-      if (is.null(ylim)) ylim <-  c(-2.5, 2.5) * qtval
-      sc[1, dtseg < 0] <- NA #Remove points from plot though they are used in bisection routine
-      plot(myseq, sc[1, ], type = "l", ylim = ylim, xlab = contrast,
-           ylab = "Score", yaxs = "i", col = "blue",
-           main = paste("Score function for",
-                      ifelse(distrib == "bin", "binomial", "Poisson"),
-                      contrast,
-                      "\n", paste(x1, collapse=","), "/",
-                      paste(n1, collapse=","),
-                      " vs ", paste(x2, collapse=","), "/",
-                      paste(n2, collapse=","))
-           #log = ifelse(contrast == "RD", "", "x")
+      if (is.null(ylim)) ylim <- c(-2.5, 2.5) * qtval
+      # Remove points from plot though they are used in bisection routine
+      sc[1, dtseg < 0] <- NA
+      plot(myseq, sc[1, ],
+        type = "l", ylim = ylim, xlab = contrast,
+        ylab = "Score", yaxs = "i", col = "blue",
+        main = paste(
+          "Score function for",
+          ifelse(distrib == "bin", "binomial", "Poisson"),
+          contrast, "\n", paste(x1, collapse = ","), "/",
+          paste(n1, collapse = ","),
+          " vs ", paste(x2, collapse = ","), "/",
+          paste(n2, collapse = ",")
+        )
+        # log = ifelse(contrast == "RD", "", "x")
       )
-      if (any(dtseg[!is.na(dtseg)] < 0) && skew==T && !simpleskew) {
+      if (any(dtseg[!is.na(dtseg)] < 0) && skew == T && !simpleskew) {
         lines(myseq, ssc[1, ], col = "grey", lty = 2)
-#        lines(myseq[dtseg < 0], uc[1, dtseg < 0], col = "green", lty = 1)
-#        lines(myseq, uc[1, ], col = "green", lty = 2)
+        # lines(myseq[dtseg < 0], uc[1, dtseg < 0], col = "green", lty = 1)
+        # lines(myseq, uc[1, ], col = "green", lty = 2)
       }
       abline(h = c(-1, 1) * qtval)
       abline(h = 0, lty = 2)
@@ -791,35 +894,48 @@ scoreci <- function(
       lines(rep(upper, 2), c(-2 * qtval + 0.4, -qtval), lty = 3)
       lines(rep(point, 2), c(ylim[1], -1.75 * qtval - 0.3), lty = 3)
       lines(rep(point, 2), c(-1.75 * qtval + 0.4, 0), lty = 3)
-      text(x = c(lower, point, upper), y = c(-1.5, -1.75, -2) * qtval,
-           labels = formatC(c(lower, point, upper), format = "fg", 4,
-                            flag = "#"),
-           pos = 4, offset = -0.2, cex = 0.8, xpd = TRUE)
+      text(
+        x = c(lower, point, upper), y = c(-1.5, -1.75, -2) * qtval,
+        labels = formatC(c(lower, point, upper),
+          format = "fg", 4,
+          flag = "#"
+        ),
+        pos = 4, offset = -0.2, cex = 0.8, xpd = TRUE
+      )
     }
   }
 
   outlist <- list(estimates = estimates, pval = pval)
   if (stratified == TRUE) {
-    Qtest <- c(Q = Q_FE, pval_het = pval_het, I2 = I2, tau2 = tau2_FE, Qc = Qc,
-               pval_qualhet = Qcprob) #Qc_m, Qc_p,
-    #NB Qc_m + Qc_p = Q only when theta0=MLE
-    wtpct <- 100 * wt_MLE/sum(wt_MLE)
-    wt1pct <- 100 * wt_FE/sum(wt_FE)
+    Qtest <- c(
+      Q = Q_FE, pval_het = pval_het, I2 = I2, tau2 = tau2_FE, Qc = Qc,
+      pval_qualhet = Qcprob
+    ) # Qc_m, Qc_p,
+    # NB Qc_m + Qc_p = Q only when theta0=MLE
+    wtpct <- 100 * wt_MLE / sum(wt_MLE)
+    wt1pct <- 100 * wt_FE / sum(wt_FE)
     if (random == TRUE && prediction == TRUE) {
       outlist <- append(outlist, list(prediction = pred))
     }
-    outlist <- append(outlist,
-      list(Qtest = Qtest, weighting = weighting, dtflag = dtflag,
-      stratdata = cbind(x1j = x1, n1j = n1, x2j = x2, n2j = n2,
-                        p1hatj = p1hat, p2hatj = p2hat, wt_fixed = wt_FE,
-                        wtpct_fixed = wt1pct, wtpct_rand = wtpct,
-                        theta_j = point_FE_unstrat, lower_j = lower_unstrat,
-                        upper_j = upper_unstrat)))
+    outlist <- append(
+      outlist,
+      list(
+        Qtest = Qtest, weighting = weighting, dtflag = dtflag,
+        stratdata = cbind(
+          x1j = x1, n1j = n1, x2j = x2, n2j = n2,
+          p1hatj = p1hat, p2hatj = p2hat, wt_fixed = wt_FE,
+          wtpct_fixed = wt1pct, wtpct_rand = wtpct,
+          theta_j = point_FE_unstrat, lower_j = lower_unstrat,
+          upper_j = upper_unstrat
+        )
+      )
+    )
   }
-  outlist <- append(outlist, list(call = c(distrib = distrib,
-                   contrast = contrast, level = level, skew = skew,
-                   simpleskew = simpleskew, ORbias = ORbias, RRtang = RRtang,
-                   bcf = bcf, cc = cc, random = random)))
+  outlist <- append(outlist, list(call = c(
+    distrib = distrib, contrast = contrast, level = level, skew = skew,
+    simpleskew = simpleskew, ORbias = ORbias, RRtang = RRtang,
+    bcf = bcf, cc = cc, random = random
+  )))
   return(outlist)
 }
 
@@ -847,25 +963,23 @@ scoreci <- function(
 #'   excludes theta0. By default, a two-sided test against theta0 = 0 (for RD)
 #'   or 1 (for RR/OR) is also output.
 #' @export
-scasci <- function(
-  x1,
-  n1,
-  x2 = NULL,
-  n2 = NULL,
-  distrib = "bin",
-  contrast = "RD",
-  level = 0.95,
-  cc = FALSE,
-  theta0 = NULL,
-  precis = 6,
-  plot = FALSE,
-  plotmax = 100,
-  stratified = FALSE,
-  weighting = "IVS",
-  MNtol = 1E-8,
-  wt = NULL,
-  ...
-) {
+scasci <- function(x1,
+                   n1,
+                   x2 = NULL,
+                   n2 = NULL,
+                   distrib = "bin",
+                   contrast = "RD",
+                   level = 0.95,
+                   cc = FALSE,
+                   theta0 = NULL,
+                   precis = 6,
+                   plot = FALSE,
+                   plotmax = 100,
+                   stratified = FALSE,
+                   weighting = "IVS",
+                   MNtol = 1E-8,
+                   wt = NULL,
+                   ...) {
   scoreci(
     x1 = x1,
     n1 = n1,
@@ -889,8 +1003,6 @@ scasci <- function(
   )
 }
 
-
-
 #' t-distribution asymptotic score ("TDAS") confidence intervals for
 #' comparisons of independent binomial or Poisson rates.
 #'
@@ -912,26 +1024,24 @@ scasci <- function(
 #'   excludes theta0. By default, a two-sided test against theta0 = 0 (for RD)
 #'   or 1 (for RR/OR) is also output.
 #' @export
-tdasci <- function(
-  x1,
-  n1,
-  x2 = NULL,
-  n2 = NULL,
-  distrib = "bin",
-  contrast = "RD",
-  level = 0.95,
-  cc = 0,
-  theta0 = NULL,
-  precis = 6,
-  plot = FALSE,
-  plotmax = 100,
-  weighting = "IVS",
-  MNtol = 1E-8,
-  wt = NULL,
-  skew = TRUE, #produces SCAS intervals in stratdata by default
-  prediction = FALSE,
-  ...
-) {
+tdasci <- function(x1,
+                   n1,
+                   x2 = NULL,
+                   n2 = NULL,
+                   distrib = "bin",
+                   contrast = "RD",
+                   level = 0.95,
+                   cc = 0,
+                   theta0 = NULL,
+                   precis = 6,
+                   plot = FALSE,
+                   plotmax = 100,
+                   weighting = "IVS",
+                   MNtol = 1E-8,
+                   wt = NULL,
+                   skew = TRUE, # gives SCAS intervals in stratdata by default
+                   prediction = FALSE,
+                   ...) {
   scoreci(
     x1 = x1,
     n1 = n1,
@@ -965,15 +1075,13 @@ tdasci <- function(
 # version not reliant on point estimate This could be modified to solve upper
 # and lower limits simultaneously
 # Internal function
-bisect <- function(
-  ftn,
-  contrast,
-  distrib,
-  precis,
-  max.iter = 100,
-  uplow = "low"
-  ) {
-  tiny <- (10^-(precis))/2
+bisect <- function(ftn,
+                   contrast,
+                   distrib,
+                   precis,
+                   max.iter = 100,
+                   uplow = "low") {
+  tiny <- (10^-(precis)) / 2
   nstrat <- length(eval(ftn(1)))
   hi <- rep(1, nstrat)
   lo <- rep(-1, nstrat)
@@ -981,114 +1089,118 @@ bisect <- function(
   niter <- 1
   while (niter <= max.iter && any(dp > tiny | is.na(hi))) {
     dp <- 0.5 * dp
-    mid <- pmax(-1, pmin(1, round((hi + lo)/2, 10)))
+    mid <- pmax(-1, pmin(1, round((hi + lo) / 2, 10)))
     # rounding avoids machine precision problem with, e.g. 7/10-6/10
     if (contrast == "RD" && distrib == "bin") {
       scor <- ftn(mid)
     } else if (contrast == "RD" && distrib == "poi") {
-      scor <- ftn(round(tan(pi * mid/2), 10))
-      # avoid machine precision producing values outside [-1,1]
+      scor <- ftn(round(tan(pi * mid / 2), 10))
+      # avoid machine precision producing values outside [-1, 1]
     } else if (contrast %in% c("RR", "OR") ||
-               (contrast == "p" && distrib == "poi")) {
-      scor <- ftn(round(tan(pi * (mid + 1)/4), 10))
-      # avoid machine precision producing values outside [-1,1]
+      (contrast == "p" && distrib == "poi")) {
+      scor <- ftn(round(tan(pi * (mid + 1) / 4), 10))
+      # avoid machine precision producing values outside [-1, 1]
     } else if (contrast == "p" && distrib == "bin") {
-      scor <- ftn((mid + 1)/2)
+      scor <- ftn((mid + 1) / 2)
     }
-    check <- (scor <= 0)  | is.na(scor)
-    #??scor=NA only happens when |p1-p2|=1 and |theta|=1
-    #(in which case hi==lo anyway), or if p1=p2=0
+    check <- (scor <= 0) | is.na(scor)
+    # ??scor=NA only happens when |p1-p2|=1 and |theta|=1
+    # (in which case hi==lo anyway), or if p1=p2=0
     hi[check] <- mid[check]
     lo[!check] <- mid[!check]
     niter <- niter + 1
   }
-  if (uplow == "low")
-    best <- lo else best <- hi
+  if (uplow == "low") {
+    best <- lo
+  } else {
+    best <- hi
+  }
   if (contrast == "RD" && distrib == "bin") {
     return(best)
   } else if ((contrast %in% c("RD") && distrib == "poi")) {
-    return(tan(best * pi/2))
-  } else if (contrast %in% c("RR", "OR")||
-             (contrast == "p" && distrib == "poi")) {
-    return(tan((best + 1) * pi/4))
-  } else if (contrast == "p" && distrib =="bin")
-    return((best + 1)/2)
+    return(tan(best * pi / 2))
+  } else if (contrast %in% c("RR", "OR") ||
+    (contrast == "p" && distrib == "poi")) {
+    return(tan((best + 1) * pi / 4))
+  } else if (contrast == "p" && distrib == "bin") {
+    return((best + 1) / 2)
+  }
 }
 
-# Internal function
-scoretheta <- function(
-  #function to evaluate the score at a given value of theta, given the
-  #observed data uses the MLE solution (and notation) given in F&M, extended
-  #in Laud 2017. This function is vectorised in x1,x2
-  theta,
-  x1,
-  n1,
-  x2 = NULL,
-  n2 = NULL,
-  distrib = "bin",
-  contrast = "RD",
-  bcf = TRUE,
-  skew = TRUE,
-  simpleskew = FALSE,
-  level = 0.95, #confidence level, only needed to facilitate simpleskew option
-  ORbias = TRUE,
-  RRtang = TRUE,
-  cc = FALSE,
-  stratified = FALSE,
-  wt = NULL,
-  weighting = "IVS",
-  MNtol = 1E-8,
-  random = FALSE,
-  prediction = FALSE,
-  ...
-  ) {
-
+# Internal function to evaluate the score at a given value of theta, given the
+# observed data using the MLE solution (and notation) given in F&M, extended
+# in Laud 2017. This function is vectorised in x1,x2
+scoretheta <- function(theta,
+                       x1,
+                       n1,
+                       x2 = NULL,
+                       n2 = NULL,
+                       distrib = "bin",
+                       contrast = "RD",
+                       bcf = TRUE,
+                       skew = TRUE,
+                       simpleskew = FALSE,
+                       level = 0.95,
+                       ORbias = TRUE,
+                       RRtang = TRUE,
+                       cc = FALSE,
+                       stratified = FALSE,
+                       wt = NULL,
+                       weighting = "IVS",
+                       MNtol = 1E-8,
+                       random = FALSE,
+                       prediction = FALSE,
+                       ...) {
   nstrat <- length(n1)
-  lambda <- switch(as.character(bcf), "TRUE" = (n1 + n2)/(n1 + n2 - 1),
-                   "FALSE" = 1)
-  p1hat <- x1/n1
-  p2hat <- x2/n2
+  lambda <- switch(as.character(bcf),
+    "TRUE" = (n1 + n2) / (n1 + n2 - 1),
+    "FALSE" = 1
+  )
+  p1hat <- x1 / n1
+  p2hat <- x2 / n2
   x <- x1 + x2
   N <- n1 + n2
 
-  bias <- 0
+  bias <- 0 # Initialise bias modified later for OR only
 
-   #RMLE of p1|theta depends on whether theta=RD or RR or OR, and on whether a
-   #binomial or Poisson distribution is assumed
+  # RMLE of p1|theta depends on whether theta=RD or RR or OR, and on whether a
+  # binomial or Poisson distribution is assumed
   if (contrast == "RD") {
     Stheta <- (p1hat - p2hat) - theta
     if (distrib == "bin") {
-##      s0 <- theta # NB: Farrington & Manning notation (p1448) uses
-                    #     theta for N2/N1, and s_0 for RD
+      # NOTE: Farrington & Manning notation (p1448) uses
+      #       theta for N2/N1, and s_0 for RD
       a <- N
       b <- (n1 + 2 * n2) * theta - N - x
       c_ <- (n2 * theta - N - 2 * x2) * theta + x
       d <- x2 * theta * (1 - theta)
-      v <- (b/a/3)^3 - b * c_/(6 * a * a) + d/a/2
-      s <- sqrt(pmax(0, (b/a/3)^2 - c_/a/3))
+      v <- (b / a / 3)^3 - b * c_ / (6 * a * a) + d / a / 2
+      s <- sqrt(pmax(0, (b / a / 3)^2 - c_ / a / 3))
       # NaNs produced when? - machine precision again?
       u <- ifelse(v > 0, 1, -1) * s
-      w <- (pi + acos(pmax(-1, pmin(1, ifelse(u == 0 & v == 0, 0, v/u^3)))))/3
+      w <- (pi + acos(pmax(-1, pmin(1, ifelse(
+        u == 0 & v == 0, 0, v / u^3
+      ))))) / 3
       # avoids machine precision errors passing impossible values
       # (outside (-1,1)) to acos
-      p2d <- pmin(1, pmax(0, round(2 * u * cos(w) - b/a/3, 10)))
+      p2d <- pmin(1, pmax(0, round(2 * u * cos(w) - b / a / 3, 10)))
       # again, machine precision errors can give values a tiny fraction either
       # side of 0 or 1
       p1d <- pmin(1, pmax(0, p2d + theta))
-      V <- pmax(0, (p1d * (1 - p1d)/n1 + p2d * (1 - p2d)/n2) * lambda)
+      V <- pmax(0, (p1d * (1 - p1d) / n1 + p2d * (1 - p2d) / n2) * lambda)
       # V set to zero if machine precision error in cos function produces
       # a negative V
-      mu3 <- p1d * (1 - p1d) * (1 - 2 * p1d)/(n1^2) -
-        p2d * (1 - p2d) * (1 - 2 * p2d)/(n2^2)
+      mu3 <- p1d * (1 - p1d) * (1 - 2 * p1d) / (n1^2) -
+        p2d * (1 - p2d) * (1 - 2 * p2d) / (n2^2)
     } else if (distrib == "poi") {
       A <- N
       B <- N * theta - x
       C_ <- -x2 * theta
       num <- (-B + sqrt(B^2 - 4 * A * C_))
-      p2d <- ifelse(num == 0, 0, num/(2 * A))
+      p2d <- ifelse(num == 0, 0, num / (2 * A))
       p1d <- p2d + theta
-      V <- (p1d/n1 + p2d/n2)
-      mu3 <- (p1d/(n1^2) - p2d/(n2^2))
+      V <- (p1d / n1 + p2d / n2)
+      mu3 <- (p1d / (n1^2) - p2d / (n2^2))
     }
   } else if (contrast == "RR") {
     Stheta <- p1hat - p2hat * theta
@@ -1097,32 +1209,34 @@ scoretheta <- function(
       B <- (-(n1 * theta + x1 + n2 + x2 * theta))
       C_ <- x
       num <- (-B - sqrt(pmax(0, B^2 - 4 * A * C_)))
-      p2d <- ifelse(A == 0, -C_/B, ifelse((num == 0 | C_ == 0), 0, num/(2 * A)))
+      p2d <- ifelse(A == 0, -C_ / B, ifelse(
+        (num == 0 | C_ == 0), 0, num / (2 * A)
+      ))
       p1d <- p2d * theta
-      V <- pmax(0, (p1d * (1 - p1d)/n1 + (theta^2) * p2d * (1 - p2d)/n2) *
-                  lambda)
-      mu3 <- (p1d * (1 - p1d) * (1 - 2 * p1d)/(n1^2) -
-                (theta^3) * p2d * (1 - p2d) * (1 - 2 * p2d)/(n2^2))
+      V <- pmax(0, (p1d * (1 - p1d) / n1 +
+        (theta^2) * p2d * (1 - p2d) / n2) * lambda)
+      mu3 <- (p1d * (1 - p1d) * (1 - 2 * p1d) / (n1^2) -
+        (theta^3) * p2d * (1 - p2d) * (1 - 2 * p2d) / (n2^2))
       if (RRtang == TRUE) {
-        Stheta <- (p1hat - p2hat * theta)/p2d
-        V <- pmax(0, (p1d * (1 - p1d)/n1 + (theta^2) * p2d * (1 - p2d)/n2) *
-                    lambda / p2d^2)
-        mu3 <- (p1d * (1 - p1d) * (1 - 2 * p1d)/(n1^2) -
-                  (theta^3) * p2d * (1 - p2d) * (1 - 2 * p2d)/(n2^2))/p2d^3
+        Stheta <- (p1hat - p2hat * theta) / p2d
+        V <- pmax(0, (p1d * (1 - p1d) / n1 +
+          (theta^2) * p2d * (1 - p2d) / n2) * lambda / p2d^2)
+        mu3 <- (p1d * (1 - p1d) * (1 - 2 * p1d) / (n1^2) -
+          (theta^3) * p2d * (1 - p2d) * (1 - 2 * p2d) / (n2^2)) / p2d^3
         mu3[(x1 == 0 & x2 == 0)] <- 0
         Stheta[(x1 == 0 & x2 == 0)] <- 0
       }
       V[is.na(V)] <- Inf
     } else if (distrib == "poi") {
-      #incidence density version from M&N p223
-      p2d <- (x1 + x2)/(n1 * theta + n2)
+      # incidence density version from M&N p223
+      p2d <- (x1 + x2) / (n1 * theta + n2)
       p1d <- p2d * theta
-      V <- pmax(0, (p1d/n1 + (theta^2) * p2d/n2))
-      mu3 <- (p1d/(n1^2) - (theta^3) * p2d/(n2^2))
-      if (RRtang == TRUE) { #Apply Tang score for Poisson parameter?
-        Stheta <- (p1hat - p2hat * theta)/p2d
-        V <- pmax(0, (p1d/n1 + (theta^2) * p2d/n2) / p2d^2)
-        mu3 <- (p1d/(n1^2) - (theta^3) * p2d/(n2^2)) / p2d^3
+      V <- pmax(0, (p1d / n1 + (theta^2) * p2d / n2))
+      mu3 <- (p1d / (n1^2) - (theta^3) * p2d / (n2^2))
+      if (RRtang == TRUE) { # Apply Tang score for Poisson parameter
+        Stheta <- (p1hat - p2hat * theta) / p2d
+        V <- pmax(0, (p1d / n1 + (theta^2) * p2d / n2) / p2d^2)
+        mu3 <- (p1d / (n1^2) - (theta^3) * p2d / (n2^2)) / p2d^3
       }
     }
   } else if (contrast == "OR") {
@@ -1131,45 +1245,44 @@ scoretheta <- function(
       B <- n1 * theta + n2 - x * (theta - 1)
       C_ <- -x
       num <- (-B + Re(sqrt(as.complex(B^2 - 4 * A * C_))))
-      p2d <- ifelse(A == 0, -C_/B, ifelse(num == 0, 0, num/(2 * A)))
       # If A=0 then we solve a linear equation instead
-      p1d <- p2d * theta/(1 + p2d * (theta - 1))
+      p2d <- ifelse(A == 0, -C_ / B, ifelse(num == 0, 0, num / (2 * A)))
+      p1d <- p2d * theta / (1 + p2d * (theta - 1))
       p1d[theta == 0] <- 0
-      Stheta <- (p1hat - p1d)/(p1d * (1 - p1d)) -
-        (p2hat - p2d)/(p2d * (1 - p2d))
-      V <- pmax(0, (1/(n1 * p1d * (1 - p1d)) +
-                      1/(n2 * p2d * (1 - p2d))) * lambda)
+      Stheta <- (p1hat - p1d) / (p1d * (1 - p1d)) -
+        (p2hat - p2d) / (p2d * (1 - p2d))
+      V <- pmax(0, (1 / (n1 * p1d * (1 - p1d)) +
+        1 / (n2 * p2d * (1 - p2d))) * lambda)
       # set to zero if machine precision error in cos function
       # produces a negative V
-      mu3 <- (1 - 2 * p1d)/((n1 * p1d * (1 - p1d))^2) -
-        (1 - 2 * p2d)/((n2 * p2d * (1 - p2d))^2)
+      mu3 <- (1 - 2 * p1d) / ((n1 * p1d * (1 - p1d))^2) -
+        (1 - 2 * p2d) / ((n2 * p2d * (1 - p2d))^2)
       Stheta[(x1 == 0 & x2 == 0) | (x1 == n1 & x2 == n2)] <- 0
       mu3[(x1 == 0 & x2 == 0) | (x1 == n1 & x2 == n2)] <- 0
 
       if (ORbias == TRUE) {
-        bias <- (p1d - p2d)/(n1 * p1d * (1 - p1d) + n2 * p2d * (1 - p2d))
+        bias <- (p1d - p2d) / (n1 * p1d * (1 - p1d) + n2 * p2d * (1 - p2d))
         bias[p1d == p2d] <- 0
         Stheta <- Stheta - bias
       }
-      #note V = V_G^-1 = (npq1 + npq2)/(npq1npq2) and this version puts bias
-      #within (Stheta-bias)/sqrt(V) instead of Stheta/sqrt(V) - bias
-
-     } else if (distrib == "poi") {
+      # note V = V_G^-1 = (npq1 + npq2)/(npq1npq2) and this version puts bias
+      # within (Stheta-bias)/sqrt(V) instead of Stheta/sqrt(V) - bias
+    } else if (distrib == "poi") {
       print("Odds ratio not applicable to Poisson rates")
     }
   } else if (contrast == "p") {
     Stheta <- p1hat - theta
     Stheta[n1 == 0] <- 0
     if (distrib == "bin") {
-      V <- (pmax(0, (theta * (1 - theta)/n1)))
+      V <- (pmax(0, (theta * (1 - theta) / n1)))
       # set to zero if machine precision error in cos function
       # produces a negative V
-      mu3 <- (theta * (1 - theta) * (1 - 2 * theta)/(n1^2))
+      mu3 <- (theta * (1 - theta) * (1 - 2 * theta) / (n1^2))
     } else if (distrib == "poi") {
-      V <- theta/n1
-      mu3 <- theta/(n1^2)
+      V <- theta / n1
+      mu3 <- theta / (n1^2)
     }
-    mu3[n1==0] <- 0 #quick fix
+    mu3[n1 == 0] <- 0 # quick fix
     p1d <- theta
     p2d <- NA
   }
@@ -1178,17 +1291,19 @@ scoretheta <- function(
   corr <- 0
   if (cc > 0) {
     if (contrast == "OR") {
-      corr <- cc * (1/(n1 * p1d * (1 - p1d)) + 1/(n2 * p2d * (1 - p2d)))
+      corr <- cc * (1 / (n1 * p1d * (1 - p1d)) + 1 / (n2 * p2d * (1 - p2d)))
       # cc=0.5 gives Cornfield correction. Try cc=0.25 instead
     } else if (contrast == "RR") {
-      corr <- cc * (1/(n1) + theta/(n2))  #try 0.125 or 0.25
-      if (RRtang == TRUE) corr <- corr/p2d
+      corr <- cc * (1 / (n1) + theta / (n2)) # try 0.125 or 0.25
+      if (RRtang == TRUE) corr <- corr / p2d
     } else if (contrast == "RD") {
-      corr <- cc * (1/pmin(n1, n2))  #cc=0.5 gives Hauck-Anderson. Try cc=0.25
-      if (stratified == TRUE) corr <- (3/16) * (sum(n1 * n2/(n1 + n2)))^(-1)
+      corr <- cc * (1 / pmin(n1, n2)) # cc=0.5 gives Hauck-Anderson. Try 0.25
+      if (stratified == TRUE) {
+        corr <- (3 / 16) * (sum(n1 * n2 / (n1 + n2)))^(-1)
+      }
       # from Mehrotra & Railkar, also Zhao et al.
     } else if (contrast == "p") {
-      corr <- cc/n1
+      corr <- cc / n1
     }
   }
 
@@ -1196,146 +1311,162 @@ scoretheta <- function(
     pval <- NA
     if (is.null(wt)) {
       if (weighting == "MH") {
-        wt <- n1 * n2/(n1 + n2)
+        wt <- n1 * n2 / (n1 + n2)
         # MH weights for RD, applied across other comparative parameters too
         # (without theoretical justification for OR)
         if (contrast == "p") wt <- n1
       } else if (weighting == "IVS") {
         # IVS: inverse variance weights updated wih V_tilde
-        if (all(V == 0) || all(V == Inf | is.na(V)) ) {
-          #Need workaround here to give zero weight to zero cells for OR
+        if (all(V == 0) || all(V == Inf | is.na(V))) {
+          # Need workaround here to give zero weight to zero cells for OR
           wt <- rep(1, nstrat)
-        } else wt <- 1/V
+        } else {
+          wt <- 1 / V
+        }
       } else if (weighting == "INV") {
         # INV: inverse variance weights updated wih V_tilde
-        #Removing bcf from the weights ensures alignment with CMH test
-        if (all(V == 0) || all(V == Inf | is.na(V)) ) {
-          #Need workaround here to give zero weight to zero cells for OR
+        # Removing bcf from the weights ensures alignment with CMH test
+        if (all(V == 0) || all(V == Inf | is.na(V))) {
+          # Need workaround here to give zero weight to zero cells for OR
           wt <- rep(1, nstrat)
-        } else wt <- lambda/V
+        } else {
+          wt <- lambda / V
+        }
       } else if (weighting == "MN") {
         if (contrast == "RR" && distrib == "poi") {
-          wt <- (1/n1 + theta/n2)^(-1)
+          wt <- (1 / n1 + theta / n2)^(-1)
         } else if (contrast == "RR" && distrib == "bin") {
-            # M&Ns iterative weights - quite similar to MH
+          # M&Ns iterative weights - quite similar to MH
           wtdiff <- 1
-          wtx <- (1/n1 + theta/n2)^(-1)
+          wtx <- (1 / n1 + theta / n2)^(-1)
           while (wtdiff > MNtol) {
-            p2ds <- sum(wtx * p2d)/sum(wtx)
-            p1ds <- sum(wtx * p1d)/sum(wtx)
-            wt <- ((1 - p1ds)/(n1 * (1 - p2ds)) + theta/n2)^(-1)
+            p2ds <- sum(wtx * p2d) / sum(wtx)
+            p1ds <- sum(wtx * p1d) / sum(wtx)
+            wt <- ((1 - p1ds) / (n1 * (1 - p2ds)) + theta / n2)^(-1)
             wt[p2ds == 1] <- 0
             wtdiff <- max(abs(wtx - wt))
             wtx <- wt
           }
         } else if (contrast == "RD") {
           # M&Ns iterative weights - quite similar to MH wtx <- n1*n2/(n1+n2)
-          wt <- wtx <- (1/n1 + 1/n2)^(-1)
+          wt <- wtx <- (1 / n1 + 1 / n2)^(-1)
           wtdiff <- 1
           while (wtdiff > MNtol) {
-            p2ds <- sum(wtx * p2d)/sum(wtx)
-            p1ds <- sum(wtx * p1d)/sum(wtx)
+            p2ds <- sum(wtx * p2d) / sum(wtx)
+            p1ds <- sum(wtx * p1d) / sum(wtx)
             if (distrib == "bin") {
-              wt <- ((p1ds * (1 - p1ds)/(p2ds * (1 - p2ds)))/n1 + 1/n2)^(-1)
+              wt <- (
+                (p1ds * (1 - p1ds) / (p2ds * (1 - p2ds))) / n1 + 1 / n2
+              )^(-1)
             } else if (distrib == "poi") {
-              wt <- ((p1ds/p2ds)/n1 + 1/n2)^(-1)
+              wt <- ((p1ds / p2ds) / n1 + 1 / n2)^(-1)
             }
             wt[p2ds == 0 || p2ds == 1] <- 0
-            if (sum(wt) == 0) wt <- wt + 1 #Fix for when all weights are zero
+            if (sum(wt) == 0) wt <- wt + 1 # Fix for when all weights are zero
             wtdiff <- max(abs(wtx - wt))
             wtx <- wt
-         }
+          }
         } else if (contrast == "OR") {
           # M&Ns weights are very similar in structure to IVS
-          wt <- n1 * n2 * ((1 - p1d) * p2d)^2/
+          wt <- n1 * n2 * ((1 - p1d) * p2d)^2 /
             (n1 * p1d * (1 - p1d) + n2 * p2d * (1 - p2d))
         }
       }
-    } else weighting <- "User-defined"
+    } else {
+      weighting <- "User-defined"
+    }
 
-    Sdot <- sum(wt * Stheta)/sum(wt)
-    #NB the skewness correction is omitted for the heterogeneity test statistics.
-    Q_j <- ((Stheta - Sdot)^2)/V
-    #NB it is necessary to include Sdot here for TDAS method to work.
+    Sdot <- sum(wt * Stheta) / sum(wt)
+    # NB the skewness correction is omitted for the heterogeneity test statistics.
+    Q_j <- ((Stheta - Sdot)^2) / V
+    # NB it is necessary to include Sdot here for TDAS method to work.
     # - for the heterogeneity test evaluated at MLE, Sdot will equal 0 if skew=F
-    #NB it is necessary to use equation S2 here for TDAS method to work
+    # NB it is necessary to use equation S2 here for TDAS method to work
     Q <- sum(Q_j)
     W <- sum(wt)
 
-    if (weighting %in% c("IVS", "INV")) { #Check if this works for INV as well
-      tau2 <- max(0, (Q - (nstrat - 1)))/(W - (sum(wt^2)/W))
+    if (weighting %in% c("IVS", "INV")) { # Check if this works for INV as well
+      tau2 <- max(0, (Q - (nstrat - 1))) / (W - (sum(wt^2) / W))
       # published formula for IVS weights
     } else {
-      tau2 <- max(0, (Q - (nstrat - 1 * (sum(V * wt^2)/W))))/
-        (sum(1/V) - 1 * (sum(wt^2)/W))
+      tau2 <- max(0, (Q - (nstrat - 1 * (sum(V * wt^2) / W)))) /
+        (sum(1 / V) - 1 * (sum(wt^2) / W))
       # only needed if want to output tau2.
     }
-    if (random == TRUE && weighting %in% c("IVS", "INV") &&
-        !(all(V == 0) || all(V == Inf | is.na(V)))) {
-      wt <- 1/(V + tau2)
+    if (
+      random == TRUE && weighting %in% c("IVS", "INV") &&
+        !(all(V == 0) || all(V == Inf | is.na(V)))
+    ) {
+      wt <- 1 / (V + tau2)
     }
 
-    Sdot <- sum(wt * Stheta)/sum(wt)
-    Vdot <- sum(((wt/sum(wt))^2) * V)
+    Sdot <- sum(wt * Stheta) / sum(wt)
+    Vdot <- sum(((wt / sum(wt))^2) * V)
 
     if (contrast == "OR" && cc > 0) {
-#      corr <- cc * Vdot #This gives essentially the same correction as Gart 1985
-      corr <- cc * sum(((wt/sum(wt))^2) * (1/(n1 * p1d * (1 - p1d)) +
-                                             1/(n2 * p2d * (1 - p2d))))
+      # corr <- cc * Vdot # This gives essentially the same correction as Gart 1985
+      corr <- cc * sum(((wt / sum(wt))^2) * (1 / (n1 * p1d * (1 - p1d)) +
+        1 / (n2 * p2d * (1 - p2d))))
     }
-    if (contrast == "RR" && cc > 0) { #EXPERIMENTAL cc for stratified RR
-      corr <- cc * sum(((wt/sum(wt))^2) * (1/(n1) + theta/(n2))) #Tentative
-#      corr <- cc * Vdot #more tentative - I think wrong
+    if (contrast == "RR" && cc > 0) { # EXPERIMENTAL cc for stratified RR
+      # Tentative
+      corr <- cc * sum(((wt / sum(wt))^2) * (1 / (n1) + theta / (n2)))
+      # corr <- cc * Vdot #more tentative - I think wrong
     }
-    corr <- corr*sign(Sdot)
-    score1 <- sum( (wt/sum(wt)) * (Stheta - corr))/pmax(0, sqrt(Vdot))
-    score1[sum((wt/sum(wt)) * (Stheta - corr)) == 0] <- 0 #Avoids NA scores
-    scterm <- sum(((wt/sum(wt))^3) * mu3)/(6 * Vdot^(3/2))
-    scterm[sum(((wt/sum(wt))^3) * mu3) == 0] <- 0 #Avoids NA scores
+    corr <- corr * sign(Sdot)
+    score1 <- sum((wt / sum(wt)) * (Stheta - corr)) / pmax(0, sqrt(Vdot))
+    score1[sum((wt / sum(wt)) * (Stheta - corr)) == 0] <- 0 # Avoids NA scores
+    scterm <- sum(((wt / sum(wt))^3) * mu3) / (6 * Vdot^(3 / 2))
+    scterm[sum(((wt / sum(wt))^3) * mu3) == 0] <- 0 # Avoids NA scores
     A <- scterm
     B <- 1
     C_ <- -(score1 + scterm)
     num <- (-B + sqrt(pmax(0, B^2 - 4 * A * C_)))
     dsct <- B^2 - 4 * A * C_
-    score <- ifelse((skew == FALSE | scterm == 0),
-                    score1, num/(2 * A))
-      if (skew == TRUE) {
-        qtnorm <- qnorm(1 - (1 - level)/2)
-        scoresimp <- score1 - (qtnorm^2 - 1) * scterm
-      # scorebart <- score1 - (score1^2 - 1) * scterm #Bartlett version
+    score <- ifelse(
+      (skew == FALSE | scterm == 0),
+      score1, num / (2 * A)
+    )
+    if (skew == TRUE) {
+      qtnorm <- qnorm(1 - (1 - level) / 2)
+      scoresimp <- score1 - (qtnorm^2 - 1) * scterm
+      # Bartlett version, not recommended:
+      # scorebart <- score1 - (score1^2 - 1) * scterm
       if (simpleskew == TRUE) {
         score <- scoresimp
       }
-      if (!is.na(dsct) & dsct < 0) {score <- scoresimp}
+      if (!is.na(dsct) & dsct < 0) {
+        score <- scoresimp
+      }
     }
-    score[abs(Sdot) < abs(sum( (wt/sum(wt)) * corr))] <- 0
+    score[abs(Sdot) < abs(sum((wt / sum(wt)) * corr))] <- 0
     pval <- pnorm(score)
-    VS <- sum(wt/sum(wt) * (Stheta - Sdot)^2)/(nstrat - 1)
+    VS <- sum(wt / sum(wt) * (Stheta - Sdot)^2) / (nstrat - 1)
     if (random == TRUE) {
-      tnum <- sum((wt/sum(wt)) * (Stheta - corr))
+      tnum <- sum((wt / sum(wt)) * (Stheta - corr))
       tdenom <- sqrt(VS)
       if (prediction == TRUE) {
-        #Prediction interval from Higgins et al. 2009,
+        # Prediction interval from Higgins et al. 2009,
         # using Hartung-Knapp variance estimate
         tdenom <- sqrt(VS + tau2)
       }
-      score1 <- tnum/tdenom
-##  Aborted attempt to add skewness correction to TDAS (for contrast="p")
-#      score1 <- (tnum + scterm)/tdenom
-## Or
-#      A <- scterm
-#      B <- 1
-#      C_ <- -(score1 + scterm)
-#      num <- (-B + sqrt(max(0, B^2 - 4 * A * C_)))
-#      score <- ifelse((skew == FALSE | scterm == 0), score1, num/(2 * A))
-#      score[abs(Sdot) < abs(sum( (wt/sum(wt)) * corr))] <- 0
+      score1 <- tnum / tdenom
+      ##  Aborted (& unnecessary) attempt to add skewness correction
+      ## to TDAS (for contrast="p")
+      # score1 <- (tnum + scterm)/tdenom
+      ## Or
+      # A <- scterm
+      # B <- 1
+      # C_ <- -(score1 + scterm)
+      # num <- (-B + sqrt(max(0, B^2 - 4 * A * C_)))
+      # score <- ifelse((skew == FALSE | scterm == 0), score1, num/(2 * A))
+      # score[abs(Sdot) < abs(sum( (wt/sum(wt)) * corr))] <- 0
       score <- score1
       pval <- pt(score, nstrat - 1)
     }
-    p2ds <- sum(wt * p2d/sum(wt))
-    p1ds <- sum(wt * p1d/sum(wt))
-  }
-  else if (stratified==FALSE) {
+    p2ds <- sum(wt * p2d / sum(wt))
+    p1ds <- sum(wt * p1d / sum(wt))
+  } else if (stratified == FALSE) {
     p1ds <- p1d
     p2ds <- p2d
 
@@ -1345,9 +1476,9 @@ scoretheta <- function(
     # Note that in the special case of mu3=0, this reduces to
     # the skew=FALSE case.
     # i.e. z_p = Stheta/sqrt(V)
-    scterm <- mu3/(6 * V^(3/2))
+    scterm <- mu3 / (6 * V^(3 / 2))
     scterm[mu3 == 0] <- 0
-    score1 <- (Stheta - corr)/sqrt(V)
+    score1 <- (Stheta - corr) / sqrt(V)
     score1[Stheta == 0] <- 0
     A <- scterm
     B <- 1
@@ -1355,27 +1486,34 @@ scoretheta <- function(
     num <- (-B + sqrt(pmax(0, B^2 - 4 * A * C_)))
     dsct <- B^2 - 4 * A * C_
     score <- ifelse((skew == FALSE | scterm == 0),
-                    score1, num/(2 * A))
+      score1, num / (2 * A)
+    )
     if (skew == TRUE) {
-      qtnorm <- qnorm(1 - (1 - level)/2)
+      qtnorm <- qnorm(1 - (1 - level) / 2)
       scoresimp <- score1 - (qtnorm^2 - 1) * scterm
-      # scorebart <- score1 - (score1^2 - 1) * scterm #Bartlett version
+      # Bartlett version, not recommended
+      # scorebart <- score1 - (score1^2 - 1) * scterm
       if (simpleskew == TRUE) {
         score <- scoresimp
       }
-      score[!is.na(dsct) & dsct < 0] <- scoresimp[!is.na(dsct) & dsct < 0] #unnecessary as this never happens for unstratified datasets
+      # below is unnecessary as this never happens for unstratified datasets
+      score[!is.na(dsct) & dsct < 0] <- scoresimp[!is.na(dsct) & dsct < 0]
     }
     score[abs(Stheta) < abs(corr)] <- 0
 
     pval <- pnorm(score)
   }
 
-  outlist <- list(score = score, p1d = p1d, Stheta = Stheta, num=num, V = V,
-                  p2d = p2d, mu3 = mu3, pval = pval, dsct = dsct)
+  outlist <- list(
+    score = score, p1d = p1d, Stheta = Stheta, num = num, V = V,
+    p2d = p2d, mu3 = mu3, pval = pval, dsct = dsct
+  )
   if (stratified) {
-    outlist <- append(outlist, list(Sdot = Sdot, Vdot = Vdot, tau2 = tau2,
-               VS = VS, Q_j = Q_j, Q = Q, wt = wt, p1ds = p1ds,
-               p2ds = p2ds))
+    outlist <- append(outlist, list(
+      Sdot = Sdot, Vdot = Vdot, tau2 = tau2,
+      VS = VS, Q_j = Q_j, Q = Q, wt = wt, p1ds = p1ds,
+      p2ds = p2ds
+    ))
   }
   return(outlist)
 }
