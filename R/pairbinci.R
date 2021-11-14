@@ -130,7 +130,7 @@ pairbinci <- function(x,
       estimates <- c(trans_ci / (1 - trans_ci))
       outlist <- list(xi, estimates = estimates)
     }
-  } else {
+  } else if (contrast != "OR") {
     if ((contrast == "RD" && method_RD == "TDAS") ||
       (contrast == "RR" && method_RR == "TDAS")) {
       # stratified TDAS method for paired data as suggested in Laud 2017

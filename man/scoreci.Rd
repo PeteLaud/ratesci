@@ -172,11 +172,17 @@ Also includes score intervals for a single binomial proportion or Poisson
 rate. Based on the Wilson score interval, when corrected for skewness,
 coverage is almost identical to the mid-p method, or Clopper-Pearson
 when also continuity-corrected.
+Hypothesis tests for superiority or non-inferiority are provided using the
+same score, to ensure consistency between test and CI.
 This function is vectorised in x1, x2, n1, and n2.  Vector inputs may also be
 combined into a single stratified analysis (e.g. meta-analysis), either using
 fixed effects, or the more general random effects "TDAS" method, which
 incorporates stratum variability using a t-distribution score (inspired by
 Hartung-Knapp-Sidik-Jonkman).
+For fixed-effects analysis of stratified datasets, with weighting = "MH" for
+RD or RR, or weighting = "IVS" for OR, omitting the skewness correction
+produces the CMH test, together with a coherent confidence interval for the
+required contrast.
 }
 \examples{
 # Binomial RD, SCAS method:

@@ -11,11 +11,17 @@
 #' rate. Based on the Wilson score interval, when corrected for skewness,
 #' coverage is almost identical to the mid-p method, or Clopper-Pearson
 #' when also continuity-corrected.
+#' Hypothesis tests for superiority or non-inferiority are provided using the
+#' same score, to ensure consistency between test and CI.
 #' This function is vectorised in x1, x2, n1, and n2.  Vector inputs may also be
 #' combined into a single stratified analysis (e.g. meta-analysis), either using
 #' fixed effects, or the more general random effects "TDAS" method, which
 #' incorporates stratum variability using a t-distribution score (inspired by
 #' Hartung-Knapp-Sidik-Jonkman).
+#' For fixed-effects analysis of stratified datasets, with weighting = "MH" for
+#' RD or RR, or weighting = "IVS" for OR, omitting the skewness correction
+#' produces the CMH test, together with a coherent confidence interval for the
+#' required contrast.
 #'
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2
 #'   respectively.
@@ -364,7 +370,6 @@ scoreci <- function(x1,
       #  } else zero_rd <- 0
       # NB could apply the same for RR/OR instead of dropping strata
       if (contrast %in% c("RD", "RR")) { # Currently has no effect for RR
-        #      if (contrast %in% c("RD")) {
         zero_rd <- (x1 == 0 & x2 == 0) # & !empty_strat
       } else {
         zero_rd <- 0
@@ -765,7 +770,7 @@ scoreci <- function(x1,
     dim = c(dim1, length(myseq))
   )
   dtflag <- FALSE
-  if (any(dtseg[!is.na(dtseg)] < 0) && skew == T && !simpleskew) {
+  if (any(dtseg[!is.na(dtseg)] < 0) && skew == TRUE && !simpleskew) {
     dtflag <- TRUE
   }
   # Optional plot of the score function.
@@ -841,7 +846,7 @@ scoreci <- function(x1,
           )
           # log = ifelse(contrast == "RD", "", "x")
         )
-        if (any(dtseg[!is.na(dtseg)] < 0) && skew == T && !simpleskew) {
+        if (any(dtseg[!is.na(dtseg)] < 0) && skew == TRUE && !simpleskew) {
           lines(myseq, ssc[i, ], col = "grey", lty = 2)
           # lines(myseq[dtseg < 0], uc[i, dtseg < 0], col = "green", lty = 1)
           # lines(myseq, uc[i, ], col = "green", lty = 3)
@@ -881,7 +886,7 @@ scoreci <- function(x1,
         )
         # log = ifelse(contrast == "RD", "", "x")
       )
-      if (any(dtseg[!is.na(dtseg)] < 0) && skew == T && !simpleskew) {
+      if (any(dtseg[!is.na(dtseg)] < 0) && skew == TRUE && !simpleskew) {
         lines(myseq, ssc[1, ], col = "grey", lty = 2)
         # lines(myseq[dtseg < 0], uc[1, dtseg < 0], col = "green", lty = 1)
         # lines(myseq, uc[1, ], col = "green", lty = 2)
