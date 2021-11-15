@@ -39,6 +39,8 @@
 #'   the Miettinen-Nurminen method).
 #' @param simpleskew Logical (default FALSE) indicating whether to use the
 #'   "simplified" skewness correction instead of the quadratic solution.
+#'   See Laud 2021 for details. NOTE: this version of the score is only
+#'   suitable for obtaining confidence limits, not a p-value.
 #' @param ORbias Logical (default is TRUE for contrast="OR", otherwise
 #'   NULL) indicating whether to apply additional bias correction for OR derived
 #'   from Gart 1985. (Corrigendum to Laud 2017, published May 2018).
@@ -49,7 +51,7 @@
 #'   published methods (i.e. Gart & Nam, Mee, or standard Chi-squared test).
 #' @param cc Number or logical (default FALSE) specifying (amount of) continuity
 #'   correction. Numeric value is taken as the gamma parameter in Laud 2017,
-#'   Appendix S2 (default 0.5 if cc=TRUE).
+#'   Appendix S2 (default 0.5 if cc = TRUE).
 #'   IMPORTANT NOTES:
 #'   1) This is a 'continuity correction' aimed at approximating strictly
 #'   conservative coverage, NOT for dealing with zero cell counts. Such
@@ -422,6 +424,7 @@ scoreci <- function(x1,
                     stratswitch = stratified,
                     skewswitch = skew,
                     ssswitch = simpleskew,
+                    lev = level,
                     predswitch = FALSE) {
     scoretheta(
       theta = theta, x1 = x1, x2 = x2, n1 = n1, n2 = n2, bcf = bcf,
@@ -429,7 +432,7 @@ scoreci <- function(x1,
       wt = wt, weighting = weighting, MNtol = MNtol,
       random = randswitch, prediction = predswitch, skew = skewswitch,
       simpleskew = ssswitch, ORbias = ORbias, RRtang = RRtang,
-      cc = ccswitch, level = level
+      cc = ccswitch, level = lev
     )$score
   }
 
@@ -453,7 +456,7 @@ scoreci <- function(x1,
   # fixed effects point estimate taken with no cc
   point_FE <- bisect(
     ftn = function(theta) {
-      myfun(theta, randswitch = FALSE, ccswitch = 0) - 0
+      myfun(theta, randswitch = FALSE, ccswitch = 0, lev = 0) - 0
     }, contrast = contrast, distrib = distrib,
     precis = precis + 1, uplow = "low"
   )
@@ -463,7 +466,7 @@ scoreci <- function(x1,
   if (stratified == TRUE) {
     point <- bisect(
       ftn = function(theta) {
-        myfun(theta, randswitch = random, ccswitch = 0) - 0
+        myfun(theta, randswitch = random, ccswitch = 0, lev = 0) - 0
       }, contrast = contrast, distrib = distrib,
       precis = precis + 1, uplow = "low"
     )
@@ -610,7 +613,8 @@ scoreci <- function(x1,
     )
     point_FE_unstrat <- bisect(
       ftn = function(theta) {
-        myfun(theta, randswitch = FALSE, ccswitch = 0, stratswitch = FALSE) - 0
+        myfun(theta, randswitch = FALSE, ccswitch = 0,
+              stratswitch = FALSE, lev = 0) - 0
       }, contrast = contrast, distrib = distrib,
       precis = precis + 1, uplow = "low"
     )
@@ -709,11 +713,15 @@ scoreci <- function(x1,
       lower.tail = FALSE
     )
   }
-  pval <- cbind(
-    chisq = chisq_zero, pval2sided, theta0 = theta0,
-    scorenull = scorenull$score, pval_left, pval_right
-  )
-
+  if (simpleskew == TRUE && skew == TRUE) {
+    pval <- NULL # simple version of skewness-corrected score is
+                 # not valid for producing a p-value
+  } else {
+    pval <- cbind(
+      chisq = chisq_zero, pval2sided, theta0 = theta0,
+      scorenull = scorenull$score, pval_left, pval_right
+    )
+  }
   # Add qualitative interaction test as per equation S4 of Laud 2017
   if (stratified == TRUE && nstrat > 1) {
     # V is evaluated at the fixed effects MLE

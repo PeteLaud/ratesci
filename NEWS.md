@@ -5,12 +5,13 @@
 * `tdasci()` default uses skew=TRUE for stratum CIs.
 * Added optional prediction interval for random effects method.
 * Added xlim and ylim arguments to control plot output.
-* Added sda argument to control sparse data adjustment (needs work to improve versatility).
+* Added sda argument to control sparse data adjustment.
 * Added INV option for weights that omit the bias correction.
 * Added RRtang argument to apply Tang's alternative score (see Tang 2020)
     Stheta = (p1hat - p2hat * theta)/p2d 
   for stratified RR with INV/IVS weights (experimental for Poisson RR).
-* Added simplified skewness correction option (see Tang 2021 & Laud 2021).
+* Added simplified skewness correction option (causes p-values to be omitted 
+  - see Tang 2021 & Laud 2021).
 * Introduced warning and plot features for very rare occasions when quadratic 
   skewness correction has a negative discriminant.
 * Changed ORbias default to TRUE.
