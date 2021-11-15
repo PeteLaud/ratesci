@@ -84,13 +84,14 @@
 #'   "INV" = Tang's inverse variance weights (bias correction omitted),
 #'   "MH" = Mantel-Haenszel,
 #'   "MN" = Miettinen-Nurminen iterative weights.
-#'   For CI consistent with a CMH test, select skew=FALSE and use
+#'   For CI consistent with a CMH test, select skew = FALSE and use
 #'   MH weighting for RD/RR and IVS for OR.
 #' @param wt Numeric vector containing (optional) user-specified weights.
 #' @param RRtang Logical (default TRUE) indicating whether to use Tang's score
-#'   Stheta <- (p1hat - p2hat * theta)/p2d. Only relevant for stratified = TRUE,
-#'   for contrast = "RR" and weighting = "IVS". Ignored for other contrasts,
-#'   or if weighting = "MH".
+#'   Stheta = (p1hat - p2hat * theta) / p2d (see Tang 2020).
+#'   Only relevant for stratified = TRUE, for contrast = "RR" and
+#'   weighting = "IVS". Ignored for other contrasts, or if weighting = "MH".
+#'   Experimental for distrib = "poi".
 #' @param hetplot Logical (default FALSE) indicating whether to output plots for
 #'   evaluating heterogeneity of stratified datasets.
 #' @param MNtol Numeric value indicating convergence tolerance to be used in
@@ -99,7 +100,8 @@
 #' @param random Logical (default FALSE) indicating whether to perform random
 #'   effects meta-analysis for stratified data, using the t-distribution (TDAS)
 #'   method for stratified data (defined in Laud 2017).
-#'   NOTE: If random=TRUE, then skew=TRUE only affects the per-stratum estimates.
+#'   NOTE: If random = TRUE, then skew = TRUE only affects the per-stratum
+#'   estimates.
 #' @param prediction Logical (default FALSE) indicating whether to produce
 #'   a prediction interval (work in progress).
 #' @param warn Logical (default TRUE) giving the option to suppress warnings.
@@ -314,8 +316,11 @@ scoreci <- function(x1,
   }
   # Tang score intended only for IVS/INV weighting -
   # Tang p3431 does not use it for MH weights.
-  if (!(distrib == "bin" && contrast == "RR" &&
-    weighting %in% c("IVS", "INV"))) {
+  if (!(
+    # distrib == "bin" &&
+    contrast == "RR" &&
+    weighting %in% c("IVS", "INV")
+    )) {
     RRtang <- FALSE
   }
   if (as.character(cc) == "TRUE") cc <- 0.5
@@ -1238,10 +1243,14 @@ scoretheta <- function(theta,
       p1d <- p2d * theta
       V <- pmax(0, (p1d / n1 + (theta^2) * p2d / n2))
       mu3 <- (p1d / (n1^2) - (theta^3) * p2d / (n2^2))
-      if (RRtang == TRUE) { # Apply Tang score for Poisson parameter
+      if (RRtang == TRUE) {
+        # Apply Tang score for Poisson parameter
+        # EXPERIMENTAL - needs to be evaluated
         Stheta <- (p1hat - p2hat * theta) / p2d
         V <- pmax(0, (p1d / n1 + (theta^2) * p2d / n2) / p2d^2)
         mu3 <- (p1d / (n1^2) - (theta^3) * p2d / (n2^2)) / p2d^3
+        mu3[(x1 == 0 & x2 == 0)] <- 0
+        Stheta[(x1 == 0 & x2 == 0)] <- 0
       }
     }
   } else if (contrast == "OR") {
