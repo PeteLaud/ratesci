@@ -45,7 +45,7 @@ contrast="p" gives an interval for the single proportion or rate x1/n1.}
 
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
 correction. Numeric value is taken as the gamma parameter in Laud 2017,
-Appendix S2 (default 0.5 if cc=TRUE).
+Appendix S2 (default 0.5 if cc = TRUE).
 IMPORTANT NOTES:
 1) This is a 'continuity correction' aimed at approximating strictly
 conservative coverage, NOT for dealing with zero cell counts. Such
@@ -75,7 +75,7 @@ stratified = "TRUE":
 "INV" = Tang's inverse variance weights (bias correction omitted),
 "MH" = Mantel-Haenszel,
 "MN" = Miettinen-Nurminen iterative weights.
-For CI consistent with a CMH test, select skew=FALSE and use
+For CI consistent with a CMH test, select skew = FALSE and use
 MH weighting for RD/RR and IVS for OR.}
 
 \item{MNtol}{Numeric value indicating convergence tolerance to be used in

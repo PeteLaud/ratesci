@@ -60,7 +60,9 @@ correction (for the SCAS method recommended in Laud 2017) or not (for
 the Miettinen-Nurminen method).}
 
 \item{simpleskew}{Logical (default FALSE) indicating whether to use the
-"simplified" skewness correction instead of the quadratic solution.}
+"simplified" skewness correction instead of the quadratic solution.
+See Laud 2021 for details. NOTE: this version of the score is only
+suitable for obtaining confidence limits, not a p-value.}
 
 \item{ORbias}{Logical (default is TRUE for contrast="OR", otherwise
 NULL) indicating whether to apply additional bias correction for OR derived
@@ -68,9 +70,10 @@ from Gart 1985. (Corrigendum to Laud 2017, published May 2018).
 Only applies if contrast is "OR".}
 
 \item{RRtang}{Logical (default TRUE) indicating whether to use Tang's score
-Stheta <- (p1hat - p2hat * theta)/p2d. Only relevant for stratified = TRUE,
-for contrast = "RR" and weighting = "IVS". Ignored for other contrasts,
-or if weighting = "MH".}
+Stheta = (p1hat - p2hat * theta) / p2d (see Tang 2020).
+Only relevant for stratified = TRUE, for contrast = "RR" and
+weighting = "IVS". Ignored for other contrasts, or if weighting = "MH".
+Experimental for distrib = "poi".}
 
 \item{bcf}{Logical (default TRUE) indicating whether to apply bias correction
 in the score denominator. Applicable to distrib = "bin" only. (NB: bcf =
@@ -79,7 +82,7 @@ published methods (i.e. Gart & Nam, Mee, or standard Chi-squared test).}
 
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
 correction. Numeric value is taken as the gamma parameter in Laud 2017,
-Appendix S2 (default 0.5 if cc=TRUE).
+Appendix S2 (default 0.5 if cc = TRUE).
 IMPORTANT NOTES:
 1) This is a 'continuity correction' aimed at approximating strictly
 conservative coverage, NOT for dealing with zero cell counts. Such
@@ -93,10 +96,11 @@ stratified methods.}
 
 \item{theta0}{Number to be used in a one-sided significance test (e.g.
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
-excludes theta0. If bcf=F and skew=F this gives a Farrington-Manning test.
+excludes theta0. If bcf = FALSE and skew = FALSE this gives a
+Farrington-Manning test.
 By default, a two-sided test against theta0 = 0 (for RD) or 1 (for RR/OR)
-is also output: if bcf=F and skew=F this is the same as Pearson's
-Chi-squared test.}
+is also output: if bcf = FALSE and skew = FALSE this is the same as
+Pearson's Chi-squared test.}
 
 \item{precis}{Number (default 6) specifying precision (i.e. number of decimal
 places) to be used in optimisation subroutine for the confidence interval.}
@@ -126,7 +130,7 @@ stratified = "TRUE":
 "INV" = Tang's inverse variance weights (bias correction omitted),
 "MH" = Mantel-Haenszel,
 "MN" = Miettinen-Nurminen iterative weights.
-For CI consistent with a CMH test, select skew=FALSE and use
+For CI consistent with a CMH test, select skew = FALSE and use
 MH weighting for RD/RR and IVS for OR.}
 
 \item{MNtol}{Numeric value indicating convergence tolerance to be used in
@@ -139,7 +143,8 @@ iteration with weighting = "MN".}
 \item{random}{Logical (default FALSE) indicating whether to perform random
 effects meta-analysis for stratified data, using the t-distribution (TDAS)
 method for stratified data (defined in Laud 2017).
-NOTE: If random=TRUE, then skew=TRUE only affects the per-stratum estimates.}
+NOTE: If random = TRUE, then skew = TRUE only affects the per-stratum
+estimates.}
 
 \item{prediction}{Logical (default FALSE) indicating whether to produce
 a prediction interval (work in progress).}

@@ -63,10 +63,11 @@
 #' @param sda Sparse data adjustment (default 0.5 for RD & RR)
 #' @param theta0 Number to be used in a one-sided significance test (e.g.
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
-#'   excludes theta0. If bcf=F and skew=F this gives a Farrington-Manning test.
+#'   excludes theta0. If bcf = FALSE and skew = FALSE this gives a
+#'   Farrington-Manning test.
 #'   By default, a two-sided test against theta0 = 0 (for RD) or 1 (for RR/OR)
-#'   is also output: if bcf=F and skew=F this is the same as Pearson's
-#'   Chi-squared test.
+#'   is also output: if bcf = FALSE and skew = FALSE this is the same as
+#'   Pearson's Chi-squared test.
 #' @param precis Number (default 6) specifying precision (i.e. number of decimal
 #'   places) to be used in optimisation subroutine for the confidence interval.
 #' @param plot Logical (default FALSE) indicating whether to output plot of the
@@ -513,8 +514,8 @@ scoreci <- function(x1,
   wt_MLE <- at_MLE$wt
   ##  V_MLE <- at_MLE$V
 
-  # if stratified=TRUE, options are available for assuming fixed effects
-  # (random=FALSE) or random effects (random=TRUE). The IVS weights are
+  # if stratified = TRUE, options are available for assuming fixed effects
+  # (random = FALSE) or random effects (random = TRUE). The IVS weights are
   # different for each version, which in turn can lead to a different point
   # estimate, at which certain quantities are evaluated. However, fixed effects
   # estimates are needed for both, in particular for the heterogeneity test
@@ -676,7 +677,7 @@ scoreci <- function(x1,
     p1hat = p1hat_w, p2hat = p2hat_w, p1mle = p1d_w, p2mle = p2d_w
   )
 
-  # optionally add p-value for a test of null hypothesis: theta<=theta0
+  # optionally add p-value for a test of null hypothesis: theta <= theta0
   # default value of theta0 depends on contrast
   if (contrast == "RD") {
     theta00 <- 0
@@ -1402,7 +1403,8 @@ scoretheta <- function(theta,
     # NB the skewness correction is omitted for the heterogeneity test statistics.
     Q_j <- ((Stheta - Sdot)^2) / V
     # NB it is necessary to include Sdot here for TDAS method to work.
-    # - for the heterogeneity test evaluated at MLE, Sdot will equal 0 if skew=F
+    # - for the heterogeneity test evaluated at MLE,
+    #   Sdot will equal 0 if skew = FALSE
     # NB it is necessary to use equation S2 here for TDAS method to work
     Q <- sum(Q_j)
     W <- sum(wt)
@@ -1493,11 +1495,12 @@ scoretheta <- function(theta,
     p2ds <- p2d
 
     corr <- corr * sign(Stheta)
-    # Calculation of score & p-value involves solving
-    # z_p = Stheta/sqrt(V) -(z_p^2)*mu3/(6*V^(3/2)) + mu3/(6*V^(3/2))
+    # Calculation of score & p-value involves solving for z_p:
+    # z_p = Stheta / sqrt(V) - (z_p^2) * mu3 / (6 * V^(3 / 2)) +
+    #       mu3 / (6 * V^(3 / 2))
     # Note that in the special case of mu3=0, this reduces to
-    # the skew=FALSE case.
-    # i.e. z_p = Stheta/sqrt(V)
+    # the skew = FALSE case.
+    # i.e. z_p = Stheta / sqrt(V)
     scterm <- mu3 / (6 * V^(3 / 2))
     scterm[mu3 == 0] <- 0
     score1 <- (Stheta - corr) / sqrt(V)
