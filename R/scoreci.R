@@ -315,7 +315,7 @@ scoreci <- function(x1,
     print("Odds ratio not applicable to Poisson rates")
     stop()
   }
-  if (contrast == "p" && weighting == "MN") {
+  if (contrast == "p" && weighting == "MN" && stratified == TRUE) {
     print("MN weights not applicable to the single rate")
     stop()
   }
@@ -330,7 +330,8 @@ scoreci <- function(x1,
   if (!(
     # distrib == "bin" &&
     contrast == "RR" &&
-    weighting %in% c("IVS", "INV")
+    weighting %in% c("IVS", "INV") &&
+    stratified == TRUE
     )) {
     RRtang <- FALSE
   }
@@ -379,7 +380,7 @@ scoreci <- function(x1,
     # NB this should only be necessary for weighting = 'IVS' or 'INV',
     # (but some might prefer to use sda instead of excluding empty strata.)
     # Suggest default should be sda=0.5 for RD & RR, sda=0 for OR
-    if (weighting %in% c("IVS", "INV")) {
+    if (stratified == TRUE && weighting %in% c("IVS", "INV")) {
       #  if (contrast %in% c("OR") && weighting == "MH") {
       # ??OR struggles with zero event counts with MH weights
       #    zero_rd <- (x1 == 0 | x2 == 0 | x1 == n1 | x2 == n2) #& !empty_strat
@@ -556,8 +557,9 @@ scoreci <- function(x1,
     } else {
       p2d_w <- NULL
     }
-
-    if (!is.null(wt)) weighting <- "User-defined"
+    if (!is.null(wt)) {
+      weighting <- "User-defined"
+    }
   } else {
     # if removing empty strata leaves only one stratum treat as unstratified
     p1hat_w <- p1hat
