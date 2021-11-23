@@ -15,6 +15,8 @@
 * Introduced warning and plot features for very rare occasions when quadratic 
   skewness correction has a negative discriminant.
 * Changed ORbias default to TRUE.
+* Changed weighting default to "MH" for contrast = "RD" or "RR" (for consistency
+  with CMH test).
 * Added hetplot argument to separate heterogeneity plots from score function plot.
 
 ## Bug fixes

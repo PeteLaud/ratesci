@@ -78,7 +78,7 @@ test_that("legacy & new methods match published examples", {
       x2 = c(26, 25, 11), n2 = c(453, 174, 70),
       x1 = c(21, 11, 8), n1 = c(464, 165, 69),
       contrast = "RR", RRtang = TRUE, skew = FALSE, bcf = FALSE,
-      stratified = TRUE
+      stratified = TRUE, weighting = "IVS"
     )$estimates[, c(1, 3)], 4)),
     c(0.4444, 0.9468)
   )
@@ -87,7 +87,7 @@ test_that("legacy & new methods match published examples", {
       x2 = c(26, 25, 11), n2 = c(453, 174, 70),
       x1 = c(21, 11, 8), n1 = c(464, 165, 69),
       contrast = "RR", RRtang = TRUE, skew = TRUE, bcf = FALSE,
-      stratified = TRUE
+      stratified = TRUE, weighting = "IVS"
     )$estimates[, c(1, 3)], 4)),
     c(0.4410, 0.9462)
   )
@@ -231,7 +231,7 @@ test_that("legacy & new methods match published examples", {
       x2 = c(9, 1, 18, 31, 6, 17, 7, 23, 3, 6, 12, 22, 19),
       n1 = c(16, 16, 34, 56, 22, 54, 17, 58, 14, 26, 44, 29, 38),
       n2 = c(16, 16, 34, 56, 22, 55, 15, 58, 15, 27, 45, 30, 38),
-      stratified = TRUE
+      stratified = TRUE, weighting = "IVS"
     )$estimates[, c(1, 3)], 4)),
     c(0.2441, 0.3698)
   )
@@ -242,7 +242,7 @@ test_that("legacy & new methods match published examples", {
       x2 = c(9, 1, 18, 31, 6, 17, 7, 23, 3, 6, 12, 22, 19),
       n1 = c(16, 16, 34, 56, 22, 54, 17, 58, 14, 26, 44, 29, 38),
       n2 = c(16, 16, 34, 56, 22, 55, 15, 58, 15, 27, 45, 30, 38),
-      stratified = TRUE, random = TRUE, skew = FALSE
+      stratified = TRUE, random = TRUE, skew = FALSE, weighting = "IVS"
     )$estimates[, c(1, 3)], 4)),
     c(0.1928, 0.4647)
   )

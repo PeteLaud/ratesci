@@ -85,7 +85,7 @@
 #'   stratified = "TRUE":
 #'   "IVS" = Inverse Variance of Score (default, see Laud 2017 for details),
 #'   "INV" = Tang's inverse variance weights (bias correction omitted),
-#'   "MH" = Mantel-Haenszel,
+#'   "MH" = Mantel-Haenszel (default for contrast = "RD" or "RR"),
 #'   "MN" = Miettinen-Nurminen iterative weights.
 #'   For CI consistent with a CMH test, select skew = FALSE and use
 #'   MH weighting for RD/RR and IVS for OR.
@@ -93,8 +93,8 @@
 #' @param RRtang Logical (default TRUE) indicating whether to use Tang's score
 #'   Stheta = (p1hat - p2hat * theta) / p2d (see Tang 2020).
 #'   Only relevant for stratified = TRUE, for contrast = "RR" and
-#'   weighting = "IVS". Ignored for other contrasts, or if weighting = "MH".
-#'   Experimental for distrib = "poi".
+#'   weighting = "IVS" or "INV". Ignored for other contrasts, or if
+#'   weighting = "MH". Experimental for distrib = "poi".
 #' @param hetplot Logical (default FALSE) indicating whether to output plots for
 #'   evaluating heterogeneity of stratified datasets.
 #' @param MNtol Numeric value indicating convergence tolerance to be used in
@@ -237,7 +237,7 @@ scoreci <- function(x1,
                     xlim = NULL,
                     ylim = NULL,
                     stratified = FALSE,
-                    weighting = "IVS",
+                    weighting = NULL,
                     MNtol = 1E-8,
                     wt = NULL,
                     tdas = NULL,
@@ -283,8 +283,16 @@ scoreci <- function(x1,
   if (contrast != "OR") {
     ORbias <- NULL
   }
+  if (stratified == TRUE && is.null(weighting)) {
+    weighting <- switch(contrast,
+                        "RD" = "MH",
+                        "RR" = "MH",
+                        "OR" = "IVS"
+    )
+  }
   if (is.null(sda)) {
-    if (weighting %in% c("IVS", "INV") && contrast %in% c("RD", "RR")) {
+    if (stratified == TRUE && weighting %in% c("IVS", "INV") &&
+        contrast %in% c("RD", "RR")) {
       sda <- 0.5
     } else {
       sda <- 0

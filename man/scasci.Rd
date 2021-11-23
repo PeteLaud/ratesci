@@ -78,7 +78,7 @@ been fully evaluated.}
 stratified = "TRUE":
 "IVS" = Inverse Variance of Score (default, see Laud 2017 for details),
 "INV" = Tang's inverse variance weights (bias correction omitted),
-"MH" = Mantel-Haenszel,
+"MH" = Mantel-Haenszel (default for contrast = "RD" or "RR"),
 "MN" = Miettinen-Nurminen iterative weights.
 For CI consistent with a CMH test, select skew = FALSE and use
 MH weighting for RD/RR and IVS for OR.}

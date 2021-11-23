@@ -28,7 +28,7 @@ scoreci(
   xlim = NULL,
   ylim = NULL,
   stratified = FALSE,
-  weighting = "IVS",
+  weighting = NULL,
   MNtol = 1e-08,
   wt = NULL,
   tdas = NULL,
@@ -62,7 +62,7 @@ the Miettinen-Nurminen method).}
 \item{simpleskew}{Logical (default FALSE) indicating whether to use the
 "simplified" skewness correction instead of the quadratic solution.
 See Laud 2021 for details. NOTE: this version of the score is only
-suitable for obtaining confidence limits, not a p-value.}
+suitable for obtaining confidence limits, not p-values.}
 
 \item{ORbias}{Logical (default is TRUE for contrast="OR", otherwise
 NULL) indicating whether to apply additional bias correction for OR derived
@@ -72,8 +72,8 @@ Only applies if contrast is "OR".}
 \item{RRtang}{Logical (default TRUE) indicating whether to use Tang's score
 Stheta = (p1hat - p2hat * theta) / p2d (see Tang 2020).
 Only relevant for stratified = TRUE, for contrast = "RR" and
-weighting = "IVS". Ignored for other contrasts, or if weighting = "MH".
-Experimental for distrib = "poi".}
+weighting = "IVS" or "INV". Ignored for other contrasts, or if
+weighting = "MH". Experimental for distrib = "poi".}
 
 \item{bcf}{Logical (default TRUE) indicating whether to apply bias correction
 in the score denominator. Applicable to distrib = "bin" only. (NB: bcf =
@@ -128,7 +128,7 @@ been fully evaluated.}
 stratified = "TRUE":
 "IVS" = Inverse Variance of Score (default, see Laud 2017 for details),
 "INV" = Tang's inverse variance weights (bias correction omitted),
-"MH" = Mantel-Haenszel,
+"MH" = Mantel-Haenszel (default for contrast = "RD" or "RR"),
 "MN" = Miettinen-Nurminen iterative weights.
 For CI consistent with a CMH test, select skew = FALSE and use
 MH weighting for RD/RR and IVS for OR.}
