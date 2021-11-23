@@ -14,6 +14,7 @@
   - see Tang 2021 & Laud 2021).
 * Introduced warning and plot features for very rare occasions when quadratic 
   skewness correction has a negative discriminant.
+* p-value suppressed where affected by negative discriminants.
 * Changed ORbias default to TRUE.
 * Changed weighting default to "MH" for contrast = "RD" or "RR" (for consistency
   with CMH test).

@@ -40,7 +40,7 @@
 #' @param simpleskew Logical (default FALSE) indicating whether to use the
 #'   "simplified" skewness correction instead of the quadratic solution.
 #'   See Laud 2021 for details. NOTE: this version of the score is only
-#'   suitable for obtaining confidence limits, not a p-value.
+#'   suitable for obtaining confidence limits, not p-values.
 #' @param ORbias Logical (default is TRUE for contrast="OR", otherwise
 #'   NULL) indicating whether to apply additional bias correction for OR derived
 #'   from Gart 1985. (Corrigendum to Laud 2017, published May 2018).
@@ -705,7 +705,7 @@ scoreci <- function(x1,
     distrib = distrib, skew = skew, ORbias = ORbias,
     RRtang = RRtang, cc = cc, simpleskew = simpleskew, level = level
   )
-  scorenull <- scoretheta(
+  scoreth0 <- scoretheta(
     theta = theta0, x1 = x1, x2 = x2, n1 = n1, n2 = n2,
     stratified = stratified, wt = wt,
     weighting = weighting, MNtol = MNtol, random = random,
@@ -713,9 +713,11 @@ scoreci <- function(x1,
     skew = skew, ORbias = ORbias, RRtang = RRtang,
     cc = cc, simpleskew = simpleskew, level = level
   )
-  pval_left <- scorenull$pval
+  pval_left <- scoreth0$pval
+  pval_left[scoreth0$dsct < 0] <- NA
   pval_right <- 1 - pval_left
   chisq_zero <- scorezero$score^2
+  chisq_zero[scorezero$dsct < 0] <- NA
   pval2sided <- pchisq(chisq_zero, 1, lower.tail = FALSE)
   if (random == TRUE) {
     pval2sided <- pf(chisq_zero, 1, nstrat - 1,
@@ -725,18 +727,23 @@ scoreci <- function(x1,
   if (simpleskew == TRUE && skew == TRUE) {
     pval <- NULL # simple version of skewness-corrected score is
                  # not valid for producing a p-value
+    warning(paste0("p-values not calculable with simpleskew == TRUE"),
+              call. = FALSE
+            )
   } else {
+    scorenull <- scoreth0$score
+    scorenull[scoreth0$dsct < 0] <- NA
     pval <- cbind(
       chisq = chisq_zero, pval2sided, theta0 = theta0,
-      scorenull = scorenull$score, pval_left, pval_right
+      scorenull, pval_left, pval_right
     )
   }
   # Add qualitative interaction test as per equation S4 of Laud 2017
   if (stratified == TRUE && nstrat > 1) {
     # V is evaluated at the fixed effects MLE
-    Qc_j <- (scorenull$Stheta)^2 / at_FE$V
-    Qc_m <- sum(Qc_j[scorenull$Stheta > 0])
-    Qc_p <- sum(Qc_j[scorenull$Stheta < 0])
+    Qc_j <- (scoreth0$Stheta)^2 / at_FE$V
+    Qc_m <- sum(Qc_j[scoreth0$Stheta > 0])
+    Qc_p <- sum(Qc_j[scoreth0$Stheta < 0])
     Qc <- min(Qc_m, Qc_p)
     Qcprob <- 0
     for (h in 1:(nstrat - 1)) {
@@ -766,6 +773,18 @@ scoreci <- function(x1,
         ),
         call. = FALSE
         )
+        if (scoreth0$dsct < 0) {
+          warning(paste0("1-sided p-value not calculable for theta0 = ",
+                         theta0),
+                  call. = FALSE
+          )
+        }
+        if (scorezero$dsct < 0) {
+          warning(paste0("2-sided p-value not calculable"),
+                  call. = FALSE
+          )
+        }
+
       }
     }
   }
