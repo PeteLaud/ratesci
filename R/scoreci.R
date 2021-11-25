@@ -83,8 +83,8 @@
 #'   been fully evaluated.
 #' @param weighting String indicating which weighting method to use if
 #'   stratified = "TRUE":
-#'   "IVS" = Inverse Variance of Score (default, see Laud 2017 for details),
-#'   "INV" = Tang's inverse variance weights (bias correction omitted),
+#'   "IVS" = Inverse Variance of Score (see Laud 2017 for details),
+#'   "INV" = Inverse Variance (bcf omitted, default for contrast = "OR"),
 #'   "MH" = Mantel-Haenszel (default for contrast = "RD" or "RR"),
 #'   "MN" = Miettinen-Nurminen iterative weights.
 #'   For CI consistent with a CMH test, select skew = FALSE and use
@@ -287,7 +287,7 @@ scoreci <- function(x1,
     weighting <- switch(contrast,
                         "RD" = "MH",
                         "RR" = "MH",
-                        "OR" = "IVS"
+                        "OR" = "INV"
     )
   }
   if (is.null(sda)) {
