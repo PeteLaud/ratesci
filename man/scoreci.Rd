@@ -125,8 +125,8 @@ been fully evaluated.}
 
 \item{weighting}{String indicating which weighting method to use if
 stratified = "TRUE":
-"IVS" = Inverse Variance of Score (default, see Laud 2017 for details),
-"INV" = Tang's inverse variance weights (bias correction omitted),
+"IVS" = Inverse Variance of Score (see Laud 2017 for details),
+"INV" = Inverse Variance (bcf omitted, default for contrast = "OR"),
 "MH" = Mantel-Haenszel (default for contrast = "RD" or "RR"),
 "MN" = Miettinen-Nurminen iterative weights.
 For CI consistent with a CMH test, select skew = FALSE and use
@@ -138,11 +138,13 @@ iteration with weighting = "MN".}
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
 
 \item{sda}{Sparse data adjustment to avoid zero variance when x1 + x2 = 0:
+Only applied when stratified = TRUE.
 Default 0.5 for RD with IVS/INV weights.
 Not required for RR/OR, default is to remove double-zero strata
 instead.}
 
 \item{fda}{Full data adjustment to avoid zero variance when x1 + x2 = n1 + n2:
+Only applied when stratified = TRUE.
 Default 0.5 for RD & RR with IVS/INV weights.
 Not required for OR, default is to remove affected strata.}
 
