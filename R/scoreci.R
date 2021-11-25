@@ -337,10 +337,12 @@ scoreci <- function(x1,
     stop()
   }
   if (cc != FALSE && stratified == TRUE && contrast != "OR") {
-    print(paste(
-      "Warning: Continuity correction is experimental for",
-      "stratified RD and RR"
-    ))
+    if (warn == TRUE) {
+      print(paste(
+        "Warning: Continuity correction is experimental for",
+        "stratified RD and RR"
+      ))
+    }
   }
   # Tang score intended only for IVS/INV weighting -
   # Tang p3431 does not use it for MH weights.
@@ -749,9 +751,11 @@ scoreci <- function(x1,
   if (simpleskew == TRUE && skew == TRUE) {
     pval <- NULL # simple version of skewness-corrected score is
                  # not valid for producing a p-value
-    warning(paste0("p-values not calculable with simpleskew == TRUE"),
-              call. = FALSE
-            )
+    if (warn == TRUE) {
+      warning(paste0("p-values not calculable with simpleskew == TRUE"),
+        call. = FALSE
+      )
+    }
   } else {
     scorenull <- scoreth0$score
     scorenull[scoreth0$dsct < 0] <- NA
@@ -760,6 +764,7 @@ scoreci <- function(x1,
       scorenull, pval_left, pval_right
     )
   }
+
   # Add qualitative interaction test as per equation S4 of Laud 2017
   if (stratified == TRUE && nstrat > 1) {
     # V is evaluated at the fixed effects MLE
@@ -787,21 +792,23 @@ scoreci <- function(x1,
     if (any(dt[!is.na(dt)] < 0)) {
       if (skew == TRUE && simpleskew == FALSE && random == FALSE) {
         badrange <- range(fullseq[dt < 0], na.rm = TRUE)
-        warning(paste0(
-          "Negative discriminant (min: ", round(min(dt, na.rm = T), 4),
-          ") in quadratic skewness corrected score between (",
-          paste(round(badrange, 5), collapse = ","),
-          "). Simplified skewness correction used in this range."
-        ),
-        call. = FALSE
-        )
-        if (scoreth0$dsct < 0) {
+        if (warn == TRUE) {
+          warning(paste0(
+            "Negative discriminant (min: ", round(min(dt, na.rm = T), 4),
+            ") in quadratic skewness corrected score between (",
+            paste(round(badrange, 5), collapse = ","),
+            "). Simplified skewness correction used in this range."
+          ),
+          call. = FALSE
+          )
+        }
+        if (scoreth0$dsct < 0 && warn == TRUE) {
           warning(paste0("1-sided p-value not calculable for theta0 = ",
                          theta0),
                   call. = FALSE
           )
         }
-        if (scorezero$dsct < 0) {
+        if (scorezero$dsct < 0 && warn == TRUE) {
           warning(paste0("2-sided p-value not calculable"),
                   call. = FALSE
           )
@@ -840,8 +847,8 @@ scoreci <- function(x1,
   # Ideally this would be in a separate function, but it is unlikely to be used
   # much in practice - only included for code development and validation
   # purposes.
-  if (plot == TRUE) {
-    if (stratified) {
+  if (plot == TRUE || hetplot == TRUE) {
+    if (stratified == TRUE && nstrat > 1) {
       if (hetplot == TRUE) { # Note some problems for OR may need fixing
         if (sum(sqrt(V_FE)) > 0) {
           qqnorm(Stheta_FE / sqrt(V_FE))
@@ -892,7 +899,7 @@ scoreci <- function(x1,
       dim = c(dim1, length(myseq))
     )
 
-    if (stratified == FALSE) {
+    if (stratified == FALSE && nstrat > 0) {
       qnval <- qtnorm
       if (is.null(ylim)) ylim <- c(-2.5, 2.5) * qnval
       for (i in 1:nstrat) {
@@ -974,7 +981,7 @@ scoreci <- function(x1,
   }
 
   outlist <- list(estimates = estimates, pval = pval)
-  if (stratified == TRUE) {
+  if (stratified == TRUE && nstrat > 1) {
     Qtest <- c(
       Q = Q_FE, pval_het = pval_het, I2 = I2, tau2 = tau2_FE, Qc = Qc,
       pval_qualhet = Qcprob
