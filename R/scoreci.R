@@ -57,10 +57,9 @@
 #'   conservative coverage, NOT for dealing with zero cell counts. Such
 #'   'sparse data adjustments' are not needed in the score method,
 #'   except to deal with double-zero cells for RD (& double-100% cells for
-#'   binomial RD & RR) with IVS weights.
+#'   binomial RD & RR) with IVS/INV weights.
 #'   2) The continuity corrections provided here have not been fully tested for
 #'   stratified methods.
-#' @param sda Sparse data adjustment (default 0.5 for RD & RR)
 #' @param theta0 Number to be used in a one-sided significance test (e.g.
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 #'   excludes theta0. If bcf = FALSE and skew = FALSE this gives a
@@ -90,6 +89,15 @@
 #'   For CI consistent with a CMH test, select skew = FALSE and use
 #'   MH weighting for RD/RR and IVS for OR.
 #' @param wt Numeric vector containing (optional) user-specified weights.
+#' @param sda Sparse data adjustment to avoid zero variance when x1 + x2 = 0:
+#'           Only applied when stratified = TRUE.
+#'           Default 0.5 for RD with IVS/INV weights.
+#'           Not required for RR/OR, default is to remove double-zero strata
+#'           instead.
+#' @param fda Full data adjustment to avoid zero variance when x1 + x2 = n1 + n2:
+#'           Only applied when stratified = TRUE.
+#'           Default 0.5 for RD & RR with IVS/INV weights.
+#'           Not required for OR, default is to remove affected strata.
 #' @param RRtang Logical (default TRUE) indicating whether to use Tang's score
 #'   Stheta = (p1hat - p2hat * theta) / p2d (see Tang 2020).
 #'   Only relevant for stratified = TRUE, for contrast = "RR" and
@@ -228,7 +236,6 @@ scoreci <- function(x1,
                     RRtang = TRUE,
                     bcf = TRUE,
                     cc = FALSE,
-                    sda = NULL,
                     theta0 = NULL,
                     precis = 6,
                     plot = FALSE,
@@ -240,6 +247,8 @@ scoreci <- function(x1,
                     weighting = NULL,
                     MNtol = 1E-8,
                     wt = NULL,
+                    sda = NULL,
+                    fda = NULL,
                     tdas = NULL,
                     random = FALSE,
                     prediction = FALSE,
@@ -292,10 +301,18 @@ scoreci <- function(x1,
   }
   if (is.null(sda)) {
     if (stratified == TRUE && weighting %in% c("IVS", "INV") &&
-        contrast %in% c("RD", "RR")) {
+        contrast %in% c("RD")) {
       sda <- 0.5
     } else {
       sda <- 0
+    }
+  }
+  if (is.null(fda)) {
+    if (stratified == TRUE && weighting %in% c("IVS", "INV") &&
+        contrast %in% c("RD", "RR")) {
+      fda <- 0.5
+    } else {
+      fda <- 0
     }
   }
   if (!is.null(theta0)) {
@@ -352,12 +369,12 @@ scoreci <- function(x1,
     } else {
       empty_strat <- (n1 == 0 | n2 == 0) |
         # Also drop uninformative strata for RR & OR
-        # Note for OR_IVS such strata should actually have zero weight(?)
-        # It would be preferable to include in the analysis with zero weight
-        # to avoid ITT concerns
-        ## ((weighting == "IVS") & ..
-        (contrast %in% c("RR", "OR") & (x1 == 0 & x2 == 0)) |
-          (contrast == "OR" & (x1 == n1 & x2 == n2))
+        # Note for IVS/INV weighting such strata have zero weight so could remain
+        # to avoid ITT concerns - but note this has implications for homogeneity
+        # test. Could exclude zero weight strata from homogeneity calculations?
+        # (!(weighting %in% c("IVS", "INV") || sda > 0) &
+        (!(sda > 0) & (contrast %in% c("RR", "OR")) & (x1 == 0 & x2 == 0)) |
+        (!(fda > 0) & (contrast == "OR" & (x1 == n1 & x2 == n2)))
     }
 
     x1 <- x1[!empty_strat]
@@ -373,20 +390,25 @@ scoreci <- function(x1,
       ))
     }
 
-    # Sparse data adjustment:
+    nstrat <- length(x1) # update nstrat after removing empty strata
+    sda <- rep_len(sda, length.out = nstrat)
+    fda <- rep_len(fda, length.out = nstrat)
+
+    # Sparse/Full data adjustment:
     # for double-zero cells for RD, add sda (default 0.5) to avoid 100% weight
-    # with IVS weights. Same for double-100% cells for binomial RD
+    # with IVS weights. Add fda (default 0.5) for double-100% cells for binomial RD
     # & RR (yes, really - variance becomes zero at theta=1).
     # NB this should only be necessary for weighting = 'IVS' or 'INV',
-    # (but some might prefer to use sda instead of excluding empty strata.)
-    # Suggest default should be sda=0.5 for RD & RR, sda=0 for OR
-    if (stratified == TRUE && weighting %in% c("IVS", "INV")) {
+    # (but some might prefer to specify instead of excluding empty strata.)
+    # Default is sda=fda=0.5 for RD, fda=0.5 for RR, sda=0 for OR
+    if (stratified == TRUE) {
+      # && weighting %in% c("IVS", "INV")) {
       #  if (contrast %in% c("OR") && weighting == "MH") {
       # ??OR struggles with zero event counts with MH weights
       #    zero_rd <- (x1 == 0 | x2 == 0 | x1 == n1 | x2 == n2) #& !empty_strat
       #  } else zero_rd <- 0
-      # NB could apply the same for RR/OR instead of dropping strata
-      if (contrast %in% c("RD", "RR")) { # Currently has no effect for RR
+      # NB users have option to apply sda for RR/OR instead of dropping strata
+      if (contrast %in% c("RD", "RR", "OR")) {
         zero_rd <- (x1 == 0 & x2 == 0) # & !empty_strat
       } else {
         zero_rd <- 0
@@ -395,29 +417,27 @@ scoreci <- function(x1,
       x2 <- x2 + (zero_rd * sda)
       n1 <- n1 + (zero_rd * 2 * sda)
       n2 <- n2 + (zero_rd * 2 * sda)
-      if (contrast %in% c("RD", "RR") & distrib == "bin") {
+      if (contrast %in% c("RD", "RR", "OR") & distrib == "bin") {
         full_rd <- (x1 == n1 & x2 == n2) # & !empty_strat
       } else {
         full_rd <- 0
       }
-      x1 <- x1 + (full_rd * sda)
-      x2 <- x2 + (full_rd * sda)
-      n1 <- n1 + (full_rd * 2 * sda)
-      n2 <- n2 + (full_rd * 2 * sda)
+      x1 <- x1 + (full_rd * fda)
+      x2 <- x2 + (full_rd * fda)
+      n1 <- n1 + (full_rd * 2 * fda)
+      n2 <- n2 + (full_rd * 2 * fda)
     }
   }
 
-  nstrat <- length(x1) # update nstrat after removing empty strata
-  sda <- rep_len(sda, length.out = nstrat)
-
   # Warnings if removal of empty strata leave 0 or 1 stratum
-  if (stratified == TRUE && nstrat <= 1) {
+  if (stratified == TRUE && nstrat == 1) {
     stratified <- FALSE
     random <- FALSE
     if (warn == TRUE) print("Note: only one stratum!")
   }
   if (nstrat == 0) {
     if (warn == TRUE) print("Warning: no usable data!")
+    stratified <- FALSE
     if (contrast %in% c("RR", "OR")) {
       x1 <- x2 <- 0
       n1 <- n2 <- 10
@@ -1370,7 +1390,6 @@ scoretheta <- function(theta,
       } else if (weighting == "IVS") {
         # IVS: inverse variance weights updated wih V_tilde
         if (all(V == 0) || all(V == Inf | is.na(V))) {
-          # Need workaround here to give zero weight to zero cells for OR
           wt <- rep(1, nstrat)
         } else {
           wt <- 1 / V
@@ -1455,6 +1474,10 @@ scoretheta <- function(theta,
 
     Sdot <- sum(wt * Stheta) / sum(wt)
     Vdot <- sum(((wt / sum(wt))^2) * V)
+    # Alternative form for IVS weights avoids the need to exclude
+    # non-informative strata for OR. For use in possible future update
+    if (weighting %in% c("IVS")) Vdot <- sum(wt / (sum(wt))^2)
+    if (weighting %in% c("INV")) Vdot <- sum(lambda * wt / (sum(wt))^2)
 
     if (contrast == "OR" && cc > 0) {
       # corr <- cc * Vdot # This gives essentially the same correction as Gart 1985

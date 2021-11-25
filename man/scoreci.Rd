@@ -19,7 +19,6 @@ scoreci(
   RRtang = TRUE,
   bcf = TRUE,
   cc = FALSE,
-  sda = NULL,
   theta0 = NULL,
   precis = 6,
   plot = FALSE,
@@ -31,6 +30,8 @@ scoreci(
   weighting = NULL,
   MNtol = 1e-08,
   wt = NULL,
+  sda = NULL,
+  fda = NULL,
   tdas = NULL,
   random = FALSE,
   prediction = FALSE,
@@ -88,11 +89,9 @@ IMPORTANT NOTES:
 conservative coverage, NOT for dealing with zero cell counts. Such
 'sparse data adjustments' are not needed in the score method,
 except to deal with double-zero cells for RD (& double-100% cells for
-binomial RD & RR) with IVS weights.
+binomial RD & RR) with IVS/INV weights.
 2) The continuity corrections provided here have not been fully tested for
 stratified methods.}
-
-\item{sda}{Sparse data adjustment (default 0.5 for RD & RR)}
 
 \item{theta0}{Number to be used in a one-sided significance test (e.g.
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
@@ -137,6 +136,15 @@ MH weighting for RD/RR and IVS for OR.}
 iteration with weighting = "MN".}
 
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
+
+\item{sda}{Sparse data adjustment to avoid zero variance when x1 + x2 = 0:
+Default 0.5 for RD with IVS/INV weights.
+Not required for RR/OR, default is to remove double-zero strata
+instead.}
+
+\item{fda}{Full data adjustment to avoid zero variance when x1 + x2 = n1 + n2:
+Default 0.5 for RD & RR with IVS/INV weights.
+Not required for OR, default is to remove affected strata.}
 
 \item{tdas}{(deprecated: parameter renamed to random)}
 
