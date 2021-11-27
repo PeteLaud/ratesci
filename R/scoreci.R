@@ -358,7 +358,7 @@ scoreci <- function(x1,
     (stratified == FALSE || weighting %in% c("IVS", "INV"))
     )) {
     RRtang <- FALSE
-    if (warn == TRUE && contrast == "RR") {
+    if (warn == TRUE && contrast == "RR" && stratified == TRUE) {
       print(paste(
         "Warning: RRtang set to FALSE - option designed for inverse variance weighting only"
       ))
