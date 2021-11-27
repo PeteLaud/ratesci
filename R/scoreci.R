@@ -519,6 +519,7 @@ scoreci <- function(x1,
     }, contrast = contrast, distrib = distrib,
     precis = precis + 1, uplow = "low"
   )
+  point_FE[myfun(theta = 1, randswitch = random, ccswitch = 0, lev = 0) == 0] <- 1
   point <- point_FE
 
   # random effects point estimate if required
@@ -530,6 +531,7 @@ scoreci <- function(x1,
       precis = precis + 1, uplow = "low"
     )
   }
+  point[myfun(theta = 1, randswitch = random, ccswitch = 0, lev = 0) == 0] <- 1
 
   # fix some extreme cases with zero counts
   if (stratified == TRUE) {
@@ -590,7 +592,7 @@ scoreci <- function(x1,
     wt_FE <- at_FE$wt
     V_FE <- at_FE$V
     tau2_FE <- at_FE$tau2
-    ##    Q_each <- at_FE$Q_j
+    Q_each <- at_FE$Q_j
     Q_FE <- at_FE$Q
     I2 <- max(0, 100 * (Q_FE - (nstrat - 1)) / Q_FE)
     pval_het <- 1 - pchisq(Q_FE, nstrat - 1)
@@ -682,6 +684,9 @@ scoreci <- function(x1,
       if (distrib == "bin") point_FE_unstrat[x1 == n1 & x2 == n2] <- 0
       point_FE_unstrat[x1 == 0 & x2 == 0] <- 0
     }
+    if (contrast == "RR") {
+      point_FE_unstrat[x1 == 0 & x2 == 0] <- 1
+    }
     lower_unstrat <- bisect(
       ftn = function(theta) {
         myfun(theta, stratswitch = FALSE) - qnorm(1 - (1 - level) / 2)
@@ -735,6 +740,9 @@ scoreci <- function(x1,
     level = level, inputs,
     p1hat = p1hat_w, p2hat = p2hat_w, p1mle = p1d_w, p2mle = p2d_w
   )
+  if (stratified == FALSE) {
+    estimates <- cbind(estimates, V = at_MLE$V)
+  }
 
   # optionally add p-value for a test of null hypothesis: theta <= theta0
   # default value of theta0 depends on contrast
@@ -806,19 +814,25 @@ scoreci <- function(x1,
     }
   }
 
-  # Warn for negative discriminant in skewness corrected score
+  # Warn for negative discriminant in stratified skewness corrected score
   if (stratified == TRUE) {
     fullseq <- seq(-1, 1, length.out = 400)
-    # generalise for RR/OR
+    # generalise for equal spacing on transformed scale for RR/OR
     if (contrast %in% c("RR", "OR")) {
       fullseq <- (round(tan(pi * (fullseq + 1) / 4), 10))
     }
+    if (contrast == "p") {
+      fullseq <- (fullseq + 1) / 2
+    }
+    # identify affected range from discriminant function
     dt <- array(sapply(fullseq, function(x) mydsct(x)),
       dim = c(1, length(fullseq))
     )
-    if (any(dt[!is.na(dt)] < 0)) {
+    anydtflag <- FALSE
+    if (min(dt, na.rm = TRUE) < 0) {
       if (skew == TRUE && simpleskew == FALSE && random == FALSE) {
         badrange <- range(fullseq[dt < 0], na.rm = TRUE)
+        anydtflag <- TRUE
         if (warn == TRUE) {
           warning(paste0(
             "Negative discriminant (min: ", round(min(dt, na.rm = T), 4),
@@ -1019,13 +1033,14 @@ scoreci <- function(x1,
     outlist <- append(
       outlist,
       list(
-        Qtest = Qtest, weighting = weighting, dtflag = dtflag,
+        Qtest = Qtest, weighting = weighting, # dtflag = dtflag, anydtflag = anydtflag,
         stratdata = cbind(
           x1j = x1, n1j = n1, x2j = x2, n2j = n2,
           p1hatj = p1hat, p2hatj = p2hat, wt_fixed = wt_FE,
           wtpct_fixed = wt1pct, wtpct_rand = wtpct,
           theta_j = point_FE_unstrat, lower_j = lower_unstrat,
-          upper_j = upper_unstrat
+          upper_j = upper_unstrat, V_j = V_FE, Stheta_j = Stheta_FE,
+          Q_j = Q_each
         )
       )
     )
