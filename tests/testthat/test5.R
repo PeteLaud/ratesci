@@ -9,7 +9,7 @@ context("Consistency")
 
 n <- 9333
 xs <- 0:100
-rounded <- 9
+rounded <- 10
 #level <- 0.9
 for (level in c(0.9, 0.95, 0.99, 0.999)) {
 #for (level in c(0.9)) {
