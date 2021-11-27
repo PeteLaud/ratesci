@@ -48,8 +48,9 @@ scaspci <- function(x,
                     level = 0.95,
                     cc = FALSE,
                     ...) {
-#  x <- Rmpfr::mpfr(x, 120)
-#  n <- Rmpfr::mpfr(n, 120)
+  x <- Rmpfr::mpfr(x, 120)
+  n <- Rmpfr::mpfr(n, 120)
+  level <- Rmpfr::mpfr(level, 120)
   if (as.character(cc) == "TRUE") cc <- 0.5
   z <- qnorm(1 - (1 - level) / 2)
   if (distrib == "poi") {
@@ -67,7 +68,7 @@ scaspci <- function(x,
   } else if (distrib == "bin") {
     E <- (z^2 - 1) / (3 * n) - 1
     # Alteration to published formula,
-    # to deal with non-nested intervals when level>0.99
+    # to deal with non-nested intervals when level > 0.99
     Du <- Rmpfr::pmax(0, (n - x - cc) / n - (z^2 - 1) / (6 * n))
     Dl <- Rmpfr::pmax(0, (x - cc) / n - (z^2 - 1) / (6 * n))
     A <- z^2 / n + E^2
