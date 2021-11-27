@@ -98,6 +98,10 @@
 #'           Only applied when stratified = TRUE.
 #'           Default 0.5 for RD & RR with IVS/INV weights.
 #'           Not required for OR, default is to remove affected strata.
+#' @param dropzeros Logical (default FALSE) indicating whether to drop
+#'   uninformative strata for RR/OR, even when the choice of weights would allow
+#'   them to be retained for a fixed effects analysis.
+#'   Has no effect on estimates, just the heterogeneity test.
 #' @param RRtang Logical (default TRUE) indicating whether to use Tang's score
 #'   Stheta = (p1hat - p2hat * theta) / p2d (see Tang 2020).
 #'   Only relevant for stratified = TRUE, for contrast = "RR" and
@@ -249,6 +253,7 @@ scoreci <- function(x1,
                     wt = NULL,
                     sda = NULL,
                     fda = NULL,
+                    dropzeros = FALSE,
                     tdas = NULL,
                     random = FALSE,
                     prediction = FALSE,
@@ -371,12 +376,29 @@ scoreci <- function(x1,
     } else {
       empty_strat <- (n1 == 0 | n2 == 0) |
         # Also drop uninformative strata for RR & OR
-        # Note for IVS/INV weighting such strata have zero weight so could remain
-        # to avoid ITT concerns - but note this has implications for homogeneity
-        # test. Could exclude zero weight strata from homogeneity calculations?
-        # (!(weighting %in% c("IVS", "INV") || sda > 0) &
-        (!(sda > 0) & (contrast %in% c("RR", "OR")) & (x1 == 0 & x2 == 0)) |
-        (!(fda > 0) & (contrast == "OR" & (x1 == n1 & x2 == n2)))
+        # Note for RR & OR with IVS/INV weighting such strata have zero weight
+        # and for RR with fixed weights and RRtang = FALSE they dont contribute
+        # for a fixed effects analysis,
+        # so could remain to avoid ITT concerns - but note this has
+        # implications for heterogeneity test and random effects method.
+        ((x1 == 0 & x2 == 0) & !(sda > 0) & contrast == "RR" &
+          weighting %in% c("INV", "IVS") & RRtang == FALSE) |
+#       below not needed because RRtang is forced to FALSE anyway
+#        ((x1 == 0 & x2 == 0) & !(sda > 0) & contrast == "RR" &
+#          !(weighting %in% c("INV", "IVS")) & RRtang == TRUE) |
+        ((x1 == 0 & x2 == 0) & !(sda > 0) & contrast == "OR" &
+          !(weighting %in% c("INV", "IVS")) ) |
+        ((x1 == n1 & x2 == n2) & !(fda > 0) & contrast == "OR" &
+          !(weighting %in% c("INV", "IVS")) )
+    }
+    if (random == TRUE || dropzeros == TRUE) {
+      # Might be unnecessary for some random effects analyses, such as
+      # RR with RRtang = TRUE and INV/IVS weighting
+      # and OR with INV/IVS weighting,
+      # but needs further research.
+      empty_strat <- (n1 == 0 | n2 == 0) |
+        ((x1 == 0 & x2 == 0) & !(sda > 0) & (contrast %in% c("RR", "OR"))) |
+        ((x1 == n1 & x2 == n2) & !(fda > 0) & (contrast == "OR"))
     }
 
     x1 <- x1[!empty_strat]

@@ -32,6 +32,7 @@ scoreci(
   wt = NULL,
   sda = NULL,
   fda = NULL,
+  dropzeros = FALSE,
   tdas = NULL,
   random = FALSE,
   prediction = FALSE,
@@ -147,6 +148,11 @@ instead.}
 Only applied when stratified = TRUE.
 Default 0.5 for RD & RR with IVS/INV weights.
 Not required for OR, default is to remove affected strata.}
+
+\item{dropzeros}{Logical (default FALSE) indicating whether to drop
+uninformative strata for RR/OR, even when the choice of weights would allow
+them to be retained for a fixed effects analysis.
+Has no effect on estimates, just the heterogeneity test.}
 
 \item{tdas}{(deprecated: parameter renamed to random)}
 
