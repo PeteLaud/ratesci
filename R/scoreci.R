@@ -259,7 +259,7 @@ scoreci <- function(x1,
                     prediction = FALSE,
                     warn = TRUE,
                     ...) {
-  if (!missing(tdas)) {
+  if (!is.null(tdas)) {
     warning(
       "argument tdas is deprecated; please use random instead.",
       call. = FALSE
