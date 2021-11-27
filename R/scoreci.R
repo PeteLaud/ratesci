@@ -353,11 +353,16 @@ scoreci <- function(x1,
   # Tang p3431 does not use it for MH weights.
   if (!(
     # distrib == "bin" &&
+    # stratified == TRUE && # Note the different score does impact unstratified V
     contrast == "RR" &&
-    weighting %in% c("IVS", "INV") &&
-    stratified == TRUE
+    (stratified == FALSE || weighting %in% c("IVS", "INV"))
     )) {
     RRtang <- FALSE
+    if (warn == TRUE && contrast == "RR") {
+      print(paste(
+        "Warning: RRtang set to FALSE - option designed for inverse variance weighting only"
+      ))
+    }
   }
   if (as.character(cc) == "TRUE") cc <- 0.5
 
