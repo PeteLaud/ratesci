@@ -97,7 +97,7 @@ test_that("legacy & new methods match published examples", {
     unname(round(scoreci(
       x2 = c(26, 25, 11), n2 = c(453, 174, 70),
       x1 = c(21, 11, 8), n1 = c(464, 165, 69),
-      contrast = "OR", RRtang = TRUE, skew = FALSE, bcf = FALSE, ORbias = TRUE,
+      contrast = "OR", skew = FALSE, bcf = FALSE, ORbias = TRUE,
       stratified = TRUE
     )$estimates[, c(1, 3)], 4)),
     c(0.4155, 0.9466)
@@ -106,7 +106,7 @@ test_that("legacy & new methods match published examples", {
     unname(round(scoreci(
       x2 = c(26, 25, 11), n2 = c(453, 174, 70),
       x1 = c(21, 11, 8), n1 = c(464, 165, 69),
-      contrast = "OR", RRtang = TRUE, skew = TRUE, bcf = FALSE,
+      contrast = "OR", skew = TRUE, bcf = FALSE,
       stratified = TRUE
     )$estimates[, c(1, 3)], 4)),
     c(0.4124, 0.9461)
