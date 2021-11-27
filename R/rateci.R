@@ -40,7 +40,7 @@ exactci <- function( # function to calculate exact 'exact' confidence interval f
 #' @param n Numeric vector of sample sizes (for binomial rates) or exposure
 #'   times (for Poisson rates).
 #' @inheritParams scoreci
-#' @importFrom Rmpfr mpfr asNumeric
+# @importFrom Rmpfr mpfr asNumeric
 #' @export
 scaspci <- function(x,
                     n,
