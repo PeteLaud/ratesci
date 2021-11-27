@@ -813,34 +813,51 @@ scoreci <- function(x1,
                   call. = FALSE
           )
         }
-
       }
     }
   }
 
-  # Create flag to identify where negative discriminants occur within the
-  # plotting range
+  # Set plot x-axis limits if not specified
   if (is.null(xlim)) {
     if (contrast == "RD") {
       if (distrib == "bin") {
-        xlim <- c(
-          max(-1, min(lower - (upper - lower) / 2)),
-          min(1, max(upper + (upper - lower) / 2))
+        xlim <- cbind(
+          pmax(-1, pmin(lower - (upper - lower) / 2)),
+          pmin(1, pmax(upper + (upper - lower) / 2))
         )
       } else if (distrib == "poi") {
-        xlim <- c(lower - (upper - lower) / 2, upper + (upper - lower) / 2)
+        xlim <- cbind(lower - (upper - lower) / 2, upper + (upper - lower) / 2)
       }
     } else {
-      xlim <- c(max(0, min(0.5 * lower)), min(plotmax, max(1.5 * upper)))
+      xlim <- cbind(pmax(0, pmin(0.5 * lower)), pmin(plotmax, pmax(1.5 * upper)))
     }
   }
-  myseq <- seq(xlim[1], xlim[2], length.out = 1000)
-  if (stratified) dim1 <- 1 else dim1 <- nstrat
-  dtseg <- array(sapply(myseq, function(x) mydsct(x)),
-    dim = c(dim1, length(myseq))
+  if (!is.array(xlim)) {
+    if (stratified == TRUE) {
+      xlim <- array(xlim, dim = c(1, length(xlim)))
+    } else {
+      xlim <- array(rep(xlim, each = nstrat), dim = c(nstrat, length(xlim)))
+    }
+  }
+  # sequence of x-axis values for plotting
+  rangen <- 400
+  if (stratified == TRUE) {
+    dim1 <- 1
+    myseq <- array(seq(xlim[, 1], xlim[, 2], length.out = rangen),
+                   dim = c(rangen, dim1))
+  } else {
+    dim1 <- nstrat
+    myseq <- array(sapply(1:nstrat, function(i)
+      seq(xlim[i, 1], xlim[i, 2], length.out = rangen)),
+      dim = c(rangen, dim1))
+  }
+  # Create flag to identify where negative discriminants occur within the
+  # plotting range, i.e. in the vicinity of the confidence interval
+  dtseg <- array(sapply(1:rangen, function(i) mydsct(myseq[i, ])),
+                 dim = c(dim1, rangen)
   )
   dtflag <- FALSE
-  if (any(dtseg[!is.na(dtseg)] < 0) && skew == TRUE && !simpleskew) {
+  if (min(dtseg, na.rm = TRUE) < 0 && skew == TRUE && !simpleskew) {
     dtflag <- TRUE
   }
   # Optional plot of the score function.
@@ -870,41 +887,22 @@ scoreci <- function(x1,
         }
       }
     }
-    if (is.null(xlim)) {
-      if (contrast == "RD") {
-        if (distrib == "bin") {
-          xlim <- c(
-            max(-1, min(lower - (upper - lower) / 2)),
-            min(1, max(upper + (upper - lower) / 2))
-          )
-        } else if (distrib == "poi") {
-          xlim <- c(lower - (upper - lower) / 2, upper + (upper - lower) / 2)
-        }
-      } else {
-        xlim <- c(max(0, min(0.5 * lower)), min(plotmax, max(1.5 * upper)))
-      }
-    }
-    myseq <- seq(xlim[1], xlim[2], length.out = 400)
-    if (stratified) dim1 <- 1 else dim1 <- nstrat
-    sc <- array(sapply(myseq, function(x) myfun(x)),
-      dim = c(dim1, length(myseq))
+    # score for plotting
+    sc <- array(sapply(1:rangen, function(i) myfun(myseq[i, ])),
+                  dim = c(dim1, rangen)
     )
-    ssc <- array(sapply(myseq, function(x) myfun(x, ssswitch = TRUE)),
-      dim = c(dim1, length(myseq))
-    )
-    uc <- array(sapply(myseq, function(x) myfun(x, skewswitch = FALSE)),
-      dim = c(dim1, length(myseq))
-    )
-    dtseg <- array(sapply(myseq, function(x) mydsct(x)),
-      dim = c(dim1, length(myseq))
+    # simpleskew version for displaying in event of negative discriminant
+    ssc <- array(sapply(1:rangen,
+                        function(i) myfun(myseq[i, ], ssswitch = TRUE)),
+                dim = c(dim1, rangen)
     )
 
     if (stratified == FALSE && nstrat > 0) {
       qnval <- qtnorm
       if (is.null(ylim)) ylim <- c(-2.5, 2.5) * qnval
       for (i in 1:nstrat) {
-        plot(myseq, sc[i, ],
-          type = "l", xlim = xlim, ylim = ylim,
+        plot(myseq[, i], sc[i, ],
+          type = "l", xlim = xlim[i, ], ylim = ylim,
           xlab = contrast, yaxs = "i", ylab = "Score", col = "blue",
           main = paste0(
             "Score function for ",
@@ -916,9 +914,8 @@ scoreci <- function(x1,
           )
           # log = ifelse(contrast == "RD", "", "x")
         )
-        if (any(dtseg[!is.na(dtseg)] < 0) && skew == TRUE && !simpleskew) {
-          lines(myseq, ssc[i, ], col = "grey", lty = 2)
-          # lines(myseq[dtseg < 0], uc[i, dtseg < 0], col = "green", lty = 1)
+        if (dtflag == TRUE) {
+          lines(myseq[,i], ssc[i, ], col = "grey", lty = 2)
           # lines(myseq, uc[i, ], col = "green", lty = 3)
         }
         text(
@@ -941,8 +938,9 @@ scoreci <- function(x1,
     } else if (stratified == TRUE) {
       qtval <- qtnorm
       if (is.null(ylim)) ylim <- c(-2.5, 2.5) * qtval
-      # Remove points from plot though they are used in bisection routine
-      sc[1, dtseg < 0] <- NA
+      # Remove negative discriminant points from plot
+      # though they are used in bisection routine
+      if (skew == TRUE) sc[1, dtseg < 0] <- NA
       plot(myseq, sc[1, ],
         type = "l", ylim = ylim, xlab = contrast,
         ylab = "Score", yaxs = "i", col = "blue",
@@ -956,9 +954,8 @@ scoreci <- function(x1,
         )
         # log = ifelse(contrast == "RD", "", "x")
       )
-      if (any(dtseg[!is.na(dtseg)] < 0) && skew == TRUE && !simpleskew) {
+      if (min(dtseg, na.rm = TRUE) < 0 && skew == TRUE && !simpleskew) {
         lines(myseq, ssc[1, ], col = "grey", lty = 2)
-        # lines(myseq[dtseg < 0], uc[1, dtseg < 0], col = "green", lty = 1)
         # lines(myseq, uc[1, ], col = "green", lty = 2)
       }
       abline(h = c(-1, 1) * qtval)
