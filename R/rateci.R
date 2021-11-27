@@ -48,8 +48,8 @@ scaspci <- function(x,
                     level = 0.95,
                     cc = FALSE,
                     ...) {
-  x <- Rmpfr::mpfr(x, 50)
-  n <- Rmpfr::mpfr(n, 50)
+  x <- Rmpfr::mpfr(x, 30)
+  n <- Rmpfr::mpfr(n, 30)
   if (as.character(cc) == "TRUE") cc <- 0.5
   z <- qnorm(1 - (1 - level) / 2)
   if (distrib == "poi") {
