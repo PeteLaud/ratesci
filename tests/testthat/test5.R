@@ -8,7 +8,7 @@ context("Consistency")
 # Seems to be OK for level≤0.99
 
 n <- 9333
-xs <- 0:100
+xs <- 0:5000
 rounded <- 10
 #level <- 0.9
 for (level in c(0.9, 0.95, 0.99, 0.999)) {
