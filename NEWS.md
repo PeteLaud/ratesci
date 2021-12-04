@@ -21,7 +21,7 @@ for stratified analysis with INV/IVS weights. Experimental for Poisson RR).
 * Uninformative strata are now retained in the analysis except if: 
   * contrast = OR with MH weighting;
   * contrast = RR with IVS/INV weighting if RRtang = FALSE;
-  * random = TRUE (under evaluation);
+  * random = TRUE (needs further evaluation);
   * excluded using new option dropzeros = TRUE.
 ### In `tdasci()`:
 * Default uses skew = TRUE for stratum CIs.

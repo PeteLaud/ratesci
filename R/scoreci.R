@@ -404,16 +404,19 @@ scoreci <- function(x1,
         ((x1 == 0 & x2 == 0) & !(sda > 0) & contrast == "OR" &
           !(weighting %in% c("INV", "IVS"))) |
         ((x1 == n1 & x2 == n2) & !(fda > 0) & contrast == "OR" &
-          !(weighting %in% c("INV", "IVS")) )
-    }
-    if (random == TRUE || dropzeros == TRUE) {
-      # Might be unnecessary for some random effects analyses, such as
-      # RR with RRtang = TRUE and INV/IVS weighting
-      # and OR with INV/IVS weighting,
-      # but needs further research.
-      empty_strat <- (n1 == 0 | n2 == 0) |
-        ((x1 == 0 & x2 == 0) & !(sda > 0) & (contrast %in% c("RR", "OR"))) |
-        ((x1 == n1 & x2 == n2) & !(fda > 0) & (contrast == "OR"))
+          !(weighting %in% c("INV", "IVS")))
+
+      if (random == TRUE || dropzeros == TRUE) {
+        # Exclude more uninformative strata using dropzeros argument,
+        # to prevent them affecting the heterogeneity test.
+        # Similarly if applying the TDAS method with 'random' argument.
+        # This might be unnecessary for some random effects analyses, such as
+        # RR with RRtang = TRUE and INV/IVS weighting and OR with INV/IVS
+        # weighting, but needs further research.
+        empty_strat <- (n1 == 0 | n2 == 0) |
+          ((x1 == 0 & x2 == 0) & !(sda > 0) & (contrast %in% c("RR", "OR"))) |
+          ((x1 == n1 & x2 == n2) & !(fda > 0) & (contrast == "OR"))
+      }
     }
 
     x1 <- x1[!empty_strat]
