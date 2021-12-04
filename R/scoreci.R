@@ -880,14 +880,19 @@ scoreci <- function(x1,
     if (contrast == "RD") {
       if (distrib == "bin") {
         xlim <- cbind(
-          pmax(-1, pmin(lower - (upper - lower) / 2)),
-          pmin(1, pmax(upper + (upper - lower) / 2))
+          pmax(-1, (lower - (upper - lower) / 2)),
+          pmin(1, (upper + (upper - lower) / 2))
         )
       } else if (distrib == "poi") {
         xlim <- cbind(lower - (upper - lower) / 2, upper + (upper - lower) / 2)
       }
+    } else if (contrast == "p" && distrib == "bin") {
+      xlim <- cbind(
+        pmax(0, (lower - (upper - lower) / 2)),
+        pmin(1, (upper + (upper - lower) / 2))
+      )
     } else {
-      xlim <- cbind(pmax(0, pmin(0.5 * lower)), pmin(plotmax, pmax(1.5 * upper)))
+      xlim <- cbind(pmax(0, (0.5 * lower)), pmin(plotmax, (1.5 * upper)))
     }
   }
   if (!is.array(xlim)) {
@@ -1007,8 +1012,12 @@ scoreci <- function(x1,
           ifelse(distrib == "bin", "binomial", "Poisson"),
           contrast, "\n", paste(x1, collapse = ","), "/",
           paste(n1, collapse = ","),
-          " vs ", paste(x2, collapse = ","), "/",
-          paste(n2, collapse = ",")
+          ifelse(contrast == "p", "",
+            paste0(
+              " vs\n ", paste(x2, collapse = ","), " / ",
+              paste(n2, collapse = ",")
+            )
+          )
         )
         # log = ifelse(contrast == "RD", "", "x")
       )
