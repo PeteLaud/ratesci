@@ -1,5 +1,5 @@
 ## Test environments
-* local OS X (Big Sur) install, R 4.1.1
+* local OS X (Big Sur) install, R 4.1.2
 * GitHub Actions - (maxOS): release
 * GitHub Actions - (ubuntu-20.04): oldrel, release, devel
 * GitHub Actions (windows): release
@@ -8,4 +8,4 @@
 There were no ERRORs, WARNINGs or NOTEs.
 
 ## Downstream dependencies
-Downstream dependency papci passed R CMD check.
+papci passed R CMD check.
