@@ -306,7 +306,8 @@ scoreci <- function(x1,
     weighting <- switch(contrast,
                         "RD" = "MH",
                         "RR" = "MH",
-                        "OR" = "INV"
+                        "OR" = "INV",
+                        "p" = "IVS"
     )
   }
   if (is.null(sda)) {
