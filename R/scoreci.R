@@ -49,6 +49,7 @@
 #'   in the score denominator. Applicable to distrib = "bin" only. (NB: bcf =
 #'   FALSE option is really only included for legacy validation against previous
 #'   published methods (i.e. Gart & Nam, Mee, or standard Chi-squared test).
+#'   Ignored for contrast = "p".
 #' @param cc Number or logical (default FALSE) specifying (amount of) continuity
 #'   correction. Numeric value is taken as the gamma parameter in Laud 2017,
 #'   Appendix S2 (default 0.5 if cc = TRUE).
@@ -102,11 +103,11 @@
 #'   uninformative strata for RR/OR, even when the choice of weights would allow
 #'   them to be retained for a fixed effects analysis.
 #'   Has no effect on estimates, just the heterogeneity test.
-#' @param RRtang Logical (default TRUE) indicating whether to use Tang's score
+#' @param RRtang Logical indicating whether to use Tang's score for RR:
 #'   Stheta = (p1hat - p2hat * theta) / p2d (see Tang 2020).
-#'   Only relevant for stratified = TRUE, for contrast = "RR" and
-#'   weighting = "IVS" or "INV". Ignored for other contrasts, or if
-#'   weighting = "MH". Experimental for distrib = "poi".
+#'   Default TRUE for stratified = TRUE, with weighting = "IVS" or "INV".
+#'   Forced to FALSE for stratified = TRUE, with fixed weighting.
+#'   Experimental for distrib = "poi".
 #' @param hetplot Logical (default FALSE) indicating whether to output plots for
 #'   evaluating heterogeneity of stratified datasets.
 #' @param MNtol Numeric value indicating convergence tolerance to be used in
@@ -237,7 +238,7 @@ scoreci <- function(x1,
                     skew = TRUE,
                     simpleskew = FALSE,
                     ORbias = TRUE,
-                    RRtang = TRUE,
+                    RRtang = NULL,
                     bcf = TRUE,
                     cc = FALSE,
                     theta0 = NULL,
@@ -349,21 +350,30 @@ scoreci <- function(x1,
       ))
     }
   }
-  # Tang score intended only for IVS/INV weighting -
+  # Tang RR score intended only for IVS/INV weighting -
   # Tang p3431 does not use it for MH weights.
-  if (!(
-    # distrib == "bin" &&
-    # stratified == TRUE && # Note the different score does impact unstratified V
-    contrast == "RR" &&
-    (stratified == FALSE || weighting %in% c("IVS", "INV"))
-    )) {
+  if (contrast != "RR" && !is.null(RRtang) && warn == TRUE) {
+    print(paste(
+      "Warning: RRtang argument has no effect for contrast =", contrast
+    ))
+    RRtang = FALSE
+  } else if (contrast == "RR") {
+    if (stratified == TRUE && !(weighting %in% c("IVS", "INV"))) {
+      if (!is.null(RRtang)) {
+      if (warn == TRUE && RRtang == TRUE) {
+        print(paste(
+          "Warning: RRtang set to FALSE - option designed for inverse variance weighting only"
+        ))
+      }
+      }
     RRtang <- FALSE
-    if (warn == TRUE && contrast == "RR" && stratified == TRUE) {
-      print(paste(
-        "Warning: RRtang set to FALSE - option designed for inverse variance weighting only"
-      ))
+    } else if (is.null(RRtang)) {
+      RRtang <- TRUE
     }
+  } else {
+    RRtang <- FALSE
   }
+
   if (as.character(cc) == "TRUE") cc <- 0.5
 
   nstrat <- length(x1)
@@ -388,11 +398,11 @@ scoreci <- function(x1,
         # implications for heterogeneity test and random effects method.
         ((x1 == 0 & x2 == 0) & !(sda > 0) & contrast == "RR" &
           weighting %in% c("INV", "IVS") & RRtang == FALSE) |
-#       below not needed because RRtang is forced to FALSE anyway
-#        ((x1 == 0 & x2 == 0) & !(sda > 0) & contrast == "RR" &
-#          !(weighting %in% c("INV", "IVS")) & RRtang == TRUE) |
+        #       below not needed because RRtang is forced to FALSE anyway
+        #        ((x1 == 0 & x2 == 0) & !(sda > 0) & contrast == "RR" &
+        #          !(weighting %in% c("INV", "IVS")) & RRtang == TRUE) |
         ((x1 == 0 & x2 == 0) & !(sda > 0) & contrast == "OR" &
-          !(weighting %in% c("INV", "IVS")) ) |
+          !(weighting %in% c("INV", "IVS"))) |
         ((x1 == n1 & x2 == n2) & !(fda > 0) & contrast == "OR" &
           !(weighting %in% c("INV", "IVS")) )
     }
@@ -1439,8 +1449,6 @@ scoretheta <- function(theta,
     Stheta[n1 == 0] <- 0
     if (distrib == "bin") {
       V <- (pmax(0, (theta * (1 - theta) / n1)))
-      # set to zero if machine precision error in cos function
-      # produces a negative V
       mu3 <- (theta * (1 - theta) * (1 - 2 * theta) / (n1^2))
     } else if (distrib == "poi") {
       V <- theta / n1
@@ -1490,7 +1498,6 @@ scoretheta <- function(theta,
         # INV: inverse variance weights updated wih V_tilde
         # Removing bcf from the weights ensures alignment with CMH test
         if (all(V == 0) || all(V == Inf | is.na(V))) {
-          # Need workaround here to give zero weight to zero cells for OR
           wt <- rep(1, nstrat)
         } else {
           wt <- lambda / V

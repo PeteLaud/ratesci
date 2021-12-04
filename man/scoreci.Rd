@@ -16,7 +16,7 @@ scoreci(
   skew = TRUE,
   simpleskew = FALSE,
   ORbias = TRUE,
-  RRtang = TRUE,
+  RRtang = NULL,
   bcf = TRUE,
   cc = FALSE,
   theta0 = NULL,
@@ -71,16 +71,17 @@ NULL) indicating whether to apply additional bias correction for OR derived
 from Gart 1985. (Corrigendum to Laud 2017, published May 2018).
 Only applies if contrast is "OR".}
 
-\item{RRtang}{Logical (default TRUE) indicating whether to use Tang's score
+\item{RRtang}{Logical indicating whether to use Tang's score for RR:
 Stheta = (p1hat - p2hat * theta) / p2d (see Tang 2020).
-Only relevant for stratified = TRUE, for contrast = "RR" and
-weighting = "IVS" or "INV". Ignored for other contrasts, or if
-weighting = "MH". Experimental for distrib = "poi".}
+Default TRUE for stratified = TRUE, with weighting = "IVS" or "INV".
+Forced to FALSE for stratified = TRUE, with fixed weighting.
+Experimental for distrib = "poi".}
 
 \item{bcf}{Logical (default TRUE) indicating whether to apply bias correction
 in the score denominator. Applicable to distrib = "bin" only. (NB: bcf =
 FALSE option is really only included for legacy validation against previous
-published methods (i.e. Gart & Nam, Mee, or standard Chi-squared test).}
+published methods (i.e. Gart & Nam, Mee, or standard Chi-squared test).
+Ignored for contrast = "p".}
 
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
 correction. Numeric value is taken as the gamma parameter in Laud 2017,
