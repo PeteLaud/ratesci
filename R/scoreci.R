@@ -279,6 +279,10 @@ scoreci <- function(x1,
     print("argument x2 or n2 missing")
     stop()
   }
+  if ((contrast != "p") && length(x1) != length(x2)) {
+    print("x1 and x2 must be the same length")
+    stop()
+  }
   if ((contrast != "p") && !is.numeric(c(x1, n1, x2, n2, theta0))) {
     print("Non-numeric inputs!")
     stop()
