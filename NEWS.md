@@ -1,4 +1,4 @@
-# ratesci 0.3-0.9000 (2021-mm-dd)
+# ratesci 0.4-0 (2021-12-04)
 
 ## New features
 ### In `scoreci()`:
