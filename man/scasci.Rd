@@ -17,11 +17,15 @@ scasci(
   theta0 = NULL,
   precis = 6,
   plot = FALSE,
+  hetplot = FALSE,
+  xlim = NULL,
+  ylim = NULL,
   plotmax = 100,
   stratified = FALSE,
-  weighting = "IVS",
+  weighting = NULL,
   MNtol = 1e-08,
   wt = NULL,
+  warn = TRUE,
   ...
 )
 }
@@ -65,6 +69,13 @@ places) to be used in optimisation subroutine for the confidence interval.}
 \item{plot}{Logical (default FALSE) indicating whether to output plot of the
 score function}
 
+\item{hetplot}{Logical (default FALSE) indicating whether to output plots for
+evaluating heterogeneity of stratified datasets.}
+
+\item{xlim}{pair of values indicating range of values to be plotted.}
+
+\item{ylim}{pair of values indicating range of values to be plotted.}
+
 \item{plotmax}{Numeric value indicating maximum value to be displayed on
 x-axis of plots (useful for ratio contrasts which can be infinite).}
 
@@ -88,7 +99,22 @@ iteration with weighting = "MN".}
 
 \item{wt}{Numeric vector containing (optional) user-specified weights.}
 
+\item{warn}{Logical (default TRUE) giving the option to suppress warnings.}
+
 \item{...}{Other arguments.}
+}
+\value{
+A list containing the following components: \describe{
+  \item{estimates}{a matrix containing estimates of the rates in each group
+  and of the requested contrast, with its confidence interval} \item{pval}{a
+  matrix containing details of the corresponding 2-sided significance test
+  against the null hypothesis that p_1 = p_2, and one-sided significance
+  tests against the null hypothesis that theta >= or <= theta0}
+  \item{call}{details of the function call} } If stratified = TRUE, the
+  following outputs are added: \describe{ \item{Qtest}{a vector of values
+  describing and testing heterogeneity} \item{weighting}{a string indicating
+  the selected weighting method} \item{stratdata}{a matrix containing stratum
+  estimates and weights}}
 }
 \description{
 Wrapper function for the SCAS method. Score-based confidence intervals for

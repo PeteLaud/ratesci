@@ -13,16 +13,20 @@ tdasci(
   distrib = "bin",
   contrast = "RD",
   level = 0.95,
-  cc = 0,
+  cc = FALSE,
   theta0 = NULL,
   precis = 6,
   plot = FALSE,
+  hetplot = FALSE,
   plotmax = 100,
-  weighting = "IVS",
+  xlim = NULL,
+  ylim = NULL,
+  weighting = NULL,
   MNtol = 1e-08,
   wt = NULL,
   skew = TRUE,
   prediction = FALSE,
+  warn = TRUE,
   ...
 )
 }
@@ -66,8 +70,15 @@ places) to be used in optimisation subroutine for the confidence interval.}
 \item{plot}{Logical (default FALSE) indicating whether to output plot of the
 score function}
 
+\item{hetplot}{Logical (default FALSE) indicating whether to output plots for
+evaluating heterogeneity of stratified datasets.}
+
 \item{plotmax}{Numeric value indicating maximum value to be displayed on
 x-axis of plots (useful for ratio contrasts which can be infinite).}
+
+\item{xlim}{pair of values indicating range of values to be plotted.}
+
+\item{ylim}{pair of values indicating range of values to be plotted.}
 
 \item{weighting}{String indicating which weighting method to use if
 stratified = "TRUE":
@@ -85,19 +96,35 @@ iteration with weighting = "MN".}
 
 \item{skew}{Logical (default TRUE) indicating whether to apply skewness
 correction (for the SCAS method recommended in Laud 2017) or not (for
-the Miettinen-Nurminen method).}
+the Miettinen-Nurminen method) to the per-stratum estimates provided
+in the output. Has no effect on the TDAS interval itself.}
 
 \item{prediction}{Logical (default FALSE) indicating whether to produce
 a prediction interval (work in progress).}
 
+\item{warn}{Logical (default TRUE) giving the option to suppress warnings.}
+
 \item{...}{Other arguments.}
+}
+\value{
+A list containing the following components: \describe{
+  \item{estimates}{a matrix containing estimates of the rates in each group
+  and of the requested contrast, with its confidence interval} \item{pval}{a
+  matrix containing details of the corresponding 2-sided significance test
+  against the null hypothesis that p_1 = p_2, and one-sided significance
+  tests against the null hypothesis that theta >= or <= theta0}
+  \item{Qtest}{a vector of values
+  describing and testing heterogeneity} \item{weighting}{a string indicating
+  the selected weighting method} \item{stratdata}{a matrix containing stratum
+  estimates and weights}
+  \item{call}{details of the function call}}
 }
 \description{
 Wrapper function for the TDAS method. Score-based stratified confidence
 intervals for the rate (or risk) difference ("RD") or ratio ("RR") for
 independent binomial or Poisson rates, or for odds ratio ("OR", binomial
 only), or for prevalence or incidence rate ("p"). This function combines
-vector inputs into a single stratified analysis (e.g. meta-analysis).
-The TDAS method incorporates any stratum variability into the confidence
-interval.
+vector inputs into a single stratified random effects analysis
+(e.g. meta-analysis), incorporating any stratum variability into the
+confidence interval.
 }

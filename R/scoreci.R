@@ -1076,6 +1076,17 @@ scoreci <- function(x1,
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 #'   excludes theta0. By default, a two-sided test against theta0 = 0 (for RD)
 #'   or 1 (for RR/OR) is also output.
+#' @return A list containing the following components: \describe{
+#'   \item{estimates}{a matrix containing estimates of the rates in each group
+#'   and of the requested contrast, with its confidence interval} \item{pval}{a
+#'   matrix containing details of the corresponding 2-sided significance test
+#'   against the null hypothesis that p_1 = p_2, and one-sided significance
+#'   tests against the null hypothesis that theta >= or <= theta0}
+#'   \item{call}{details of the function call} } If stratified = TRUE, the
+#'   following outputs are added: \describe{ \item{Qtest}{a vector of values
+#'   describing and testing heterogeneity} \item{weighting}{a string indicating
+#'   the selected weighting method} \item{stratdata}{a matrix containing stratum
+#'   estimates and weights}}
 #' @export
 scasci <- function(x1,
                    n1,
@@ -1088,11 +1099,15 @@ scasci <- function(x1,
                    theta0 = NULL,
                    precis = 6,
                    plot = FALSE,
+                   hetplot = FALSE,
+                   xlim = NULL,
+                   ylim = NULL,
                    plotmax = 100,
                    stratified = FALSE,
-                   weighting = "IVS",
+                   weighting = NULL,
                    MNtol = 1E-8,
                    wt = NULL,
+                   warn = TRUE,
                    ...) {
   scoreci(
     x1 = x1,
@@ -1102,17 +1117,24 @@ scasci <- function(x1,
     distrib = distrib,
     contrast = contrast,
     level = level,
+    skew = TRUE,
+    simpleskew = FALSE,
+    ORbias = TRUE,
+    bcf = TRUE,
     cc = cc,
     theta0 = theta0,
     precis = precis,
     plot = plot,
+    hetplot = hetplot,
     plotmax = plotmax,
+    xlim = xlim,
+    ylim = ylim,
     stratified = stratified,
     weighting = weighting,
     MNtol = MNtol,
     wt = wt,
-    skew = TRUE,
-    bcf = TRUE,
+    random = FALSE,
+    prediction = FALSE,
     ...
   )
 }
@@ -1124,19 +1146,34 @@ scasci <- function(x1,
 #' intervals for the rate (or risk) difference ("RD") or ratio ("RR") for
 #' independent binomial or Poisson rates, or for odds ratio ("OR", binomial
 #' only), or for prevalence or incidence rate ("p"). This function combines
-#' vector inputs into a single stratified analysis (e.g. meta-analysis).
-#' The TDAS method incorporates any stratum variability into the confidence
-#' interval.
+#' vector inputs into a single stratified random effects analysis
+#' (e.g. meta-analysis), incorporating any stratum variability into the
+#' confidence interval.
 #'
 #' @param x1,x2 Numeric vectors of numbers of events in group 1 & group 2
 #'   respectively.
 #' @param n1,n2 Numeric vectors of sample sizes (for binomial rates) or exposure
 #'   times (for Poisson rates) in each group.
+#' @param skew Logical (default TRUE) indicating whether to apply skewness
+#'   correction (for the SCAS method recommended in Laud 2017) or not (for
+#'   the Miettinen-Nurminen method) to the per-stratum estimates provided
+#'   in the output. Has no effect on the TDAS interval itself.
 #' @inheritParams scoreci
 #' @param theta0 Number to be used in a one-sided significance test (e.g.
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
 #'   excludes theta0. By default, a two-sided test against theta0 = 0 (for RD)
 #'   or 1 (for RR/OR) is also output.
+#' @return A list containing the following components: \describe{
+#'   \item{estimates}{a matrix containing estimates of the rates in each group
+#'   and of the requested contrast, with its confidence interval} \item{pval}{a
+#'   matrix containing details of the corresponding 2-sided significance test
+#'   against the null hypothesis that p_1 = p_2, and one-sided significance
+#'   tests against the null hypothesis that theta >= or <= theta0}
+#'   \item{Qtest}{a vector of values
+#'   describing and testing heterogeneity} \item{weighting}{a string indicating
+#'   the selected weighting method} \item{stratdata}{a matrix containing stratum
+#'   estimates and weights}
+#'   \item{call}{details of the function call}}
 #' @export
 tdasci <- function(x1,
                    n1,
@@ -1145,16 +1182,20 @@ tdasci <- function(x1,
                    distrib = "bin",
                    contrast = "RD",
                    level = 0.95,
-                   cc = 0,
+                   cc = FALSE,
                    theta0 = NULL,
                    precis = 6,
                    plot = FALSE,
+                   hetplot = FALSE,
                    plotmax = 100,
-                   weighting = "IVS",
+                   xlim = NULL,
+                   ylim = NULL,
+                   weighting = NULL,
                    MNtol = 1E-8,
                    wt = NULL,
                    skew = TRUE, # gives SCAS intervals in stratdata by default
                    prediction = FALSE,
+                   warn = TRUE,
                    ...) {
   scoreci(
     x1 = x1,
@@ -1164,11 +1205,16 @@ tdasci <- function(x1,
     distrib = distrib,
     contrast = contrast,
     level = level,
+    ORbias = TRUE,
+    bcf = TRUE,
     cc = cc,
     theta0 = theta0,
     precis = precis,
     plot = plot,
+    hetplot = hetplot,
     plotmax = plotmax,
+    xlim = xlim,
+    ylim = ylim,
     stratified = TRUE,
     weighting = weighting,
     MNtol = MNtol,
@@ -1176,7 +1222,7 @@ tdasci <- function(x1,
     random = TRUE,
     prediction = prediction,
     skew = skew,
-    bcf = TRUE,
+    simpleskew = FALSE,
     ...
   )
 }
