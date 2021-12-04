@@ -7,8 +7,9 @@ context("Consistency")
 # conditions.
 # Seems to be OK for level≤0.99
 
-n <- round(runif(1000, 15, 9000), 0)
-xs <- sample(0:10, 1000, replace = TRUE)
+#n <- round(runif(1000, 15, 9000), 0)
+n <- seq(15, 9000, length.out = 1000)
+xs <- rep_len(0:10, 1000)
 rounded <- 10
 for (level in c(0.9, 0.95, 0.99, 0.999)) {
   test_that("noniterative scas matches iterative version", {
