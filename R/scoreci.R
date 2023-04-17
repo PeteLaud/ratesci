@@ -1397,7 +1397,8 @@ scoretheta <- function(theta,
       C_ <- x
       num <- (-B - sqrt(pmax(0, B^2 - 4 * A * C_)))
       p2d <- ifelse(A == 0, -C_ / B, ifelse(
-        (num == 0 | C_ == 0), 0, num / (2 * A)
+        # Avoid machine precision error causing infinite loop when p2hat == 1 in all strata
+        (num == 0 | C_ == 0), 0, round(num / (2 * A), 10)
       ))
       p1d <- p2d * theta
       V <- pmax(0, (p1d * (1 - p1d) / n1 +
@@ -1529,17 +1530,21 @@ scoretheta <- function(theta,
           while (wtdiff > MNtol) {
             p2ds <- sum(wtx * p2d) / sum(wtx)
             p1ds <- sum(wtx * p1d) / sum(wtx)
+            # Fix for special case resulting in zero weights
+            if(p2ds == 1) p2ds <- 1 - 0.00000001
             wt <- ((1 - p1ds) / (n1 * (1 - p2ds)) + theta / n2)^(-1)
-            wt[p2ds == 1] <- 0
             wtdiff <- max(abs(wtx - wt))
             wtx <- wt
           }
         } else if (contrast == "RD") {
-          # M&Ns iterative weights - quite similar to MH wtx <- n1*n2/(n1+n2)
+          # M&Ns iterative weights - quite similar to MH: wtx <- n1*n2/(n1+n2)
           wt <- wtx <- (1 / n1 + 1 / n2)^(-1)
           wtdiff <- 1
           while (wtdiff > MNtol) {
             p2ds <- sum(wtx * p2d) / sum(wtx)
+            # Improved fix for special case resulting in zero weights - credit Vincent Jaquet
+            if (p2ds == 0) p2ds <- 0.00000001
+            if (p2ds == 1) p2ds <- 1 - 0.00000001
             p1ds <- sum(wtx * p1d) / sum(wtx)
             if (distrib == "bin") {
               wt <- (
@@ -1548,8 +1553,6 @@ scoretheta <- function(theta,
             } else if (distrib == "poi") {
               wt <- ((p1ds / p2ds) / n1 + 1 / n2)^(-1)
             }
-            wt[p2ds == 0 || p2ds == 1] <- 0
-            if (sum(wt) == 0) wt <- wt + 1 # Fix for when all weights are zero
             wtdiff <- max(abs(wtx - wt))
             wtx <- wt
           }

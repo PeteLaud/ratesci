@@ -1,5 +1,11 @@
 # ratesci 0.4-0.9000 (yyyy-mm-dd)
 
+## New features
+
+## Bug fixes
+* In `scoreci()`, improved handling of special cases for MN weighting (#25, thanks to Vincent Jaquet for reporting the issue and proposed solution.)
+
+## Other
 
 
 # ratesci 0.4-0 (2021-12-04)
