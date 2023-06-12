@@ -1525,16 +1525,20 @@ scoretheta <- function(theta,
           wt <- (1 / n1 + theta / n2)^(-1)
         } else if (contrast == "RR" && distrib == "bin") {
           # M&Ns iterative weights - quite similar to MH
-          wtdiff <- 1
-          wtx <- (1 / n1 + theta / n2)^(-1)
-          while (wtdiff > MNtol) {
-            p2ds <- sum(wtx * p2d) / sum(wtx)
-            p1ds <- sum(wtx * p1d) / sum(wtx)
-            # Fix for special case resulting in zero weights
-            if(p2ds == 1) p2ds <- 1 - 0.00000001
-            wt <- ((1 - p1ds) / (n1 * (1 - p2ds)) + theta / n2)^(-1)
-            wtdiff <- max(abs(wtx - wt))
-            wtx <- wt
+          if (all(V == Inf | is.na(V))) {
+            wt <- rep(1, nstrat)
+          } else {
+            wtdiff <- 1
+            wtx <- (1 / n1 + theta / n2)^(-1)
+            while (wtdiff > MNtol) {
+              p2ds <- sum(wtx * p2d) / sum(wtx)
+              p1ds <- sum(wtx * p1d) / sum(wtx)
+              # Fix for special case resulting in zero weights
+              if (p2ds == 1) p2ds <- 1 - 0.00000001
+              wt <- ((1 - p1ds) / (n1 * (1 - p2ds)) + theta / n2)^(-1)
+              wtdiff <- max(abs(wtx - wt))
+              wtx <- wt
+            }
           }
         } else if (contrast == "RD") {
           # M&Ns iterative weights - quite similar to MH: wtx <- n1*n2/(n1+n2)

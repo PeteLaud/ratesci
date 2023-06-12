@@ -3,7 +3,7 @@
 ## New features
 
 ## Bug fixes
-* In `scoreci()`, improved handling of special cases for MN weighting (#25, thanks to Vincent Jaquet for reporting the issue and proposed solution.)
+* In `scoreci()`, improved handling of special cases for MN weighting (#25, thanks to Vincent Jaquet for reporting the issue and proposed solution. Also #27 for RR, thanks to Shangchen Song.)
 
 ## Other
 
