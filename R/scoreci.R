@@ -19,7 +19,7 @@
 #' incorporates stratum variability using a t-distribution score (inspired by
 #' Hartung-Knapp-Sidik-Jonkman).
 #' For fixed-effects analysis of stratified datasets, with weighting = "MH" for
-#' RD or RR, or weighting = "IVS" for OR, omitting the skewness correction
+#' RD or RR, or weighting = "INV" for OR, omitting the skewness correction
 #' produces the CMH test, together with a coherent confidence interval for the
 #' required contrast.
 #'
@@ -88,7 +88,7 @@
 #'   "MH" = Mantel-Haenszel (default for contrast = "RD" or "RR"),
 #'   "MN" = Miettinen-Nurminen iterative weights.
 #'   For CI consistent with a CMH test, select skew = FALSE and use
-#'   MH weighting for RD/RR and IVS for OR.
+#'   default MH weighting for RD/RR and INV for OR.
 #' @param wt Numeric vector containing (optional) user-specified weights.
 #' @param sda Sparse data adjustment to avoid zero variance when x1 + x2 = 0:
 #'           Only applied when stratified = TRUE.
