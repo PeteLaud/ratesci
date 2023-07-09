@@ -612,8 +612,12 @@ scoreci <- function(x1,
     tau2_FE <- at_FE$tau2
     Q_each <- at_FE$Q_j
     Q_FE <- at_FE$Q
-    I2 <- max(0, 100 * (Q_FE - (nstrat - 1)) / Q_FE)
-    pval_het <- 1 - pchisq(Q_FE, nstrat - 1)
+    # Exclude "double zero" cells from heterogeneity test for RR and OR
+    doublezero <- (x1 == 0 & x2 == 0) & contrast %in% c("RR", "OR") |
+                  (x1 == n1 & x2 == n2) & contrast == "OR"
+    Q_df <- length(x1[!doublezero]) - 1
+    I2 <- max(0, 100 * (Q_FE - Q_df) / Q_FE)
+    pval_het <- 1 - pchisq(Q_FE, Q_df)
     # Qualitative interaction test is calculated further down
 
     # as per M&N p218 (little r), actually no longer needed for point estimate.
@@ -636,7 +640,6 @@ scoreci <- function(x1,
     p1d_w <- p1d_MLE
     if (contrast != "p") p2d_w <- p2d_MLE else p2d_w <- NULL
     wt_MLE <- NULL
-    ## Sdot <- Q_each <- NULL
   }
 
   # z- or t- quantile required for specified significance level
@@ -826,9 +829,9 @@ scoreci <- function(x1,
     Qc_p <- sum(Qc_j[scoreth0$Stheta < 0])
     Qc <- min(Qc_m, Qc_p)
     Qcprob <- 0
-    for (h in 1:(nstrat - 1)) {
+    for (h in 1:Q_df) {
       Qcprob <- Qcprob + (1 - pchisq(Qc, h)) *
-        dbinom(h, size = nstrat - 1, prob = 0.5)
+        dbinom(h, size = Q_df, prob = 0.5)
     }
   }
 
@@ -932,20 +935,20 @@ scoreci <- function(x1,
     if (stratified == TRUE && nstrat > 1) {
       if (hetplot == TRUE) { # Note some problems for OR may need fixing
         if (sum(sqrt(V_FE)) > 0) {
-          qqnorm(Stheta_FE / sqrt(V_FE))
+          qqnorm((Stheta_FE / sqrt(V_FE))[!doublezero])
           abline(coef = c(0, 1))
           plot(
-            x = 1 / sqrt(V_FE), y = Stheta_FE / sqrt(V_FE),
+            x = (1 / sqrt(V_FE))[!doublezero], y = (Stheta_FE / sqrt(V_FE))[!doublezero],
             xlab = expression("1/" * sqrt("V"["j"])),
             ylab = expression("S"["j"] * "(" * theta * ")/" * sqrt("V")),
-            xlim = c(0, max(1 / sqrt(V_FE))),
-            ylim = range(c(-2.5, 2.5, Stheta_FE / sqrt(V_FE))),
+            xlim = c(0, max(1 / sqrt(V_FE)[!doublezero])),
+            ylim = range(c(-2.5, 2.5, (Stheta_FE / sqrt(V_FE))[!doublezero])),
             main = expression("Galbraith plot for S"["j"] * "(" * theta * ")")
           )
           abline(coef = c(0, 0))
           abline(coef = c(1.96, 0), lty = 2)
           abline(coef = c(-1.96, 0), lty = 2)
-          xrange <- seq(0.1, max(1 / sqrt(V_FE)), length.out = 30)
+          xrange <- seq(0.1, max(1 / sqrt(V_FE)[!doublezero]), length.out = 30)
           lines(xrange, (1.96 * sqrt(1 - xrange^2 / sum(1 / V_FE))), lty = 3)
           lines(xrange, (-1.96 * sqrt(1 - xrange^2 / sum(1 / V_FE))), lty = 3)
         }
@@ -1048,7 +1051,7 @@ scoreci <- function(x1,
   outlist <- list(estimates = estimates, pval = pval)
   if (stratified == TRUE && nstrat > 1) {
     Qtest <- c(
-      Q = Q_FE, pval_het = pval_het, I2 = I2, tau2 = tau2_FE, Qc = Qc,
+      Q = Q_FE, Q_df = Q_df, pval_het = pval_het, I2 = I2, tau2 = tau2_FE, Qc = Qc,
       pval_qualhet = Qcprob
     ) # Qc_m, Qc_p,
     # NB Qc_m + Qc_p = Q only when theta0=MLE
