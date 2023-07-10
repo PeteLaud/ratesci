@@ -39,7 +39,15 @@ exactci <- function( # function to calculate exact 'exact' confidence interval f
 #' @param x Numeric vector of number of events.
 #' @param n Numeric vector of sample sizes (for binomial rates) or exposure
 #'   times (for Poisson rates).
-#' @inheritParams scoreci
+#' @param distrib Character string indicating distribution assumed for the input
+#'   data: "bin" = binomial (default), "poi" = Poisson.
+#' @param level Number specifying confidence level (between 0 and 1, default
+#'   0.95).
+#' @param cc Number or logical (default FALSE) specifying (amount of) continuity
+#'   correction. Numeric value is taken as the gamma parameter in Laud 2017,
+#'   Appendix S2 (default 0.5 for 'conventional' correction if cc = TRUE).
+#' @param ... Other arguments.
+#' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @export
 scaspci <- function(x,
                     n,

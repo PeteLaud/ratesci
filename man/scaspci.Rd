@@ -22,15 +22,7 @@ data: "bin" = binomial (default), "poi" = Poisson.}
 
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
 correction. Numeric value is taken as the gamma parameter in Laud 2017,
-Appendix S2 (default 0.5 if cc = TRUE).
-IMPORTANT NOTES:
-1) This is a 'continuity correction' aimed at approximating strictly
-conservative coverage, NOT for dealing with zero cell counts. Such
-'sparse data adjustments' are not needed in the score method,
-except to deal with double-zero cells for RD (& double-100% cells for
-binomial RD & RR) with IVS/INV weights.
-2) The continuity corrections provided here have not been fully tested for
-stratified methods.}
+Appendix S2 (default 0.5 for 'conventional' correction if cc = TRUE).}
 
 \item{...}{Other arguments.}
 }
@@ -38,4 +30,7 @@ stratified methods.}
 Skewness-corrected asymptotic score ("SCAS") confidence intervals for
 single binomial or Poisson rate using closed-form calculations.
 This function is vectorised in x, n.
+}
+\author{
+Pete Laud, \email{p.j.laud@sheffield.ac.uk}
 }

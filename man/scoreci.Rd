@@ -85,7 +85,7 @@ Ignored for contrast = "p".}
 
 \item{cc}{Number or logical (default FALSE) specifying (amount of) continuity
 correction. Numeric value is taken as the gamma parameter in Laud 2017,
-Appendix S2 (default 0.5 if cc = TRUE).
+Appendix S2 (default 0.5 for 'conventional' correction if cc = TRUE).
 IMPORTANT NOTES:
 1) This is a 'continuity correction' aimed at approximating strictly
 conservative coverage, NOT for dealing with zero cell counts. Such
@@ -93,15 +93,25 @@ conservative coverage, NOT for dealing with zero cell counts. Such
 except to deal with double-zero cells for RD (& double-100% cells for
 binomial RD & RR) with IVS/INV weights.
 2) The continuity corrections provided here have not been fully tested for
-stratified methods.}
+stratified methods, but are found to match the Mantel-Haenszel corrected test,
+when cc = 0.5 for any of the binomial contrasts. Flexibility is included for
+a less conservative correction, such as cc = 0.25 suggested in Laud 2017
+(see Appendix S3.4), or cc = 3/16 = 0.1875 in Mehrotra & Railkar (2000)}
 
 \item{theta0}{Number to be used in a one-sided significance test (e.g.
 non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
-excludes theta0. If bcf = FALSE and skew = FALSE this gives a
-Farrington-Manning test.
+excludes theta0. (If bcf = FALSE and skew = FALSE this gives a
+Farrington-Manning test.)
 By default, a two-sided test against theta0 = 0 (for RD) or 1 (for RR/OR)
-is also output: if bcf = FALSE and skew = FALSE this is the same as
-Pearson's Chi-squared test.}
+is also output:
+- If bcf = FALSE and skew = FALSE this is the same as K. Pearson's Chi-squared
+  test in the single stratum case.
+- bcf = TRUE gives E. Pearson's 'N-1' Chi-squared test for a single stratum,
+  (Recommended by Campbell 2007: https://doi.org/10.1002/sim.2832)
+  and (with default weighting and random = FALSE) the CMH test for stratified
+   tables.
+- Default bcf = TRUE and skew = TRUE produces a skewness-corrected version
+  of the 'N-1' Chi-squared test or CMH.}
 
 \item{precis}{Number (default 6) specifying precision (i.e. number of decimal
 places) to be used in optimisation subroutine for the confidence interval.}
@@ -130,9 +140,12 @@ stratified = "TRUE":
 "IVS" = Inverse Variance of Score (see Laud 2017 for details),
 "INV" = Inverse Variance (bcf omitted, default for contrast = "OR"),
 "MH" = Mantel-Haenszel (default for contrast = "RD" or "RR"),
-"MN" = Miettinen-Nurminen iterative weights.
-For CI consistent with a CMH test, select skew = FALSE and use
-MH weighting for RD/RR and IVS for OR.}
+"MN" = Miettinen-Nurminen weights.
+       (similar to MH for contrast = "RD" or "RR",
+       similar to INV for contrast = "OR")
+For CI consistent with a CMH test, select skew = FALSE, random = FALSE,
+and use default MH weighting for RD/RR and INV for OR.
+Weighting = 'MN' also matches the CMH test.}
 
 \item{MNtol}{Numeric value indicating convergence tolerance to be used in
 iteration with weighting = "MN".}
@@ -202,7 +215,7 @@ fixed effects, or the more general random effects "TDAS" method, which
 incorporates stratum variability using a t-distribution score (inspired by
 Hartung-Knapp-Sidik-Jonkman).
 For fixed-effects analysis of stratified datasets, with weighting = "MH" for
-RD or RR, or weighting = "IVS" for OR, omitting the skewness correction
+RD or RR, or weighting = "INV" for OR, omitting the skewness correction
 produces the CMH test, together with a coherent confidence interval for the
 required contrast.
 }

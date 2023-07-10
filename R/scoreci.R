@@ -52,7 +52,7 @@
 #'   Ignored for contrast = "p".
 #' @param cc Number or logical (default FALSE) specifying (amount of) continuity
 #'   correction. Numeric value is taken as the gamma parameter in Laud 2017,
-#'   Appendix S2 (default 0.5 if cc = TRUE).
+#'   Appendix S2 (default 0.5 for 'conventional' correction if cc = TRUE).
 #'   IMPORTANT NOTES:
 #'   1) This is a 'continuity correction' aimed at approximating strictly
 #'   conservative coverage, NOT for dealing with zero cell counts. Such
@@ -60,14 +60,24 @@
 #'   except to deal with double-zero cells for RD (& double-100% cells for
 #'   binomial RD & RR) with IVS/INV weights.
 #'   2) The continuity corrections provided here have not been fully tested for
-#'   stratified methods.
+#'   stratified methods, but are found to match the Mantel-Haenszel corrected test,
+#'   when cc = 0.5 for any of the binomial contrasts. Flexibility is included for
+#'   a less conservative correction, such as cc = 0.25 suggested in Laud 2017
+#'   (see Appendix S3.4), or cc = 3/16 = 0.1875 in Mehrotra & Railkar (2000)
 #' @param theta0 Number to be used in a one-sided significance test (e.g.
 #'   non-inferiority margin). 1-sided p-value will be <0.025 iff 2-sided 95\% CI
-#'   excludes theta0. If bcf = FALSE and skew = FALSE this gives a
-#'   Farrington-Manning test.
+#'   excludes theta0. (If bcf = FALSE and skew = FALSE this gives a
+#'   Farrington-Manning test.)
 #'   By default, a two-sided test against theta0 = 0 (for RD) or 1 (for RR/OR)
-#'   is also output: if bcf = FALSE and skew = FALSE this is the same as
-#'   Pearson's Chi-squared test.
+#'   is also output:
+#'   - If bcf = FALSE and skew = FALSE this is the same as K. Pearson's Chi-squared
+#'     test in the single stratum case.
+#'   - bcf = TRUE gives E. Pearson's 'N-1' Chi-squared test for a single stratum,
+#'     (Recommended by Campbell 2007: https://doi.org/10.1002/sim.2832)
+#'     and (with default weighting and random = FALSE) the CMH test for stratified
+#'      tables.
+#'   - Default bcf = TRUE and skew = TRUE produces a skewness-corrected version
+#'     of the 'N-1' Chi-squared test or CMH.
 #' @param precis Number (default 6) specifying precision (i.e. number of decimal
 #'   places) to be used in optimisation subroutine for the confidence interval.
 #' @param plot Logical (default FALSE) indicating whether to output plot of the
@@ -86,9 +96,12 @@
 #'   "IVS" = Inverse Variance of Score (see Laud 2017 for details),
 #'   "INV" = Inverse Variance (bcf omitted, default for contrast = "OR"),
 #'   "MH" = Mantel-Haenszel (default for contrast = "RD" or "RR"),
-#'   "MN" = Miettinen-Nurminen iterative weights.
-#'   For CI consistent with a CMH test, select skew = FALSE and use
-#'   default MH weighting for RD/RR and INV for OR.
+#'   "MN" = Miettinen-Nurminen weights.
+#'          (similar to MH for contrast = "RD" or "RR",
+#'          similar to INV for contrast = "OR")
+#'   For CI consistent with a CMH test, select skew = FALSE, random = FALSE,
+#'   and use default MH weighting for RD/RR and INV for OR.
+#'   Weighting = 'MN' also matches the CMH test.
 #' @param wt Numeric vector containing (optional) user-specified weights.
 #' @param sda Sparse data adjustment to avoid zero variance when x1 + x2 = 0:
 #'           Only applied when stratified = TRUE.
@@ -1562,7 +1575,7 @@ scoretheta <- function(theta,
             wtx <- wt
           }
         } else if (contrast == "OR") {
-          # M&Ns weights are very similar in structure to IVS
+          # M&Ns weights are very similar in structure to INV/IVS
           wt <- n1 * n2 * ((1 - p1d) * p2d)^2 /
             (n1 * p1d * (1 - p1d) + n2 * p2d * (1 - p2d))
         }
@@ -1587,6 +1600,7 @@ scoretheta <- function(theta,
     W <- sum(wt)
 
     if (weighting %in% c("IVS", "INV")) { # Check if this works for INV as well
+      # Try updating to use Q_df to avoid dropping double-zero strata for TDAS
       tau2 <- max(0, (Q - (nstrat - 1))) / (W - (sum(wt^2) / W))
       # published formula for IVS weights
     } else {
@@ -1603,8 +1617,8 @@ scoretheta <- function(theta,
 
     Sdot <- sum(wt * Stheta) / sum(wt)
     Vdot <- sum(((wt / sum(wt))^2) * V)
-    # Alternative form for IVS weights avoids the need to exclude
-    # non-informative strata for OR. For use in possible future update
+    # Alternative (equivalent) form for IVS/INV weights avoids the need to exclude
+    # non-informative strata for OR.
     if (weighting %in% c("IVS")) Vdot <- sum(wt / (sum(wt))^2)
     if (weighting %in% c("INV")) Vdot <- sum(lambda * wt / (sum(wt))^2)
 
