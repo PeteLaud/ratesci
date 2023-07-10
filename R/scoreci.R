@@ -347,14 +347,6 @@ scoreci <- function(x1,
     print("MN weights not applicable to the single rate")
     stop()
   }
-  if (cc != FALSE && stratified == TRUE && contrast != "OR") {
-    if (warn == TRUE) {
-      print(paste(
-        "Warning: Continuity correction is experimental for",
-        "stratified RD and RR"
-      ))
-    }
-  }
   # Tang RR score intended only for IVS/INV weighting -
   # Tang p3431 does not use it for MH weights.
   if (contrast != "RR" && !is.null(RRtang) && warn == TRUE) {
@@ -365,13 +357,13 @@ scoreci <- function(x1,
   } else if (contrast == "RR") {
     if (stratified == TRUE && !(weighting %in% c("IVS", "INV"))) {
       if (!is.null(RRtang)) {
-      if (warn == TRUE && RRtang == TRUE) {
-        print(paste(
-          "Warning: RRtang set to FALSE - option designed for inverse variance weighting only"
-        ))
+        if (warn == TRUE && RRtang == TRUE) {
+          print(paste(
+            "Warning: RRtang set to FALSE - option designed for inverse variance weighting only"
+          ))
+        }
       }
-      }
-    RRtang <- FALSE
+      RRtang <- FALSE
     } else if (is.null(RRtang)) {
       RRtang <- TRUE
     }
@@ -1491,10 +1483,6 @@ scoretheta <- function(theta,
       if (RRtang == TRUE) corr <- corr / p2d
     } else if (contrast == "RD") {
       corr <- cc * (1 / pmin(n1, n2)) # cc=0.5 gives Hauck-Anderson. Try 0.25
-      if (stratified == TRUE) {
-        corr <- (3 / 16) * (sum(n1 * n2 / (n1 + n2)))^(-1)
-      }
-      # from Mehrotra & Railkar, also Zhao et al.
     } else if (contrast == "p") {
       corr <- cc / n1
     }
@@ -1605,15 +1593,27 @@ scoretheta <- function(theta,
     if (weighting %in% c("IVS")) Vdot <- sum(wt / (sum(wt))^2)
     if (weighting %in% c("INV")) Vdot <- sum(lambda * wt / (sum(wt))^2)
 
-    if (contrast == "OR" && cc > 0) {
-      # corr <- cc * Vdot # This gives essentially the same correction as Gart 1985
-      corr <- cc * sum(((wt / sum(wt))^2) * (1 / (n1 * p1d * (1 - p1d)) +
-        1 / (n2 * p2d * (1 - p2d))))
-    }
-    if (contrast == "RR" && cc > 0) { # EXPERIMENTAL cc for stratified RR
-      # Tentative
-      corr <- cc * sum(((wt / sum(wt))^2) * (1 / (n1) + theta / (n2)))
-      # corr <- cc * Vdot #more tentative - I think wrong
+    # stratified continuity corrections
+    corr <- 0
+    if (cc > 0) {
+      if (contrast == "OR") {
+        # corr <- cc * Vdot
+        # The below gives essentially the same correction as Gart 1985
+        # Slightly different from cc*Vdot, but p-value matches Mantel-Haenszel
+        corr <- cc * sum(((wt / sum(wt))^2) * (1 / (n1 * p1d * (1 - p1d)) +
+                                           1 / (n2 * p2d * (1 - p2d))))
+      } else if (contrast == "RR") {
+        # cc for stratified RR (suggested in Laud 2017, Appendix S2)
+        # Confirmed to give p-value matching corrected Mantel-Haenszel test
+        corr <- cc * sum(((wt / sum(wt))^2) * (1 / (n1) + theta / (n2)))
+        if (RRtang == TRUE) corr <- cc * sum(((wt / sum(wt))^2) * (1 / (n1) + theta / (n2)) / p2d)
+      } else if (contrast == "RD") {
+        corr <- cc * (sum(n1 * n2 / (n1 + n2)))^(-1)
+        # Generalised version of Mehrotra & Railkar (2000) who suggest cc = (3/16)
+        # "our suggested correction is approximately 3/8 times the
+        # continuity correction used in the Mantel-Haenszel statistic; we found the latter to be
+        # overly conservative in extensive simulations."
+      }
     }
     corr <- corr * sign(Sdot)
     score1 <- sum((wt / sum(wt)) * (Stheta - corr)) / pmax(0, sqrt(Vdot))
