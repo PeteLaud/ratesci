@@ -399,9 +399,9 @@ scoreci <- function(x1,
         #        ((x1 == 0 & x2 == 0) & !(sda > 0) & contrast == "RR" &
         #          !(weighting %in% c("INV", "IVS")) & RRtang == TRUE) |
         ((x1 == 0 & x2 == 0) & !(sda > 0) & contrast == "OR" &
-          !(weighting %in% c("INV", "IVS"))) |
+          !(weighting %in% c("INV", "IVS", "MN"))) |
         ((x1 == n1 & x2 == n2) & !(fda > 0) & contrast == "OR" &
-          !(weighting %in% c("INV", "IVS")))
+          !(weighting %in% c("INV", "IVS", "MN")))
 
       if (random == TRUE || dropzeros == TRUE) {
         # Exclude more uninformative strata using dropzeros argument,
@@ -1396,6 +1396,9 @@ scoretheta <- function(theta,
         (num == 0 | C_ == 0), 0, round(num / (2 * A), 10)
       ))
       p1d <- p2d * theta
+      # Fix for special case resulting in problems for stratified score
+      # (including Q scores involving V, hence fix before calculating V)
+      p2d[p2d < 1E-8] <- 0.00000001
       V <- pmax(0, (p1d * (1 - p1d) / n1 +
         (theta^2) * p2d * (1 - p2d) / n2) * lambda)
       mu3 <- (p1d * (1 - p1d) * (1 - 2 * p1d) / (n1^2) -
@@ -1407,13 +1410,15 @@ scoretheta <- function(theta,
         mu3 <- (p1d * (1 - p1d) * (1 - 2 * p1d) / (n1^2) -
           (theta^3) * p2d * (1 - p2d) * (1 - 2 * p2d) / (n2^2)) / p2d^3
         mu3[(x1 == 0 & x2 == 0)] <- 0
-        Stheta[(x1 == 0 & x2 == 0)] <- 0
       }
       V[is.na(V)] <- Inf
     } else if (distrib == "poi") {
       # incidence density version from M&N p223
       p2d <- (x1 + x2) / (n1 * theta + n2)
       p1d <- p2d * theta
+      # Fix for special case resulting in problems for stratified score
+      # (including Q scores involving V, hence fix before calculating V)
+      p2d[p2d < 1E-8] <- 0.00000001
       V <- pmax(0, (p1d / n1 + (theta^2) * p2d / n2))
       mu3 <- (p1d / (n1^2) - (theta^3) * p2d / (n2^2))
       if (RRtang == TRUE) {
@@ -1423,7 +1428,6 @@ scoretheta <- function(theta,
         V <- pmax(0, (p1d / n1 + (theta^2) * p2d / n2) / p2d^2)
         mu3 <- (p1d / (n1^2) - (theta^3) * p2d / (n2^2)) / p2d^3
         mu3[(x1 == 0 & x2 == 0)] <- 0
-        Stheta[(x1 == 0 & x2 == 0)] <- 0
       }
     }
   } else if (contrast == "OR") {
@@ -1436,6 +1440,12 @@ scoretheta <- function(theta,
       p2d <- ifelse(A == 0, -C_ / B, ifelse(num == 0, 0, num / (2 * A)))
       p1d <- p2d * theta / (1 + p2d * (theta - 1))
       p1d[theta == 0] <- 0
+      # Fix for special case resulting in problems for stratified score
+      # (including with INV weighting, hence fix before calculating V)
+      p1d[p1d < 1E-8] <- 0.00000001
+      p2d[p2d < 1E-8] <- 0.00000001
+      p1d[1 - p1d < 1E-8] <- 1 - 0.00000001
+      p2d[1 - p2d < 1E-8] <- 1 - 0.00000001
       Stheta <- (p1hat - p1d) / (p1d * (1 - p1d)) -
         (p2hat - p2d) / (p2d * (1 - p2d))
       V <- pmax(0, (1 / (n1 * p1d * (1 - p1d)) +
@@ -1563,11 +1573,16 @@ scoretheta <- function(theta,
 
     Sdot <- sum(wt * Stheta) / sum(wt)
     # NB the skewness correction is omitted for the heterogeneity test statistics.
-    Q_j <- ((Stheta - Sdot)^2) / V
-    # NB it is necessary to include Sdot here for TDAS method to work.
-    # - for the heterogeneity test evaluated at MLE,
-    #   Sdot will equal 0 if skew = FALSE
-    # NB it is necessary to use equation S2 here for TDAS method to work
+    if (random == TRUE) {
+      Q_j <- ((Stheta - Sdot)^2) / V
+      # NB it is necessary to include Sdot here (equation S2) for TDAS method to work.
+      # - for the heterogeneity test evaluated at MLE,
+      #   Sdot will equal 0 if skew = FALSE
+      #    Q_j[(Stheta - Sdot)^2 < 1E-08] <- 0 # Fix for double-zero cells for RR  (may be redundant)
+    } else if (random == FALSE) {
+      # Simplify for fixed effects version to avoid issues caused by double-zero cells
+      Q_j <- (Stheta^2) / V # Per Laud 2017 equation S3
+    }
     Q <- sum(Q_j)
     W <- sum(wt)
 
