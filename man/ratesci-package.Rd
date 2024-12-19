@@ -2,6 +2,7 @@
 % Please edit documentation in R/ratesci-package.R
 \docType{package}
 \name{ratesci-package}
+\alias{ratesci}
 \alias{ratesci-package}
 \title{ratesci: A package for computing confidence intervals for various
 comparisons of independent binomial and Poisson rates.}

@@ -56,24 +56,25 @@
 #' @author Pete Laud, \email{p.j.laud@@sheffield.ac.uk}
 #' @references
 #'   Laud PJ. Equal-tailed confidence intervals for comparison of
-#'   rates. Pharmaceutical Statistics 2017; 16:334-348.
+#'   rates.
+#'   Pharmaceutical Statistics 2017; 16:334-348.
 #'
 #'   Tango T. Equivalence test and confidence interval for the difference
-#'   in proportions for the paired-sample design. Statistics in Medicine
-#'   1998; 17:891-908
+#'   in proportions for the paired-sample design.
+#'   Statistics in Medicine 1998; 17:891-908
 #'
 #'   Tango T. Improved confidence intervals for the difference between binomial
 #'   proportions based on paired data by Robert G. Newcombe, Statistics in
-#'   Medicine, 17, 2635–2650 (1998). Statistics in Medicine 1999;
-#'   18(24):3511-3513
+#'   Medicine, 17, 2635-2650 (1998).
+#'   Statistics in Medicine 1999; 18(24):3511-3513
 #'
 #'   Tang N-S, Tang M-L, Chan ISF. On tests of equivalence via non-unity
-#'   relative risk for matched-pair design. Statistics in Medicine 2003;
-#'   22:1217-1233
+#'   relative risk for matched-pair design.
+#'   Statistics in Medicine 2003; 22:1217-1233
 #'
 #'   Fagerland MW, Lydersen S, Laake P. Recommended tests and
-#'   confidence intervals for paired binomial proportions. Statistics in
-#'   Medicine 2014; 33(16):2850–2875
+#'   confidence intervals for paired binomial proportions.
+#'   Statistics in Medicine 2014; 33(16):2850-2875
 #'
 #'   Agresti A, Min Y. Simple improved confidence intervals for
 #'   comparing matched proportions. Statistics in Medicine 2005;

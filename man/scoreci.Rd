@@ -286,7 +286,7 @@ Laud PJ. Equal-tailed confidence intervals for comparison of
 
   Laud PJ, Dane A. Confidence intervals for the difference between
   independent binomial proportions: comparison using a graphical approach and
-  moving averages. Pharmaceutical Statistics 2014; 13(5):294–308.
+  moving averages. Pharmaceutical Statistics 2014; 13(5):294-308.
 
   Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in
   Medicine 1985; 4:213-226.
@@ -310,7 +310,7 @@ Laud PJ. Equal-tailed confidence intervals for comparison of
 
   Tang Y. Score confidence intervals and sample sizes for stratified
   comparisons of binomial proportions. Statistics in Medicine 2020;
-  39:3427–3457.
+  39:3427-3457.
 }
 \author{
 Pete Laud, \email{p.j.laud@sheffield.ac.uk}

@@ -214,7 +214,7 @@
 #'
 #'   Laud PJ, Dane A. Confidence intervals for the difference between
 #'   independent binomial proportions: comparison using a graphical approach and
-#'   moving averages. Pharmaceutical Statistics 2014; 13(5):294–308.
+#'   moving averages. Pharmaceutical Statistics 2014; 13(5):294-308.
 #'
 #'   Miettinen OS, Nurminen M. Comparative analysis of two rates. Statistics in
 #'   Medicine 1985; 4:213-226.
@@ -238,7 +238,7 @@
 #'
 #'   Tang Y. Score confidence intervals and sample sizes for stratified
 #'   comparisons of binomial proportions. Statistics in Medicine 2020;
-#'   39:3427–3457.
+#'   39:3427-3457.
 #'
 #' @export
 scoreci <- function(x1,
@@ -1299,8 +1299,9 @@ bisect <- function(ftn,
       scor <- ftn((mid + 1) / 2)
     }
     check <- (scor <= 0) | is.na(scor)
-    # ??scor=NA only happens when |p1-p2|=1 and |theta|=1
+    # ??scor=NA only happens when |p1-p2|=1 and |theta|=1 for RD
     # (in which case hi==lo anyway), or if p1=p2=0
+    # also for RR when p1=0 and theta=0
     hi[check] <- mid[check]
     lo[!check] <- mid[!check]
     niter <- niter + 1

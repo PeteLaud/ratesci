@@ -61,8 +61,8 @@ places) to be used in optimisation subroutine for the confidence interval.}
 \description{
 Score-based confidence intervals for the rate (or risk) difference ('RD'),
 rate ratio ('RR') or odds ratio ('OR'), for paired binomial data.
-[For paired Poisson rates, use the tdasci function with distrib='poi',
-and weighting='MH', with pairs as strata.].
+(For paired Poisson rates, use the tdasci function with distrib='poi',
+and weighting='MH', with pairs as strata.)
 This function applies the Tango and Tang methods for RD and RR respectively,
 as well as an experimental method using the stratified TDAS method with
 pairs as strata.
@@ -87,7 +87,7 @@ Laud PJ. Equal-tailed confidence intervals for comparison of
 
   Tango T. Improved confidence intervals for the difference between binomial
   proportions based on paired data by Robert G. Newcombe, Statistics in
-  Medicine, 17, 2635–2650 (1998). Statistics in Medicine 1999;
+  Medicine, 17, 2635-2650 (1998). Statistics in Medicine 1999;
   18(24):3511-3513
 
   Tang N-S, Tang M-L, Chan ISF. On tests of equivalence via non-unity
@@ -96,7 +96,7 @@ Laud PJ. Equal-tailed confidence intervals for comparison of
 
   Fagerland MW, Lydersen S, Laake P. Recommended tests and
   confidence intervals for paired binomial proportions. Statistics in
-  Medicine 2014; 33(16):2850–2875
+  Medicine 2014; 33(16):2850-2875
 
   Agresti A, Min Y. Simple improved confidence intervals for
   comparing matched proportions. Statistics in Medicine 2005;
